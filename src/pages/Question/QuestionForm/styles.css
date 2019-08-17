@@ -1,4 +1,5 @@
 .QuestionForm {
+  width: 100%;
   padding: 0 2%;
   display: flex;
   flex-direction: column;

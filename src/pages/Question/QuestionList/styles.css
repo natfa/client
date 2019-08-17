@@ -1,0 +1,22 @@
+.QuestionList {
+  width: 100%;
+}
+
+.QuestionListItem {
+  /*display: flex;
+  flex-direction: column;*/
+
+  width: 100%;
+  border: 1px solid black;
+}
+
+.QuestionListItem > .info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.QuestionListItem > .info > div {
+  width: 50%;
+}
