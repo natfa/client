@@ -1,0 +1,9 @@
+.TestsView {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.TestsView > * {
+  width: 100%;
+}
