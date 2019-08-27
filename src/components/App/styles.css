@@ -1,8 +1,13 @@
 .App {
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 
-.App > div {
-  width: 50%;
+.App > .sidebar {
+  width: 20%;
+}
+
+.App > .page {
+  width: 80%;
 }
