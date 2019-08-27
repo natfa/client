@@ -130,12 +130,12 @@ class NewTestModal extends React.Component {
         <div className="content">
           <div className="header">
             <span onClick={this.props.handleClose}>x</span>
-            <h2>Modal Heading</h2>
+            <h2>Compilation filters</h2>
           </div>
 
           <div className="body">
             <div>
-              <label htmlFor="number-of-questions">{"Брой въпроси: "}</label>
+              <label htmlFor="number-of-questions">{"Брой въпроси"}</label>
               <input
                 id="number-of-questions"
                 type="text"
@@ -144,14 +144,16 @@ class NewTestModal extends React.Component {
               />
             </div>
               {this.renderSubjectFilters()}
-              <div>
-                <select onChange={this.handleSelectChange}>
-                  {this.state.availableSubjects.map((subject, i) => {
-                    return <option key={i}>{subject}</option>
-                  })}
-                </select>
-                <span onClick={this.addSubjectFilter}>+ Добавете филтър</span>
-              </div>
+              {this.state.availableSubjects.length > 0 &&
+                <div>
+                  <select onChange={this.handleSelectChange}>
+                    {this.state.availableSubjects.map((subject, i) => {
+                      return <option key={i}>{subject}</option>
+                    })}
+                  </select>
+                  <span onClick={this.addSubjectFilter}>+ Добавете филтър</span>
+                </div>
+              }
               <div>
                 <button onClick={this.submit}>Submit</button>
               </div>
