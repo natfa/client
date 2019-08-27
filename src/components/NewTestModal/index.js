@@ -1,6 +1,9 @@
 import React from 'react'
-
 import './styles.css'
+
+import store from '../../store'
+import pages from '../../store/pages'
+import { changePage, populate } from '../../store/actions'
 
 class NewTestModal extends React.Component {
   constructor (props) {
@@ -77,15 +80,28 @@ class NewTestModal extends React.Component {
       return `subjects[${subject.subject}]=${subject.count}`
     })
 
-    let url = `http://localhost:3001/api/test?total=${this.state.totalCount}&` +
+    const url = `http://localhost:3001/api/test?total=${this.state.totalCount}&` +
       filters.join('&')
 
-    console.log(url)
-
     fetch(url)
-      .then((data) => data.json())
-      .then((test) => console.log(test))
-      .catch((err) => console.error(err))
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(`Error while fetching compiled test.\n${response.status} ${response.statusText}`)
+
+        return response.json()
+      })
+      .then((data) => {
+        const test = {
+          name: data.name,
+          questions: data.questions,
+          start: null,
+          end: null,
+          timeToSolve: null,
+        }
+
+        store.dispatch(populate(test))
+        store.dispatch(changePage(pages.TEST_EDIT))
+      })
   }
 
   addSubjectFilter () {

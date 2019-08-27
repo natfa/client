@@ -1,9 +1,11 @@
-import React from 'react';
+import React from 'react'
+import store from '../../store/'
+import { changePage } from '../../store/actions'
 
-import './styles.css';
+import './styles.css'
 
-import QuestionForm from './QuestionForm/';
-import QuestionList from './QuestionList/';
+import QuestionForm from './QuestionForm/'
+import QuestionList from './QuestionList/'
 
 class Question extends React.Component {
   constructor(props) {
@@ -31,11 +33,19 @@ class Question extends React.Component {
       });
   }
 
+  handlePageChange() {
+    store.dispatch(changePage('TEST_EDIT'))
+  }
+
   render() {
     return (
       <div className="Question">
         <QuestionForm />
         <QuestionList questions={this.state.questions} />
+
+        <button onClick={this.handlePageChange}>
+          Go to TEST EDIT page
+        </button>
       </div>
     );
   }

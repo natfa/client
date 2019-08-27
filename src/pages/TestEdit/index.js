@@ -7,24 +7,12 @@ class TestEdit extends React.Component {
     super(props);
 
     this.state = {
-      name: '',
-      start: null,
-      end: null,
-      questions: [],
+      name: this.props.name,
+      questions: this.props.questions,
+      start: this.props.start,
+      end: this.props.end,
+      timeToSolve: this.props.timeToSolve,
     }
-  }
-
-  componentDidMount() {
-    fetch('http://localhost:3001/api/test?total=10&subjects[Programming]=2&subjects[Math]=2')
-      .then((data) => data.json())
-      .then((test) => {
-        this.setState((state) => {
-          return {
-            name: test.name,
-            questions: test.questions,
-          }
-        })
-      })
   }
 
   render() {
