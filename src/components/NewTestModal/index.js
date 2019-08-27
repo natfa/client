@@ -151,7 +151,7 @@ class NewTestModal extends React.Component {
                       return <option key={i}>{subject}</option>
                     })}
                   </select>
-                  <span onClick={this.addSubjectFilter}>+ Добавете филтър</span>
+                  <button onClick={this.addSubjectFilter}>+ Добавете филтър</button>
                 </div>
               }
               <div>
