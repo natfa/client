@@ -12,7 +12,7 @@ class SideBar extends React.Component {
       pages: this.props.pages
     }
 
-    this.handlePageChange = this.handlePageChange.bind(this)
+    this.handleStoreDispatch = this.handlePageChange.bind(this)
   }
 
   handlePageChange(page) {
@@ -22,8 +22,8 @@ class SideBar extends React.Component {
   renderNavigationLinks() {
     return this.state.pages.map((page, i) => {
       return (
-        <div key={i}>
-          <span onClick={() => { this.handlePageChange(page.page) }}>{page.name}</span>
+        <div key={i} onClick={() => { this.handlePageChange(page.page) }}>
+          {page.name}
         </div>
       )
     })

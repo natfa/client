@@ -1,7 +1,24 @@
 .SideBar {
   width: 100%;
-  background-color: #1E90FF;
+  height: 100%;
+  background-color: #1E88E5;
 
   display: flex;
   flex-direction: column;
+}
+
+.SideBar > div {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  margin: 5px 0;
+}
+
+.SideBar > div:hover {
+  cursor: pointer;
+  background-color: #1976D2;
+}
+
+.SideBar > div > span {
+  width: 100%;
 }
