@@ -11,9 +11,10 @@ import TestEdit from '../../pages/TestEdit'
 class App extends React.Component {
   constructor (props) {
     super(props);
+    const storeState = store.getState()
 
     this.state = {
-      page: ''
+      page: storeState.page,
     }
 
     this.handleStoreDispatch = this.handleStoreDispatch.bind(this)
@@ -43,7 +44,7 @@ class App extends React.Component {
         if (!storeState.test)
           page = <TestEdit />
         else
-          page = <TestEdit 
+          page = <TestEdit
             name={storeState.test.name}
             questions={storeState.test.questions}
             start={storeState.test.start}

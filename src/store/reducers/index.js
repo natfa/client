@@ -6,7 +6,7 @@ import {
 import pages from '../pages'
 
 const initialState = {
-  page: pages.TESTS_VIEW,
+  page: pages.QUESTIONS,
   test: null,
 }
 
