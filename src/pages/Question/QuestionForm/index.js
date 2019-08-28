@@ -9,190 +9,151 @@ class QuestionForm extends React.Component {
     super(props);
 
     this.state = {
-      text: '',
-      points: 0,
-      answers: [],
-      newAnswerText: '',
+      availableSubjects: [],
+      correctAnswerInputs: 1,
+      incorrectAnswerInputs: 1,
     }
 
-    // Rebind this to local functions, cos javascript...
-    this.onTextChange = this.onTextChange.bind(this);
-    this.onPointsChange = this.onPointsChange.bind(this);
-    this.onNewAnswerChange = this.onNewAnswerChange.bind(this);
-    this.onAddNewAnswer = this.onAddNewAnswer.bind(this);
-    this.onAnswerUpdate = this.onAnswerUpdate.bind(this);
-    this.submitNewAnswer = this.submitNewAnswer.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.renderSelectSubjectComponent = this.renderSelectSubjectComponent.bind(this)
+    this.renderCorrectAnswerInputs = this.renderCorrectAnswerInputs.bind(this)
+    this.renderIncorrectAnswerInputs = this.renderIncorrectAnswerInputs.bind(this)
+    this.addAnswer = this.addAnswer.bind(this)
   }
 
-  onTextChange(e) {
-    this.setState({ text: e.target.value })
-  }
+  componentDidMount() {
+    fetch('http://localhost:3001/api/subject')
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(`Error fetching subjects: ${response.status} ${response.statusText}`)
 
-  onPointsChange(e) {
-    const value = e.target.value;
-
-    if (isNaN(Number(value)))
-      return;
-
-    // We trim so that the input doesn't include any spaces
-    // isNaN takes care of spaces between numbers
-    this.setState({ points: value.trim() })
-  }
-
-  onNewAnswerChange(e) {
-    this.setState({ newAnswerText: e.target.value })
-  }
-
-  onAddNewAnswer(e) {
-    this.setState((state) => {
-      return ({
-        answers: [
-          ...state.answers,
-          {
-            text: state.newAnswerText,
-            correct: false,
-          }
-        ],
-        newAnswerText: '',
+        return response.json()
       })
-    })
+      .then((subjects) => {
+        this.setState({ availableSubjects: [...subjects]})
+      })
   }
 
-  onAnswerUpdate(index, newAnswer) {
-    this.setState((state) => {
-      return {
-        answers: state.answers.map((answer, i) => {
-          if (i === index)
-            return { text: newAnswer.text, correct: newAnswer.correct }
-          return answer
-        })
-      }
-    })
+  count = function*(n) {
+    for (let i = 1; i <= n; i++)
+      yield i;
   }
 
-  submitNewAnswer() {
-    const url = 'http://localhost:3001/api/question'
-    const correctAnswers = this.state.answers.filter((answer) => answer.correct).map((answer) => answer.text);
-    const incorrectAnswers = this.state.answers.filter((answer) => !(answer.correct)).map((answer) => answer.text);
+  addAnswer(correct) {
+    console.log('adding answer')
+    if (correct)
+      this.setState((state) => ({ correctAnswerInputs: state.correctAnswerInputs + 1}))
+    else
+      this.setState((state) => ({ incorrectAnswerInputs: state.incorrectAnswerInputs + 1}))
+  }
 
+  handleSubmit(e) {
+    e.preventDefault()
+    const form = e.target
 
-    const data = {
-      text: this.state.text,
-      incorrectAnswers: incorrectAnswers,
-      correctAnswers: correctAnswers,
-      points: Number(this.state.points),
+    const formData = new FormData(form)
+
+    const req = new XMLHttpRequest()
+    req.open('POST', 'http://localhost:3001/api/question')
+    req.onload = (event) => {
+      if (req.status === 200)
+        alert('sent')
+      console.log(event)
     }
+    req.send(formData)
+  }
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+  renderSelectSubjectComponent() {
+    return (
+      <select name="subject">
+        {this.state.availableSubjects.map((subject, i) => {
+          return <option key={i}>{subject}</option>
+        })}
+      </select>
+    )
+  }
+
+  renderCorrectAnswerInputs() {
+    const children = [...this.count(this.state.correctAnswerInputs)].map((i) => {
+      console.log(`Correct: ${i}`)
+      if (i === this.state.correctAnswerInputs)
+        return <input key={i} type="text" name="correct[]" onChange={(e) => { this.addAnswer(true)}} />
+      return <input key={i} type="text" name="correct[]" />
     })
-      .then((answer) => {
-        answer.json()
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-      })
+
+    return (
+      <div>
+        {children}
+      </div>
+    )
+  }
+
+  renderIncorrectAnswerInputs() {
+    const children = [...this.count(this.state.incorrectAnswerInputs)].map((i) => {
+      console.log(`Incorrect: ${i}`)
+      if (i === this.state.incorrectAnswerInputs)
+        return <input key={i} type="text" name="incorrect[]" onChange={(e) => { this.addAnswer(false)}} />
+      return <input key={i} type="text" name="incorrect[]" />
+    })
+
+    return (
+      <div>
+        {children}
+      </div>
+    )
   }
 
   render () {
-    const answerFields = this.state.answers.map((answer, i) => {
-      return (
-        <AnswerField
-          value={answer.text}
-          correct={answer.correct}
-          key={i}
-          index={i}
-          onUpdate={this.onAnswerUpdate}
-        />
-      )
-    })
-
     return (
-      <div className="QuestionForm">
-        <textarea maxLength="150" onChange={this.onTextChange} value={this.state.text} />
+      <form 
+        method="POST" 
+        encType="multipart/form-data" 
+        onSubmit={this.handleSubmit} 
+        className="QuestionForm"
+      >
         <div>
+          <label>Text</label>
+          <textarea 
+            name="text" 
+            maxLength="150" 
+          />
+        </div>
+        <div>
+          <label>Subject</label>
+          {this.renderSelectSubjectComponent()}
+        </div>
+        <div>
+          <label>Points</label>
           <input
             name="points"
-            type="text"
-            value={this.state.points}
-            onChange={this.onPointsChange}
+            type="number"
           />
         </div>
-        <div className="inputter">
+        <div>
+          <label>Media (if any)</label>
           <input
-            type="text"
-            value={this.state.newAnswerText}
-            onChange={this.onNewAnswerChange}
+            name="media"
+            type="file"
+            multiple
           />
-          <button onClick={this.onAddNewAnswer}>Add</button> or
-          <button onClick={this.submitNewAnswer}>Save question</button>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Answers</th>
-              <th>Correct</th>
-            </tr>
-          </thead>
-          <tbody>
-            {answerFields}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
-
-class AnswerField extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.onTextChange = this.onTextChange.bind(this);
-    this.onCorrectChange = this.onCorrectChange.bind(this);
-  }
-
-  onTextChange(e) {
-    this.props.onUpdate(this.props.index, {
-      text: e.target.value,
-      correct: this.props.correct,
-    })
-  }
-
-  onCorrectChange(e) {
-    this.props.onUpdate(this.props.index, {
-      text: this.props.value,
-      correct: e.target.checked,
-    })
-  }
-
-  render() {
-    return (
-      <tr>
-        <td>
+        <div className="answers">
+          <div className="correct">
+            <p>Correct answers</p>
+            {this.renderCorrectAnswerInputs()}
+          </div>
+          <div className="incorrect">
+            <p>Incorrect answers</p>
+            {this.renderIncorrectAnswerInputs()}
+          </div>
+        </div>
+        <div>
           <input
-            type="text"
-            value={this.props.value}
-            onChange={this.onTextChange}
+            type="submit"
+            value="Save question"
           />
-        </td>
-        <td>
-          <input
-            type="checkbox"
-            checked={this.props.correct}
-            onChange={this.onCorrectChange}
-          />
-        </td>
-      </tr>
+        </div>
+      </form>
     );
   }
 }

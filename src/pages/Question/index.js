@@ -42,10 +42,6 @@ class Question extends React.Component {
       <div className="Question">
         <QuestionForm />
         <QuestionList questions={this.state.questions} />
-
-        <button onClick={this.handlePageChange}>
-          Go to TEST EDIT page
-        </button>
       </div>
     );
   }
