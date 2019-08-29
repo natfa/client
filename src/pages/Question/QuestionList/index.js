@@ -3,8 +3,9 @@ import React from 'react';
 import './styles.css';
 
 class QuestionList extends React.Component {
-  render() {
-    const questions = this.props.questions.map((question, i) => {
+
+  renderQuestionList() {
+    return this.props.questions.map((question, i) => {
       return (
         <QuestionListItem
           text={question.text}
@@ -16,10 +17,29 @@ class QuestionList extends React.Component {
         />
       );
     })
+  }
+
+  //TODO: This is the algorithm for parsing the media buffer into an image
+  //Use it when drawing the images...
+  unusedMethod() {
+    const questionsWithMedia = this.props.questions.filter((question) => question.media.length > 0)
+    let question
+    if (questionsWithMedia[0]) {
+      const bufferData = questionsWithMedia[1].media[0].data
+      const b64 = btoa(String.fromCharCode.apply(null, bufferData))
+
+      question = <img src={'data:image/jpeg;base64,' + b64} />
+    }
+    else {
+      question = "Loading..."
+    }
+  }
+
+  render() {
 
     return (
       <div className="QuestionList">
-        {questions}
+        {this.renderQuestionList()}
       </div>
     );
   }
