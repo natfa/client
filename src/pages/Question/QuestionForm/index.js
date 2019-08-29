@@ -40,7 +40,6 @@ class QuestionForm extends React.Component {
   }
 
   addAnswer(correct) {
-    console.log('adding answer')
     if (correct)
       this.setState((state) => ({ correctAnswerInputs: state.correctAnswerInputs + 1}))
     else
@@ -58,7 +57,6 @@ class QuestionForm extends React.Component {
     req.onload = (event) => {
       if (req.status === 200)
         alert('sent')
-      console.log(event)
     }
     req.send(formData)
   }
@@ -75,7 +73,6 @@ class QuestionForm extends React.Component {
 
   renderCorrectAnswerInputs() {
     const children = [...this.count(this.state.correctAnswerInputs)].map((i) => {
-      console.log(`Correct: ${i}`)
       if (i === this.state.correctAnswerInputs)
         return <input key={i} type="text" name="correct[]" onChange={(e) => { this.addAnswer(true)}} />
       return <input key={i} type="text" name="correct[]" />
@@ -90,7 +87,6 @@ class QuestionForm extends React.Component {
 
   renderIncorrectAnswerInputs() {
     const children = [...this.count(this.state.incorrectAnswerInputs)].map((i) => {
-      console.log(`Incorrect: ${i}`)
       if (i === this.state.incorrectAnswerInputs)
         return <input key={i} type="text" name="incorrect[]" onChange={(e) => { this.addAnswer(false)}} />
       return <input key={i} type="text" name="incorrect[]" />
