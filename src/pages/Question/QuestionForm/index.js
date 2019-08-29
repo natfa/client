@@ -26,8 +26,10 @@ class QuestionForm extends React.Component {
     const url = `http://${config.api.hostname}:${config.api.port}/api/subject`
     fetch(url)
       .then((response) => {
-        if (!response.ok)
+        if (!response.ok) {
+          alert('Връзка със сървъра не може да се осъществи!')
           throw new Error(`Error fetching subjects: ${response.status} ${response.statusText}`)
+        }
 
         return response.json()
       })
@@ -53,6 +55,14 @@ class QuestionForm extends React.Component {
     const form = e.target
 
     const formData = new FormData(form)
+    const correct = formData.getAll('correct[]').filter(a => a.length > 0)
+    const incorrect = formData.getAll('incorrect[]').filter(a => a.length > 0)
+
+    formData.delete('correct[]')
+    formData.delete('incorrect[]')
+
+    correct.map((answer) => formData.append('correct[]', answer))
+    incorrect.map((answer) => formData.append('incorrect[]', answer))
 
     const req = new XMLHttpRequest()
     const url = `http://${config.api.hostname}:${config.api.port}/api/question`
