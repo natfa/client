@@ -1,5 +1,6 @@
 import React from 'react';
 import './styles.css';
+import config from '../../../config/default'
 
 // Answer signature
 // answer: { text: String, correct: Boolean }
@@ -22,7 +23,8 @@ class QuestionForm extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:3001/api/subject')
+    const url = `http://${config.api.hostname}:${config.api.port}/api/subject`
+    fetch(url)
       .then((response) => {
         if (!response.ok)
           throw new Error(`Error fetching subjects: ${response.status} ${response.statusText}`)
@@ -53,7 +55,8 @@ class QuestionForm extends React.Component {
     const formData = new FormData(form)
 
     const req = new XMLHttpRequest()
-    req.open('POST', 'http://localhost:3001/api/question')
+    const url = `http://${config.api.hostname}:${config.api.port}/api/question`
+    req.open('POST', url)
     req.onload = (event) => {
       if (req.status === 200)
         alert('sent')

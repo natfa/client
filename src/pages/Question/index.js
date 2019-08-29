@@ -1,5 +1,6 @@
 import React from 'react'
 import store from '../../store/'
+import config from '../../config/default'
 import { changePage } from '../../store/actions'
 
 import './styles.css'
@@ -17,7 +18,7 @@ class Question extends React.Component {
   }
 
   componentDidMount() {
-    const url = 'http://localhost:3001/api/question';
+    const url = `http://${config.api.hostname}:${config.api.port}/api/question`
     fetch(url, {
       method: 'GET',
       mode: 'cors',

@@ -1,5 +1,6 @@
 import React from 'react'
 import './styles.css'
+import config from '../../config/default'
 
 import store from '../../store'
 import pages from '../../store/pages'
@@ -25,7 +26,7 @@ class NewTestModal extends React.Component {
   }
 
   componentDidMount() {
-    const url = 'http://localhost:3001/api/subject'
+    const url = `http://${config.api.hostname}:${config.api.port}/api/subject`
     fetch(url)
       .then((data) => data.json())
       .then((subjects) => {
@@ -80,7 +81,7 @@ class NewTestModal extends React.Component {
       return `subjects[${subject.subject}]=${subject.count}`
     })
 
-    const url = `http://localhost:3001/api/test?total=${this.state.totalCount}&` +
+    const url = `http://${config.api.hostname}:${config.api.port}/api/test?total=${this.state.totalCount}&` +
       filters.join('&')
 
     fetch(url)
