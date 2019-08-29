@@ -121,25 +121,25 @@ class QuestionForm extends React.Component {
         className="QuestionForm"
       >
         <div>
-          <label>Text</label>
+          <label>Текст *</label>
           <textarea 
             name="text" 
             maxLength="150" 
           />
         </div>
         <div>
-          <label>Subject</label>
+          <label>Предмет *</label>
           {this.renderSelectSubjectComponent()}
         </div>
         <div>
-          <label>Points</label>
+          <label>Точки *</label>
           <input
             name="points"
             type="number"
           />
         </div>
         <div>
-          <label>Media (if any)</label>
+          <label>Снимки и видео</label>
           <input
             name="media"
             type="file"
@@ -148,19 +148,16 @@ class QuestionForm extends React.Component {
         </div>
         <div className="answers">
           <div className="correct">
-            <p>Correct answers</p>
+            <p>Верни отговори</p>
             {this.renderCorrectAnswerInputs()}
           </div>
           <div className="incorrect">
-            <p>Incorrect answers</p>
+            <p>Неверни отговори</p>
             {this.renderIncorrectAnswerInputs()}
           </div>
         </div>
         <div>
-          <input
-            type="submit"
-            value="Save question"
-          />
+          <button type="submit">Запази въпрос</button>
         </div>
       </form>
     );

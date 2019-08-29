@@ -33,7 +33,7 @@ class SideBar extends React.Component {
     return (
       <div className="SideBar">
         <div>
-          <h2>Some title or logo here</h2>
+          <h2>Някакво лого или текст тук</h2>
         </div>
         {this.renderNavigationLinks()}
       </div>

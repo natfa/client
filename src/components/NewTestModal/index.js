@@ -131,7 +131,7 @@ class NewTestModal extends React.Component {
         <div className="content">
           <div className="header">
             <span onClick={this.props.handleClose}>x</span>
-            <h2>Compilation filters</h2>
+            <h2>Филтъри</h2>
           </div>
 
           <div className="body">
@@ -156,7 +156,7 @@ class NewTestModal extends React.Component {
                 </div>
               }
               <div>
-                <button onClick={this.submit}>Submit</button>
+                <button onClick={this.submit}>Създай</button>
               </div>
           </div>
         </div>

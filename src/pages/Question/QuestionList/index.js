@@ -31,7 +31,7 @@ class QuestionList extends React.Component {
       question = <img src={'data:image/jpeg;base64,' + b64} />
     }
     else {
-      question = "Loading..."
+      question = "Зареждам..."
     }
   }
 
@@ -51,16 +51,16 @@ function QuestionListItem(props) {
       <div className="text">{props.text}</div>
       <div className="info">
         <div className="answers">
-          Answers: {props.numAnswers}
+          Отговори: {props.numAnswers}
         </div>
         <div className="subject">
-          Subject: {(props.subject) ? props.subject : 'None'}
+          Предмет: {(props.subject) ? props.subject : 'None'}
         </div>
         <div className="points">
-          Points: {props.points}
+          Точки: {props.points}
         </div>
         <div className="media">
-          Media: {(props.media) ? props.media.length : 'None'}
+          Снимки и видео: {(props.media) ? props.media.length : 'None'}
         </div>
       </div>
     </div>

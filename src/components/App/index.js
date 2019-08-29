@@ -56,10 +56,16 @@ class App extends React.Component {
         page = <h1>Welcome to our website!</h1>
     }
 
-    let sidebarPages = []
-    for (let key in pages) {
-      sidebarPages = [...sidebarPages, { page: key, name: key}]
-    }
+    const sidebarPages = [
+      {
+        page: pages.QUESTIONS,
+        name: 'Въпроси',
+      },
+      {
+        page: pages.TESTS_VIEW,
+        name: 'Тестове',
+      },
+    ]
 
     return (
       <div className="App">

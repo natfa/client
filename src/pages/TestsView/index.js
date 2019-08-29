@@ -11,12 +11,12 @@ class TestsView extends React.Component {
     this.state = {
       tests: [
         {
-          name: 'First test',
+          name: 'Това не е истински тест 1',
           start: new Date(2018, 11, 15),
           end: new Date(2019, 11, 14),
         },
         {
-          name: 'Second test',
+          name: 'Това не е истински тест 2',
           start: new Date(2017, 12, 1),
           end: new Date(2017, 12, 2),
         }
@@ -51,14 +51,14 @@ class TestsView extends React.Component {
     return (
       <div className="TestsView">
         <NewTestModal show={this.state.showModal} handleClose={this.hideModal} />
-        <button onClick={this.showModal}>Compile new test</button>
+        <button onClick={this.showModal}>Създай нов тест</button>
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Start</th>
-              <th>Finish</th>
-              <th>Questions</th>
+              <th>Име</th>
+              <th>Начало</th>
+              <th>Край</th>
+              <th>Въпроси</th>
             </tr>
           </thead>
           <tbody>{tests}</tbody>
