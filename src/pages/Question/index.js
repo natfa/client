@@ -1,7 +1,5 @@
 import React from 'react'
-import store from '../../store/'
 import config from '../../config/default'
-import { changePage } from '../../store/actions'
 
 import './styles.css'
 
@@ -15,6 +13,8 @@ class Question extends React.Component {
     this.state = {
       questions: []
     }
+
+    this.handleQuestionFormSubmit = this.handleQuestionFormSubmit.bind(this)
   }
 
   componentDidMount() {
@@ -34,14 +34,25 @@ class Question extends React.Component {
       });
   }
 
-  handlePageChange() {
-    store.dispatch(changePage('TEST_EDIT'))
+  handleQuestionFormSubmit(formData) {
+    const req = new XMLHttpRequest()
+    const url = `http://${config.api.hostname}:${config.api.port}/api/question`
+    req.open('POST', url)
+    req.onload = (event) => {
+      if (req.status === 200) {
+        const newQuestion = JSON.parse(event.target.response)
+        this.setState((state) => {
+          return { questions: [...state.questions, newQuestion] }
+        })
+      }
+    }
+    req.send(formData)
   }
 
   render() {
     return (
       <div className="Question">
-        <QuestionForm />
+        <QuestionForm addNewQuestion={this.handleQuestionFormSubmit} />
         <QuestionList questions={this.state.questions} />
       </div>
     );

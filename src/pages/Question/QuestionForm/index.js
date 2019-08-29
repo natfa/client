@@ -64,14 +64,14 @@ class QuestionForm extends React.Component {
     correct.map((answer) => formData.append('correct[]', answer))
     incorrect.map((answer) => formData.append('incorrect[]', answer))
 
-    const req = new XMLHttpRequest()
-    const url = `http://${config.api.hostname}:${config.api.port}/api/question`
-    req.open('POST', url)
-    req.onload = (event) => {
-      if (req.status === 200)
-        alert('sent')
-    }
-    req.send(formData)
+    form.reset()
+    this.setState({
+      correctAnswerInputs: 1,
+      incorrectAnswerInputs: 1,
+    })
+
+    this.props.addNewQuestion(formData)
+
   }
 
   renderSelectSubjectComponent() {
