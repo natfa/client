@@ -4,42 +4,43 @@ import './styles.css';
 
 class QuestionList extends React.Component {
 
+  editQuestion (id) {
+    this.props.handleEdit(id)
+  }
+
+  deleteQuestion (id) {
+    this.props.handleDelete(id)
+  }
+
   renderQuestionList() {
-    return this.props.questions.map((question, i) => {
+    const listItems = this.props.questionList.map((question) => {
       return (
         <QuestionListItem
           text={question.text}
-          numAnswers={question.incorrectAnswers.length + question.correctAnswers.length}
-          points={question.points}
           subject={question.subject}
-          media={question.media ? question.media : undefined}
-          key={i}
+          key={question.id}
+          id={question.id}
+          handleEdit={() => this.editQuestion(question.id)}
+          handleDelete={() => this.deleteQuestion(question.id)}
         />
-      );
+      )
     })
-  }
-
-  //TODO: This is the algorithm for parsing the media buffer into an image
-  //Use it when drawing the images...
-  unusedMethod() {
-    const questionsWithMedia = this.props.questions.filter((question) => question.media.length > 0)
-    let question
-    if (questionsWithMedia[0]) {
-      const bufferData = questionsWithMedia[1].media[0].data
-      const b64 = btoa(String.fromCharCode.apply(null, bufferData))
-
-      question = <img src={'data:image/jpeg;base64,' + b64} />
-    }
-    else {
-      question = "Зареждам..."
-    }
+    return listItems
   }
 
   render() {
-
     return (
       <div className="QuestionList">
-        {this.renderQuestionList()}
+        <div className="filters">
+          <select>
+            <option>Math</option>
+            <option>Programming</option>
+          </select>
+          <input type="search" />
+        </div>
+        <div className="list">
+          {this.renderQuestionList()}
+        </div>
       </div>
     );
   }
@@ -48,23 +49,14 @@ class QuestionList extends React.Component {
 function QuestionListItem(props) {
   return (
     <div className="QuestionListItem">
-      <div className="text">{props.text}</div>
       <div className="info">
-        <div className="answers">
-          Отговори: {props.numAnswers}
-        </div>
-        <div className="subject">
-          Предмет: {(props.subject) ? props.subject : 'None'}
-        </div>
-        <div className="points">
-          Точки: {props.points}
-        </div>
-        <div className="media">
-          Снимки и видео: {(props.media) ? props.media.length : 'None'}
-        </div>
+        <div className="text">{props.text}</div>
+        <div className="subject">{props.subject}</div>
       </div>
+      <button onClick={props.handleEdit}>Промени</button>
+      <button onClick={props.handleDelete}>Изтрий</button>
     </div>
   );
 }
 
-export default QuestionList;
+export default QuestionList

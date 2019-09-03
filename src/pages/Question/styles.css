@@ -1,4 +1,15 @@
 .Question {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.Question > .form {
+  flex-basis: 60%;
+}
+
+.Question > .list {
+  border-left: 1px solid grey;
+  flex-basis: 35%;
 }

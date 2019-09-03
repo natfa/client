@@ -1,7 +1,7 @@
 .QuestionForm {
+  padding: 0.75em;
   width: 100%;
   text-align: right;
-
   display: flex;
   flex-direction: column;
 }
@@ -12,7 +12,7 @@
   justify-content: space-evenly;
   align-items: baseline;
   align-content: stretch;
-  margin: 10px 0;
+  margin-bottom: 20px;
 }
 
 .QuestionForm > div > input,
