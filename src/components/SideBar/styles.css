@@ -10,15 +10,10 @@
 .SideBar > div {
   width: 100%;
   text-align: center;
-  padding: 10px 0;
-  margin: 5px 0;
+  padding: 1rem 0;
 }
 
 .SideBar > div:hover {
   cursor: pointer;
   background-color: #1976D2;
-}
-
-.SideBar > div > span {
-  width: 100%;
 }

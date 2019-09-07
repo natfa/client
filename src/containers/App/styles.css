@@ -1,0 +1,13 @@
+.App {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.App > .side {
+  flex-basis: 15%;
+}
+
+.App > .page {
+  flex-basis: 85%;
+}
