@@ -44,15 +44,14 @@ class QuestionRouteDispatcher {
         mode: 'cors',
       })
         .then((response) => {
+          if (response.status === 404)
+            return resolve(null)
+
           if (!response.ok)
             return reject(response)
 
           return response.json()
-        })
-        .then((data) => {
-          if (!data)
-            return
-          return resolve(data)
+            .then((data) => resolve(data))
         })
         .catch((err) => {
           return reject(err)
