@@ -7,7 +7,7 @@ class Dispatcher {
     else
       this.hostname = `http://${hostname}:${port}`
 
-    this.questions = new QuestionRouteDispatcher(this.hostname + '/api/question/')
+    this.questions = new QuestionRouteDispatcher(this.hostname + '/api/question')
   }
 }
 
