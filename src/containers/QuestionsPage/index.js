@@ -5,6 +5,7 @@ import './styles.css'
 
 import QuestionForm from '../../components/QuestionForm'
 import QuestionList from '../../components/QuestionList'
+import Modal from '../../components/Modal'
 
 class QuestionsPage extends React.Component {
   constructor(props) {
@@ -13,12 +14,16 @@ class QuestionsPage extends React.Component {
     this.state = {
       questions: [],
       subjects: [],
+      question: {
+        updating: false,
+        data: null,
+      },
     }
-
-    this.getThemes = this.getThemes.bind(this)
 
     this.createQuestion = this.createQuestion.bind(this)
     this.deleteQuestion = this.deleteQuestion.bind(this)
+    this.openEditQuestion = this.openEditQuestion.bind(this)
+    this.closeUpdateModal = this.closeUpdateModal.bind(this)
   }
 
   componentDidMount() {
@@ -104,9 +109,64 @@ class QuestionsPage extends React.Component {
       })
   }
 
+  updateQuestion(questionId, formData) {
+    this.deleteQuestion(questionId)
+    this.createQuestion(formData)
+    this.closeUpdateModal()
+  }
+
+  openEditQuestion(id) {
+    dispatcher.questions.getById(id)
+      .then((res) => {
+        if (!res.success) {
+          alert('Implement proper user feedback!')
+          console.error(res)
+          return
+        }
+
+        const question = res.data
+        this.setState({ question: { updating: true, data: question }})
+      })
+  }
+
+  closeUpdateModal() {
+    this.setState({ question: { updating: false, data: null }})
+  }
+
+  renderUpdateModal() {
+    if (!this.state.question.updating) {
+      return
+    }
+
+    const question = this.state.question.data
+
+    return (
+        <Modal
+          show={this.state.question.updating}
+          handleClose={this.closeUpdateModal}
+          header={'Updating question'}
+        >
+          <QuestionForm
+            subjects={this.state.subjects}
+            getThemes={this.getThemes}
+            handleSubmit={(formData) => this.updateQuestion(question.id, formData)}
+            text={question.text}
+            points={question.points}
+            answers={question.answers}
+            subject={question.subject}
+            theme={question.theme}
+            media={question.media}
+          />
+        </Modal>
+    )
+  }
+
   render() {
     return (
       <div className="QuestionsPage">
+
+        {this.renderUpdateModal()}
+
         <div className="form">
           <QuestionForm
             subjects={this.state.subjects}
@@ -118,7 +178,7 @@ class QuestionsPage extends React.Component {
           <QuestionList
             subjects={this.state.subjects}
             questionList={this.state.questions}
-            handleEdit={() => alert('Implement handle edit question')}
+            handleEdit={this.openEditQuestion}
             handleDelete={this.deleteQuestion}
           />
         </div>

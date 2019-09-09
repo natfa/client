@@ -6,10 +6,17 @@ class QuestionForm extends React.Component {
   constructor(props) {
     super(props)
 
+    let correctInputs = 1
+    let incorrectInputs = 3
+
+    if (this.props.answers) {
+      correctInputs = this.props.answers.filter((a) => a.correct).length + 1
+      incorrectInputs = this.props.answers.filter((a) => !a.correct).length + 1
+    }
+
     this.state = {
-      correctInputs: 1,
-      incorrectInputs: 3,
-      selectedSubject: null,
+      correctInputs,
+      incorrectInputs,
       themes: [],
     }
 
@@ -22,16 +29,26 @@ class QuestionForm extends React.Component {
     this.renderThemes = this.renderThemes.bind(this)
   }
 
+  componentDidMount() {
+    if (this.props.subjects.length === 0)
+      return
+
+    const subject = this.props.subject ?
+      this.props.subject :
+      this.props.subjects[0]
+
+    this.getAndSetThemes(subject)
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.subjects === prevProps.subjects)
       return
 
-    const selectedSubject = this.props.selectedSubject ?
-      this.props.selectedSubject :
+    const subject = this.props.subject ?
+      this.props.subject :
       this.props.subjects[0]
 
-    this.getAndSetThemes(selectedSubject)
-    this.setState({ selectedSubject })
+    this.getAndSetThemes(subject)
   }
 
   getAndSetThemes(subject) {
@@ -83,26 +100,30 @@ class QuestionForm extends React.Component {
   }
 
   renderAnswers(correct) {
-    const n = correct ? this.state.correctInputs : this.state.incorrectInputs
-    const name = correct ? 'correctAnswers[]' : 'incorrectAnswers[]'
+    const numOfInputs = correct ? this.state.correctInputs : this.state.incorrectInputs
+    const inputName = correct ? 'correctAnswers[]' : 'incorrectAnswers[]'
 
-    return [...Array(n).keys()].map((i) => {
-      if (i === n-1) {
-      return (
-        <input type="text" key={i} name={name}
-          onChange={(e) => this.addAnswer(correct)} />
-        )
+    const defaultValues = this.props.answers ?
+      this.props.answers.filter((a) => a.correct == correct).map(a => a.text) :
+      [...Array(numOfInputs).keys()].map((i) => '')
+
+    return [...Array(numOfInputs).keys()].map((i) => {
+      // If it's the last input
+      if (i === numOfInputs-1) {
+        return (<input type="text" key={i} name={inputName}
+          onChange={(e) => this.addAnswer(correct)} />)
       }
-      return (
-        <input type="text" key={i} name={name} />
-      )
+
+      const value = defaultValues[i]
+
+      return <input type="text" key={i} name={inputName} defaultValue={value} />
     })
   }
 
   renderSubjects() {
     return (
       <select
-        defaultValue={this.state.selectedSubject}
+        defaultValue={this.props.subject}
         onChange={this.handleSubjectChange}
         name="subject"
       >
@@ -114,9 +135,18 @@ class QuestionForm extends React.Component {
   }
 
   renderThemes() {
+    // PLEASE READ BEFORE UPDATING THIS METHOD!!!
+    // I'm not entirely sure why, but the defaultValue attribute
+    // for the select method doesn't work properly for the themes select tag.
+    // This is why it's currently using the selected attribute in the options tag.
+    // Please fix if you can!
     return (
-      <select name="theme">
+      <select
+        name="theme"
+      >
         {this.state.themes.map((theme) => {
+          if (this.props.theme === theme)
+            return <option selected key={theme}>{theme}</option>
           return <option key={theme}>{theme}</option>
         })}
       </select>
@@ -138,8 +168,8 @@ class QuestionForm extends React.Component {
 
         <div className="question">
           <label><p>Question:</p></label>
-          <textarea name="text" />
-          <input type="number" name="points" />
+          <textarea defaultValue={this.props.text || ''} name="text" />
+          <input defaultValue={this.props.points || 0} type="number" name="points" />
         </div>
 
         <div className="answers">
@@ -155,7 +185,7 @@ class QuestionForm extends React.Component {
         </div>
 
         <div className="media">
-          <Media />
+          <Media defaultValue={this.props.media} />
         </div>
 
         <div className="submit">

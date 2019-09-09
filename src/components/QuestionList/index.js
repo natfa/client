@@ -32,7 +32,7 @@ class QuestionList extends React.Component {
     return (
       <select>
         {this.props.subjects.map((subject) => {
-          return <option key={subject.id}>{subject.name}</option>
+          return <option key={subject}>{subject}</option>
         })}
       </select>
     )
