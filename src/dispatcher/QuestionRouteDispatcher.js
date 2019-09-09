@@ -31,7 +31,14 @@ class QuestionRouteDispatcher {
           if (err instanceof TypeError)
             return reject({
               success: false,
-              message: 'Server not responding'
+              message: 'Server not responding',
+              data: err,
+            })
+          else
+            return reject({
+              success: false,
+              message: 'Unknown error',
+              data: err,
             })
         })
     })
@@ -45,16 +52,38 @@ class QuestionRouteDispatcher {
       })
         .then((response) => {
           if (response.status === 404)
-            return resolve(null)
+            return resolve({
+              success: false,
+              message: `Question with id ${id} not found`,
+              data: response,
+            })
 
           if (!response.ok)
-            return reject(response)
+            return resolve({
+              success: false,
+              message: 'Unknown error',
+              data: response,
+            })
 
           return response.json()
-            .then((data) => resolve(data))
+            .then((data) => resolve({
+              success: true,
+              message: '',
+              data: data,
+            }))
         })
         .catch((err) => {
-          return reject(err)
+          if (err instanceof TypeError)
+            return reject({
+              success: false,
+              message: 'Server not responding',
+              data: err,
+            })
+          return reject({
+            success: false,
+            message: 'Unknown error',
+            data: err,
+          })
         })
     })
   }
@@ -67,17 +96,43 @@ class QuestionRouteDispatcher {
         body: bodyData,
       })
         .then((response) => {
+          if (response.status === 400)
+            return resolve({
+              success: false,
+              message: 'Invalid input',
+              data: response,
+            })
+
           if (!response.ok)
-            return reject(response)
+            return resolve({
+              success: false,
+              message: 'Unknown error',
+              data: response,
+            })
+
           return response.json()
         })
         .then((data) => {
           if (!data)
             return
-          return resolve(data)
+          return resolve({
+            success: true,
+            message: '',
+            data: data,
+          })
         })
         .catch((err) => {
-          return reject(err)
+          if (err instanceof TypeError)
+            return reject({
+              success: false,
+              message: 'Server not responding',
+              data: err,
+            })
+          return reject({
+            success: false,
+            message: 'Unknown error',
+            data: err,
+          })
         })
     })
   }
@@ -90,11 +145,30 @@ class QuestionRouteDispatcher {
       })
         .then((response) => {
           if (!response.ok)
-            return reject(response)
-          return resolve(true)
+            return resolve({
+              success: false,
+              message: 'Unknown error',
+              data: response,
+            })
+
+          return resolve({
+            success: true,
+            message: '',
+            data: true,
+          })
         })
         .catch((err) => {
-          return reject(err)
+          if (err instanceof TypeError)
+            return reject({
+              success: false,
+              message: 'Server not responding',
+              data: err,
+            })
+          return reject({
+            success: false,
+            message: 'Unknown error',
+            data: err,
+          })
         })
     })
   }

@@ -1,14 +1,9 @@
+import config from '../config/default'
+
 import QuestionRouteDispatcher from './QuestionRouteDispatcher'
+import SubjectRouteDispatcher from './SubjectRouteDispatcher'
 
-class Dispatcher {
-  constructor(hostname, port) {
-    if (!port)
-      this.hostname = `http://${hostname}`
-    else
-      this.hostname = `http://${hostname}:${port}`
-
-    this.questions = new QuestionRouteDispatcher(this.hostname + '/api/question')
-  }
+export default {
+  questions: new QuestionRouteDispatcher(`${config.api}/api/question`),
+  subjects: new SubjectRouteDispatcher(`${config.api}/api/subject`),
 }
-
-export default Dispatcher
