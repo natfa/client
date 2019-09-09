@@ -10,22 +10,9 @@ class QuestionsPage extends React.Component {
   constructor(props) {
     super(props)
 
-    const subjects = [
-      { id: 1, name: 'Programming' },
-      { id: 2, name: 'Math' },
-    ]
-
-    const themes = [
-      { id: 1, subjectid: 1, name: 'Web development' },
-      { id: 2, subjectid: 1, name: 'Software development' },
-      { id: 3, subjectid: 2, name: 'Calculus' },
-      { id: 4, subjectid: 2, name: 'Geometry' },
-    ]
-
     this.state = {
       questions: [],
-      subjects: subjects,
-      allThemes: themes,
+      subjects: [],
     }
 
     this.getThemes = this.getThemes.bind(this)
@@ -48,10 +35,38 @@ class QuestionsPage extends React.Component {
       .catch((err) => {
         console.error(err)
       })
+
+    dispatcher.subjects.getAll()
+      .then((res) => {
+        if (!res.success) {
+          alert('Implement proper user feedback!')
+          console.error(res)
+          return
+        }
+
+        this.setState({ subjects: res.data })
+      })
+      .catch((err) => {
+      })
   }
 
-  getThemes(subjectId) {
-    return this.state.allThemes.filter((t) => t.subjectid === subjectId)
+  getThemes(subject) {
+    return new Promise((resolve, reject) => {
+      dispatcher.themes.getAllBySubject(subject)
+        .then((res) => {
+          if (!res.success) {
+            alert('Implement proper user feedback!')
+            console.error(res)
+            return
+          }
+
+          return resolve(res.data)
+        })
+        .catch((err) => {
+          alert('Implement proper user feedback!')
+          console.error(err)
+        })
+    })
   }
 
   createQuestion(formData) {

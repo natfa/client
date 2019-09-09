@@ -6,17 +6,11 @@ class QuestionForm extends React.Component {
   constructor(props) {
     super(props)
 
-    const selectedSubject = this.props.selectedSubject ?
-      this.props.selectedSubject :
-      this.props.subjects[0]
-
-    const themes = this.props.getThemes(selectedSubject.id)
-
     this.state = {
       correctInputs: 1,
       incorrectInputs: 3,
-      selectedSubject,
-      themes,
+      selectedSubject: null,
+      themes: [],
     }
 
     this.addAnswer = this.addAnswer.bind(this)
@@ -28,14 +22,33 @@ class QuestionForm extends React.Component {
     this.renderThemes = this.renderThemes.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.subjects === prevProps.subjects)
+      return
+
+    const selectedSubject = this.props.selectedSubject ?
+      this.props.selectedSubject :
+      this.props.subjects[0]
+
+    this.getAndSetThemes(selectedSubject)
+    this.setState({ selectedSubject })
+  }
+
+  getAndSetThemes(subject) {
+    this.props.getThemes(subject)
+      .then((themes) => {
+        this.setState({ themes })
+      })
+  }
+
   handleSubjectChange(e) {
     const subjectName = e.target.value
-    const subject = this.props.subjects.find((s) => s.name === subjectName)
+    const subject = this.props.subjects.find((s) => s === subjectName)
 
     if (!subject)
       return
-    const themes = this.props.getThemes(subject.id)
-    this.setState({ themes })
+
+    this.getAndSetThemes(subject)
   }
 
   handleSubmit(e) {
@@ -89,12 +102,12 @@ class QuestionForm extends React.Component {
   renderSubjects() {
     return (
       <select
-        defaultValue={this.state.selectedSubject.name}
+        defaultValue={this.state.selectedSubject}
         onChange={this.handleSubjectChange}
         name="subject"
       >
         {this.props.subjects.map((subject) => {
-          return <option key={subject.id}>{subject.name}</option>
+          return <option key={subject}>{subject}</option>
         })}
       </select>
     )
@@ -104,7 +117,7 @@ class QuestionForm extends React.Component {
     return (
       <select name="theme">
         {this.state.themes.map((theme) => {
-          return <option key={theme.id}>{theme.name}</option>
+          return <option key={theme}>{theme}</option>
         })}
       </select>
     )
