@@ -104,7 +104,7 @@ class QuestionForm extends React.Component {
     const inputName = correct ? 'correctAnswers[]' : 'incorrectAnswers[]'
 
     const defaultValues = this.props.answers ?
-      this.props.answers.filter((a) => a.correct == correct).map(a => a.text) :
+      this.props.answers.filter((a) => a.correct === correct).map(a => a.text) :
       [...Array(numOfInputs).keys()].map((i) => '')
 
     return [...Array(numOfInputs).keys()].map((i) => {
