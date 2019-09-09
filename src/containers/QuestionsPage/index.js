@@ -1,8 +1,10 @@
 import React from 'react'
+import dispatcher from '../../dispatcher/'
 
 import './styles.css'
 
 import QuestionForm from '../../components/QuestionForm'
+import QuestionList from '../../components/QuestionList'
 
 class QuestionsPage extends React.Component {
   constructor(props) {
@@ -21,12 +23,31 @@ class QuestionsPage extends React.Component {
     ]
 
     this.state = {
+      questions: [],
       subjects: subjects,
       allThemes: themes,
     }
 
     this.getThemes = this.getThemes.bind(this)
+
     this.createQuestion = this.createQuestion.bind(this)
+    this.deleteQuestion = this.deleteQuestion.bind(this)
+  }
+
+  componentDidMount() {
+    dispatcher.questions.getAll()
+      .then((res) => {
+        if (!res.success) {
+          alert('Implement proper user feedback!')
+          console.log(res)
+          return
+        }
+
+        this.setState({ questions: res.data })
+      })
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   getThemes(subjectId) {
@@ -34,20 +55,58 @@ class QuestionsPage extends React.Component {
   }
 
   createQuestion(formData) {
-    alert('Creating question')
-    console.log(formData)
+    dispatcher.questions.createOne(formData)
+      .then((res) => {
+        if (!res.success) {
+          alert('Implement proper user feedback!')
+          console.error(res)
+        }
+
+        this.setState((state) => ({ questions: [...state.questions, res.data] }))
+      })
+      .catch((err) => {
+        alert('Implement proper user feedback!')
+        console.error(err)
+      })
+  }
+
+  deleteQuestion(id) {
+    dispatcher.questions.deleteById(id)
+      .then((res) => {
+        if (!res.success) {
+          alert('Implement proper user feedback!')
+          console.error(res)
+        }
+
+        this.setState((state) => {
+          const questions = state.questions.filter((q) => q.id !== id)
+          return { questions: questions }
+        })
+      })
+      .catch((err) => {
+        alert('Implement proper user feedback!')
+        console.error(err)
+      })
   }
 
   render() {
     return (
       <div className="QuestionsPage">
-        <QuestionForm
-          subjects={this.state.subjects}
-          getThemes={this.getThemes}
-          selectedSubject={this.state.subjects[1]}
-          handleSubmit={this.createQuestion}
-        />
-        <div></div>
+        <div className="form">
+          <QuestionForm
+            subjects={this.state.subjects}
+            getThemes={this.getThemes}
+            handleSubmit={this.createQuestion}
+          />
+        </div>
+        <div className="list">
+          <QuestionList
+            subjects={this.state.subjects}
+            questionList={this.state.questions}
+            handleEdit={() => alert('Implement handle edit question')}
+            handleDelete={this.deleteQuestion}
+          />
+        </div>
       </div>
     )
   }

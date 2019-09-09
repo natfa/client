@@ -3,3 +3,13 @@
   flex-direction: row;
   height: 100%;
 }
+
+.QuestionsPage > .form {
+  flex-basis: 60%;
+  border-right: 1px solid grey;
+  padding: 0 10rem;
+}
+
+.QuestionsPage > .list {
+  flex-basis: 40%;
+}
