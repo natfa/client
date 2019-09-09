@@ -27,7 +27,18 @@ class SubjectRouteDispatcher {
           })
         })
         .catch((err) => {
-          return reject(err)
+          if (err instanceof TypeError)
+            return reject({
+              success: false,
+              message: 'Server not responding',
+              data: err,
+            })
+          else
+            return reject({
+              success: false,
+              message: 'Unknown error',
+              data: err,
+            })
         })
     })
   }
