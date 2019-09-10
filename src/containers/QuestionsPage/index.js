@@ -155,7 +155,7 @@ class QuestionsPage extends React.Component {
             answers={question.answers}
             subject={question.subject}
             theme={question.theme}
-            media={question.media}
+            showMedia={false}
           />
         </Modal>
     )
@@ -169,6 +169,7 @@ class QuestionsPage extends React.Component {
 
         <div className="form">
           <QuestionForm
+            showMedia={true}
             subjects={this.state.subjects}
             getThemes={this.getThemes}
             handleSubmit={this.createQuestion}

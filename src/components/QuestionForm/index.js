@@ -184,9 +184,11 @@ class QuestionForm extends React.Component {
           </fieldset>
         </div>
 
+        {this.props.showMedia &&
         <div className="media">
           <Media defaultValue={this.props.media} />
         </div>
+        }
 
         <div className="submit">
           <button>Submit</button>
