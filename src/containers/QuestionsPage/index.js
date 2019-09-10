@@ -24,6 +24,7 @@ class QuestionsPage extends React.Component {
     this.deleteQuestion = this.deleteQuestion.bind(this)
     this.openEditQuestion = this.openEditQuestion.bind(this)
     this.closeUpdateModal = this.closeUpdateModal.bind(this)
+    this.filterQuestions = this.filterQuestions.bind(this)
   }
 
   componentDidMount() {
@@ -74,12 +75,30 @@ class QuestionsPage extends React.Component {
     })
   }
 
+  filterQuestions(filters) {
+    dispatcher.questions.getByFilters(filters)
+      .then((res) => {
+        if (!res.success) {
+          alert('Implement proper user feedback!')
+          console.error(res)
+          return
+        }
+
+        this.setState({ questions: res.data })
+      })
+      .catch((err) => {
+        alert('Implement proper user feedback!')
+        console.error(err)
+      })
+  }
+
   createQuestion(formData) {
     dispatcher.questions.createOne(formData)
       .then((res) => {
         if (!res.success) {
           alert('Implement proper user feedback!')
           console.error(res)
+          return
         }
 
         this.setState((state) => ({ questions: [...state.questions, res.data] }))
@@ -96,6 +115,7 @@ class QuestionsPage extends React.Component {
         if (!res.success) {
           alert('Implement proper user feedback!')
           console.error(res)
+          return
         }
 
         this.setState((state) => {
@@ -177,6 +197,7 @@ class QuestionsPage extends React.Component {
         </div>
         <div className="list">
           <QuestionList
+            filterQuestions={this.filterQuestions}
             subjects={this.state.subjects}
             questionList={this.state.questions}
             handleEdit={this.openEditQuestion}
