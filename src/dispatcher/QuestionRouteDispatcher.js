@@ -44,6 +44,53 @@ class QuestionRouteDispatcher {
     })
   }
 
+  getByFilters(filters) {
+    return new Promise((resolve, reject) => {
+      if (!filters || !filters.subject)
+        return reject({
+          success: false,
+          message: 'Filters must be applied',
+          data: null,
+        })
+
+      let url = this.route + `/filter/${filters.subject}`
+      if (filters.text)
+        url += `/${filters.text}`
+
+      fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+      })
+        .then((response) => {
+          if (!response.ok)
+            return resolve({
+              success: false,
+              message: 'Unknown error',
+              data: response,
+            })
+
+          return response.json()
+        })
+        .then((data) => {
+          if (!data)
+            return
+
+          return resolve({
+            success: true,
+            message: '',
+            data: data,
+          })
+        })
+        .catch((err) => {
+          return reject({
+            success: false,
+            message: 'Unknown error',
+            data: err,
+          })
+        })
+    })
+  }
+
   getById(id) {
     return new Promise((resolve, reject) => {
       fetch(`${this.route}/${id}`, {
