@@ -135,21 +135,24 @@ class QuestionForm extends React.Component {
   }
 
   renderThemes() {
-    // PLEASE READ BEFORE UPDATING THIS METHOD!!!
-    // I'm not entirely sure why, but the defaultValue attribute
-    // for the select method doesn't work properly for the themes select tag.
-    // This is why it's currently using the selected attribute in the options tag.
-    // Please fix if you can!
+    const defaultValue = this.props.theme ?
+      this.props.theme :
+      ""
+
     return (
-      <select
-        name="theme"
-      >
-        {this.state.themes.map((theme) => {
-          if (this.props.theme === theme)
-            return <option selected key={theme}>{theme}</option>
-          return <option key={theme}>{theme}</option>
-        })}
-      </select>
+      <div>
+        <input
+          name="theme"
+          defaultValue={defaultValue}
+          type="text"
+          list="themes-list"
+        />
+        <datalist id="themes-list">
+          {this.state.themes.map((theme) => {
+            return <option key={theme} value={theme} />
+          })}
+        </datalist>
+      </div>
     )
   }
 
