@@ -110,13 +110,13 @@ class QuestionForm extends React.Component {
     return [...Array(numOfInputs).keys()].map((i) => {
       // If it's the last input
       if (i === numOfInputs-1) {
-        return (<input type="text" key={i} name={inputName}
+        return (<input autocomplete="off" type="text" key={i} name={inputName}
           onChange={(e) => this.addAnswer(correct)} />)
       }
 
       const value = defaultValues[i]
 
-      return <input type="text" key={i} name={inputName} defaultValue={value} />
+      return <input autocomplete="off" type="text" key={i} name={inputName} defaultValue={value} />
     })
   }
 
@@ -146,6 +146,7 @@ class QuestionForm extends React.Component {
           defaultValue={defaultValue}
           type="text"
           list="themes-list"
+          autocomplete="off"
         />
         <datalist id="themes-list">
           {this.state.themes.map((theme) => {
