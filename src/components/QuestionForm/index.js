@@ -60,7 +60,7 @@ class QuestionForm extends React.Component {
 
   handleSubjectChange(e) {
     const subjectName = e.target.value
-    const subject = this.props.subjects.find((s) => s === subjectName)
+    const subject = this.props.subjects.find((s) => s.name === subjectName)
 
     if (!subject)
       return
@@ -136,7 +136,7 @@ class QuestionForm extends React.Component {
 
   renderThemes() {
     const defaultValue = this.props.theme ?
-      this.props.theme :
+      this.props.theme.name :
       ""
 
     return (

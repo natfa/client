@@ -44,18 +44,18 @@ class QuestionRouteDispatcher {
     })
   }
 
-  getByFilters(filters) {
+  getByFilters(subjectid, text) {
     return new Promise((resolve, reject) => {
-      if (!filters || !filters.subject)
+      if (!subjectid)
         return reject({
           success: false,
           message: 'Filters must be applied',
           data: null,
         })
 
-      let url = this.route + `/filter/${filters.subject}`
-      if (filters.text)
-        url += `/${filters.text}`
+      let url = this.route + `/filter/${subjectid}`
+      if (text)
+        url += `/${text}`
 
       fetch(url, {
         method: 'GET',

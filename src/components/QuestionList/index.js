@@ -9,7 +9,7 @@ class QuestionList extends React.Component {
     this.state = {
       filters: {
         disableDefault: false,
-        subject: undefined,
+        subjectid: undefined,
         text: '',
       }
     }
@@ -27,50 +27,39 @@ class QuestionList extends React.Component {
   }
 
   handleSubjectChange(e) {
-    const subject = e.target.value
+    // This will disable the default value for the filter droplist
+    if (!this.state.filters.disableDefault)
+      this.setState((state) => ({ filters: Object.assign({}, state.filters, { disableDefault: true })}))
 
-    if (this.state.filters.text.length > 2)
-      this.filterQuestions(subject, this.state.filters.text)
-    else
-      this.filterQuestions(subject)
+    const subject = {
+      id: e.target.selectedOptions[0].dataset.id,
+      name: e.target.value,
+    }
+
+    if (!subject.id)
+      return
 
     this.setState((state) => ({
-      filters: {
-        subject: subject,
-        text: state.filters.text,
-        disableDefault: true,
-      }
+      filters: Object.assign({}, state.filters, {
+        subjectid: subject.id,
+      })
     }))
+
+    if (this.state.filters.text.length > 2)
+      this.props.filterQuestions(subject.id, this.state.filters.text)
+    else
+      this.props.filterQuestions(subject.id)
   }
 
   handleTextChange(e) {
     const text = e.target.value
+    this.setState((state) => ({ filters: Object.assign({}, state.filters, { text }) }))
 
-    if (this.state.filters.subject) {
-      if (text.length > 2) {
-        this.filterQuestions(this.state.filters.subject, text)
-      } else if (this.state.filters.text.length > 2) {
-        this.filterQuestions(this.state.filters.subject)
-      }
-    }
-
-    this.setState((state) => ({
-      filters: {
-        subject: state.filters.subject,
-        text: text,
-        disableDefault: state.filters.disableDefault,
-      }
-    }))
-  }
-
-  filterQuestions(subject, text) {
-    if (subject) {
-      let filters = { subject }
-
-      if (text && text.length > 2)
-        filters = Object.assign({}, filters, { text })
-
-      this.props.filterQuestions(filters)
+    if (this.state.filters.subjectid !== undefined) {
+      if (text.length > 2)
+        this.props.filterQuestions(this.state.filters.subjectid, text)
+      else if (this.state.filters.text.length > 2)
+        this.props.filterQuestions(this.state.filters.subjectid)
     }
   }
 
@@ -79,7 +68,7 @@ class QuestionList extends React.Component {
       return (
         <Item
           text={question.text}
-          subject={question.subject}
+          subject={question.subject.name}
           key={question.id}
           id={question.id}
           handleEdit={() => this.editQuestion(question.id)}
@@ -97,7 +86,7 @@ class QuestionList extends React.Component {
           <option> -- select a filter -- </option>
         }
         {this.props.subjects.map((subject) => {
-          return <option key={subject.id}>{subject.name}</option>
+          return <option data-id={subject.id} key={subject.id}>{subject.name}</option>
         })}
       </select>
     )

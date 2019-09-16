@@ -75,8 +75,8 @@ class QuestionsPage extends React.Component {
     })
   }
 
-  filterQuestions(filters) {
-    dispatcher.questions.getByFilters(filters)
+  filterQuestions(subjectid, text) {
+    dispatcher.questions.getByFilters(subjectid, text)
       .then((res) => {
         if (!res.success) {
           alert('Implement proper user feedback!')
