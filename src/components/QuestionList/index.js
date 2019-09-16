@@ -97,7 +97,7 @@ class QuestionList extends React.Component {
           <option> -- select a filter -- </option>
         }
         {this.props.subjects.map((subject) => {
-          return <option key={subject}>{subject}</option>
+          return <option key={subject.id}>{subject.name}</option>
         })}
       </select>
     )
