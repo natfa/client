@@ -149,7 +149,7 @@ class QuestionForm extends React.Component {
         />
         <datalist id="themes-list">
           {this.state.themes.map((theme) => {
-            return <option key={theme} value={theme} />
+            return <option key={theme.id} value={theme.name} />
           })}
         </datalist>
       </div>

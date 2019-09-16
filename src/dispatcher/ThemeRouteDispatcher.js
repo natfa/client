@@ -43,9 +43,9 @@ class ThemeRouteDispatcher {
     })
   }
 
-  getAllBySubject(subject) {
+  getAllBySubjectid(id) {
     return new Promise((resolve, reject) => {
-      fetch(`${this.route}/${subject}`)
+      fetch(`${this.route}/${id}`)
         .then((response) => {
           if (!response.ok)
             return resolve({

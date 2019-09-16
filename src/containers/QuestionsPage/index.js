@@ -58,7 +58,7 @@ class QuestionsPage extends React.Component {
 
   getThemes(subject) {
     return new Promise((resolve, reject) => {
-      dispatcher.themes.getAllBySubject(subject)
+      dispatcher.themes.getAllBySubjectid(subject.id)
         .then((res) => {
           if (!res.success) {
             alert('Implement proper user feedback!')
