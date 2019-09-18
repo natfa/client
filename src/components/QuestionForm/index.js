@@ -151,7 +151,7 @@ class QuestionForm extends React.Component {
       <div>
         <input
           required
-          placeholder="Theme"
+          placeholder="Тема"
           name="theme"
           defaultValue={defaultValue}
           type="text"
@@ -175,16 +175,16 @@ class QuestionForm extends React.Component {
       >
 
         <div className="subject">
-          <label><p>Subject:</p></label>{this.renderSubjects()}
+          <label><p>Предмет</p></label>{this.renderSubjects()}
 
-          <label><p>Theme:</p></label>{this.renderThemes()}
+          <label><p>Тема</p></label>{this.renderThemes()}
         </div>
 
         <div className="question">
-          <label><p>Question:</p></label>
+          <label><p>Въпрос<br/>(max 150)</p></label>
           <textarea
             required
-            placeholder="Question text"
+            placeholder="Текст на въпроса"
             defaultValue={this.props.text || ''}
             name="text"
             maxLength="150"
@@ -200,12 +200,12 @@ class QuestionForm extends React.Component {
 
         <div className="answers">
           <fieldset>
-            <legend>Correct</legend>
+            <legend>Верни отговори</legend>
             {this.renderAnswers(true)}
           </fieldset>
 
           <fieldset>
-            <legend>Incorrect</legend>
+            <legend>Неверни отговори</legend>
             {this.renderAnswers(false)}
           </fieldset>
         </div>
@@ -217,7 +217,7 @@ class QuestionForm extends React.Component {
         }
 
         <div className="submit">
-          <button>Submit</button>
+          <button>Запази</button>
         </div>
 
       </form>
@@ -228,7 +228,7 @@ class QuestionForm extends React.Component {
 function Media(props) {
   return (
     <fieldset>
-      <legend>Media</legend>
+      <legend>Снимки и/или видео</legend>
       <input name="media" type="file" multiple />
     </fieldset>
   )
