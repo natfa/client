@@ -100,23 +100,31 @@ class QuestionForm extends React.Component {
   }
 
   renderAnswers(correct) {
-    const numOfInputs = correct ? this.state.correctInputs : this.state.incorrectInputs
-    const inputName = correct ? 'correctAnswers[]' : 'incorrectAnswers[]'
+    const inputs = correct ? this.state.correctInputs : this.state.incorrectInputs
 
-    const defaultValues = this.props.answers ?
-      this.props.answers.filter((a) => a.correct === correct).map(a => a.text) :
-      [...Array(numOfInputs).keys()].map((i) => '')
+    const answers = this.props.answers ?
+      (correct ?
+        this.props.answers.filter(a => a.correct) :
+        this.props.answers.filter(a => !a.correct)):
+      undefined
 
-    return [...Array(numOfInputs).keys()].map((i) => {
-      // If it's the last input
-      if (i === numOfInputs-1) {
-        return (<input type="text" key={i} name={inputName}
-          onChange={(e) => this.addAnswer(correct)} />)
-      }
+    const values = [...Array(inputs).keys()].map((i) => {
+      if (answers)
+        if (answers[i])
+          return answers[i].text
+      return ''
+    })
 
-      const value = defaultValues[i]
-
-      return <input type="text" key={i} name={inputName} defaultValue={value} />
+    return values.map((value, i) => {
+      return <input
+        required={i === 0}
+        type="text"
+        maxLength="150"
+        name={correct ? 'correctAnswers[]' : 'incorrectAnswers[]'}
+        key={i}
+        defaultValue={value}
+        onChange={i === inputs-1 ? (e) => this.addAnswer(correct) : null}
+      />
     })
   }
 
@@ -142,6 +150,8 @@ class QuestionForm extends React.Component {
     return (
       <div>
         <input
+          required
+          placeholder="Theme"
           name="theme"
           defaultValue={defaultValue}
           type="text"
@@ -172,8 +182,20 @@ class QuestionForm extends React.Component {
 
         <div className="question">
           <label><p>Question:</p></label>
-          <textarea defaultValue={this.props.text || ''} name="text" />
-          <input defaultValue={this.props.points || 0} type="number" name="points" />
+          <textarea
+            required
+            placeholder="Question text"
+            defaultValue={this.props.text || ''}
+            name="text"
+            maxLength="150"
+          />
+          <input
+            required
+            defaultValue={this.props.points || 0}
+            type="text"
+            pattern="[0-9]+"
+            name="points"
+          />
         </div>
 
         <div className="answers">
