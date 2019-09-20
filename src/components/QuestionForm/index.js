@@ -131,7 +131,7 @@ class QuestionForm extends React.Component {
   renderSubjects() {
     return (
       <select
-        defaultValue={this.props.subject}
+        defaultValue={this.props.subject ? this.props.subject.name : null}
         onChange={this.handleSubjectChange}
         name="subject"
       >
