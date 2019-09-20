@@ -9,7 +9,7 @@ class QuestionList extends React.Component {
 
     this.state = {
       allQuestions: [],
-      displayedQuestions: [],
+      displayedQuestions: null,
     }
 
     this.handleSubjectChange = this.handleSubjectChange.bind(this)
@@ -71,7 +71,7 @@ class QuestionList extends React.Component {
     const text = e.target.value
 
     if (text.length < 3) {
-      this.setState({ displayedQuestions: [] })
+      this.setState({ displayedQuestions: null })
     }
     else {
       const filtered = this.state.allQuestions.filter(q => q.text.toLowerCase().includes(text.toLowerCase()))
@@ -80,7 +80,7 @@ class QuestionList extends React.Component {
   }
 
   renderQuestionList() {
-    const questions = this.state.displayedQuestions.length === 0 ?
+    const questions = this.state.displayedQuestions === null ?
       this.state.allQuestions :
       this.state.displayedQuestions
 
@@ -96,6 +96,10 @@ class QuestionList extends React.Component {
         />
       )
     })
+
+    if (listItems.length === 0)
+      return <p style={{'text-align': 'center'}}>Няма намерени въпроси</p>
+
     return listItems
   }
 
@@ -113,8 +117,17 @@ class QuestionList extends React.Component {
     return (
       <div className="QuestionList">
         <div className="filters">
-          {this.renderSubjectsFilter()}
-          <input type="search" onChange={this.handleTextChange} />
+          <label>Филтър по предмет
+            <div>
+              {this.renderSubjectsFilter()}
+            </div>
+          </label>
+          <label>
+            Филтър по текст (поне 3 символа)
+            <div>
+              <input type="search" placeholder="Текст" onChange={this.handleTextChange} />
+            </div>
+          </label>
         </div>
         <div className="list">
           {this.renderQuestionList()}
