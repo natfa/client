@@ -1,5 +1,4 @@
 import React from 'react';
-import dispatcher from '../../dispatcher/'
 
 import './styles.css';
 
@@ -8,27 +7,38 @@ class QuestionList extends React.Component {
     super(props)
 
     this.state = {
-      allQuestions: [],
-      displayedQuestions: null,
+      filters: {
+        text: '',
+        subjectid: null,
+      }
     }
 
     this.handleSubjectChange = this.handleSubjectChange.bind(this)
     this.handleTextChange = this.handleTextChange.bind(this)
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidMount() {
+    if (this.props.subjects.length === 0)
+      return
+
+    const subjectid = this.props.subjects[0].id
+    this.setState((state) => ({
+      filters: Object.assign({}, state.filters, {
+        subjectid: subjectid,
+      })
+    }))
+  }
+
+  componentDidUpdate(prevProps) {
     if (prevProps.subjects.length === this.props.subjects.length)
       return
 
-    try {
-      const subjectid = this.props.subjects[0].id
-      const questions = await this.getQuestionsBySubjectid(subjectid)
-      this.setState({ allQuestions: questions })
-    }
-    catch(err) {
-      alert('Implement proper user feedback!')
-      console.error(err)
-    }
+    const subjectid = this.props.subjects[0].id
+    this.setState((state) => ({
+      filters: Object.assign({}, state.filters, {
+        subjectid: subjectid,
+      })
+    }))
   }
 
   editQuestion (id) {
@@ -39,68 +49,56 @@ class QuestionList extends React.Component {
     this.props.handleDelete(id)
   }
 
-  async getQuestionsBySubjectid(subjectid) {
-    try {
-      const questions = await dispatcher.questions.getBySubjectid(subjectid)
-      return questions.data
-    }
-    catch(err) {
-      alert('Implement proper user feedback!')
-      console.error(err)
-    }
-  }
-
-  async handleSubjectChange(e) {
+  handleSubjectChange(e) {
     const selectedOption = e.target[e.target.selectedIndex]
     const subjectid = selectedOption.dataset.subjectid
-
-    if (!subjectid)
-      return
-
-    try {
-      const questions = await this.getQuestionsBySubjectid(subjectid)
-      this.setState({ allQuestions: questions })
-    }
-    catch(err) {
-      alert('Implement proper user feedback!')
-      console.error(err)
-    }
+    this.setState((state) => ({
+      filters: Object.assign({}, state.filters, {
+        subjectid: subjectid,
+      })
+    }))
   }
 
   handleTextChange(e) {
     const text = e.target.value
-
-    if (text.length < 3) {
-      this.setState({ displayedQuestions: null })
-    }
-    else {
-      const filtered = this.state.allQuestions.filter(q => q.text.toLowerCase().includes(text.toLowerCase()))
-      this.setState({ displayedQuestions: filtered })
-    }
+    this.setState((state) => ({
+      filters: Object.assign({}, state.filters, {
+        text: text,
+      })
+    }))
   }
 
   renderQuestionList() {
-    const questions = this.state.displayedQuestions === null ?
-      this.state.allQuestions :
-      this.state.displayedQuestions
+    const notFound = (<p style={{textAlign: 'center'}}>Няма намерени въпроси</p>)
 
-    const listItems = questions.map((question) => {
-      return (
-        <Item
-          text={question.text}
-          subject={question.subject.name}
-          key={question.id}
-          id={question.id}
-          handleEdit={() => this.editQuestion(question.id)}
-          handleDelete={() => this.deleteQuestion(question.id)}
-        />
-      )
-    })
+    if (!this.props.questions || this.props.questions.length === 0)
+      return notFound
 
-    if (listItems.length === 0)
-      return <p style={{'text-align': 'center'}}>Няма намерени въпроси</p>
+    let questions = []
 
-    return listItems
+    if (this.state.filters.subjectid === null)
+      questions = this.props.questions
+    else
+      questions = this.props.questions
+        .filter(q => q.subject.id === this.state.filters.subjectid)
+
+    if (this.state.filters.text && this.state.filters.text.length > 2)
+      questions = questions
+        .filter(q => q.text.toLowerCase().includes(this.state.filters.text.toLowerCase()))
+
+    return questions.length > 0 ?
+      questions.map((question) => {
+        return (
+          <Item
+            text={question.text}
+            subject={question.subject.name}
+            key={question.id}
+            id={question.id}
+            handleEdit={() => this.editQuestion(question.id)}
+            handleDelete={() => this.deleteQuestion(question.id)}
+          />
+        )
+      }) : notFound
   }
 
   renderSubjectsFilter() {

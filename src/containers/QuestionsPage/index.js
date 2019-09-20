@@ -13,6 +13,7 @@ class QuestionsPage extends React.Component {
 
     this.state = {
       subjects: [],
+      questions: [],
       question: {
         updating: false,
         data: null,
@@ -178,6 +179,7 @@ class QuestionsPage extends React.Component {
         </div>
         <div className="list">
           <QuestionList
+            questions={this.state.questions}
             subjects={this.state.subjects}
             handleEdit={this.openEditQuestion}
             handleDelete={this.deleteQuestion}
