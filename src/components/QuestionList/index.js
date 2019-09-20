@@ -138,12 +138,14 @@ class QuestionList extends React.Component {
 function Item(props) {
   return (
     <div className="Item">
-      <div className="info">
-        <div className="text">{props.text}</div>
+      <div>{props.text}</div>
+      <div>
         <div className="subject">{props.subject}</div>
+        <div className="controls">
+          <button onClick={props.handleEdit}>Промени</button>
+          <button onClick={props.handleDelete}>Изтрий</button>
+        </div>
       </div>
-      <button onClick={props.handleEdit}>Промени</button>
-      <button onClick={props.handleDelete}>Изтрий</button>
     </div>
   );
 }
