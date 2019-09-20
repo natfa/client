@@ -8,12 +8,8 @@ class QuestionList extends React.Component {
     super(props)
 
     this.state = {
-      questions: [],
-      filters: {
-        disableDefault: false,
-        subjectid: undefined,
-        text: '',
-      }
+      allQuestions: [],
+      displayedQuestions: [],
     }
 
     this.handleSubjectChange = this.handleSubjectChange.bind(this)
@@ -27,7 +23,7 @@ class QuestionList extends React.Component {
     try {
       const subjectid = this.props.subjects[0].id
       const questions = await this.getQuestionsBySubjectid(subjectid)
-      this.setState({ questions })
+      this.setState({ allQuestions: questions })
     }
     catch(err) {
       alert('Implement proper user feedback!')
@@ -63,7 +59,7 @@ class QuestionList extends React.Component {
 
     try {
       const questions = await this.getQuestionsBySubjectid(subjectid)
-      this.setState({ questions })
+      this.setState({ allQuestions: questions })
     }
     catch(err) {
       alert('Implement proper user feedback!')
@@ -73,18 +69,22 @@ class QuestionList extends React.Component {
 
   handleTextChange(e) {
     const text = e.target.value
-    this.setState((state) => ({ filters: Object.assign({}, state.filters, { text }) }))
 
-    if (this.state.filters.subjectid !== undefined) {
-      if (text.length > 2)
-        this.props.filterQuestions(this.state.filters.subjectid, text)
-      else if (this.state.filters.text.length > 2)
-        this.props.filterQuestions(this.state.filters.subjectid)
+    if (text.length < 3) {
+      this.setState({ displayedQuestions: [] })
+    }
+    else {
+      const filtered = this.state.allQuestions.filter(q => q.text.toLowerCase().includes(text.toLowerCase()))
+      this.setState({ displayedQuestions: filtered })
     }
   }
 
   renderQuestionList() {
-    const listItems = this.state.questions.map((question) => {
+    const questions = this.state.displayedQuestions.length === 0 ?
+      this.state.allQuestions :
+      this.state.displayedQuestions
+
+    const listItems = questions.map((question) => {
       return (
         <Item
           text={question.text}
@@ -101,7 +101,7 @@ class QuestionList extends React.Component {
 
   renderSubjectsFilter() {
     return (
-      <select value={this.state.filters.subject} onChange={this.handleSubjectChange}>
+      <select onChange={this.handleSubjectChange}>
         {this.props.subjects.map((subject) => {
           return <option data-subjectid={subject.id} key={subject.id}>{subject.name}</option>
         })}
@@ -114,7 +114,7 @@ class QuestionList extends React.Component {
       <div className="QuestionList">
         <div className="filters">
           {this.renderSubjectsFilter()}
-          <input type="search" value={this.state.filters.text} onChange={this.handleTextChange} />
+          <input type="search" onChange={this.handleTextChange} />
         </div>
         <div className="list">
           {this.renderQuestionList()}
