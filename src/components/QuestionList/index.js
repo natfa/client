@@ -1,4 +1,5 @@
 import React from 'react';
+import dispatcher from '../../dispatcher/'
 
 import './styles.css';
 
@@ -7,6 +8,7 @@ class QuestionList extends React.Component {
     super(props)
 
     this.state = {
+      questions: [],
       filters: {
         disableDefault: false,
         subjectid: undefined,
@@ -18,6 +20,21 @@ class QuestionList extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
   }
 
+  async componentDidUpdate(prevProps) {
+    if (prevProps.subjects.length === this.props.subjects.length)
+      return
+
+    try {
+      const subjectid = this.props.subjects[0].id
+      const questions = await this.getQuestionsBySubjectid(subjectid)
+      this.setState({ questions })
+    }
+    catch(err) {
+      alert('Implement proper user feedback!')
+      console.error(err)
+    }
+  }
+
   editQuestion (id) {
     this.props.handleEdit(id)
   }
@@ -26,29 +43,32 @@ class QuestionList extends React.Component {
     this.props.handleDelete(id)
   }
 
-  handleSubjectChange(e) {
-    // This will disable the default value for the filter droplist
-    if (!this.state.filters.disableDefault)
-      this.setState((state) => ({ filters: Object.assign({}, state.filters, { disableDefault: true })}))
-
-    const subject = {
-      id: e.target.selectedOptions[0].dataset.id,
-      name: e.target.value,
+  async getQuestionsBySubjectid(subjectid) {
+    try {
+      const questions = await dispatcher.questions.getBySubjectid(subjectid)
+      return questions.data
     }
+    catch(err) {
+      alert('Implement proper user feedback!')
+      console.error(err)
+    }
+  }
 
-    if (!subject.id)
+  async handleSubjectChange(e) {
+    const selectedOption = e.target[e.target.selectedIndex]
+    const subjectid = selectedOption.dataset.subjectid
+
+    if (!subjectid)
       return
 
-    this.setState((state) => ({
-      filters: Object.assign({}, state.filters, {
-        subjectid: subject.id,
-      })
-    }))
-
-    if (this.state.filters.text.length > 2)
-      this.props.filterQuestions(subject.id, this.state.filters.text)
-    else
-      this.props.filterQuestions(subject.id)
+    try {
+      const questions = await this.getQuestionsBySubjectid(subjectid)
+      this.setState({ questions })
+    }
+    catch(err) {
+      alert('Implement proper user feedback!')
+      console.error(err)
+    }
   }
 
   handleTextChange(e) {
@@ -64,7 +84,7 @@ class QuestionList extends React.Component {
   }
 
   renderQuestionList() {
-    const listItems = this.props.questionList.map((question) => {
+    const listItems = this.state.questions.map((question) => {
       return (
         <Item
           text={question.text}
@@ -82,11 +102,8 @@ class QuestionList extends React.Component {
   renderSubjectsFilter() {
     return (
       <select value={this.state.filters.subject} onChange={this.handleSubjectChange}>
-        {!this.state.filters.disableDefault &&
-          <option> -- select a filter -- </option>
-        }
         {this.props.subjects.map((subject) => {
-          return <option data-id={subject.id} key={subject.id}>{subject.name}</option>
+          return <option data-subjectid={subject.id} key={subject.id}>{subject.name}</option>
         })}
       </select>
     )
