@@ -5,7 +5,11 @@ class SubjectRouteDispatcher {
 
   getAll() {
     return new Promise((resolve, reject) => {
-      fetch(this.route)
+      fetch(this.route, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+      })
         .then((response) => {
           if (!response.ok)
             return resolve({

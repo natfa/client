@@ -5,7 +5,11 @@ class ThemeRouteDispatcher {
 
   getAll() {
     return new Promise((resolve, reject) => {
-      fetch(this.route)
+      fetch(this.route, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+      })
         .then((response) => {
           if (!response.ok)
             return resolve({
@@ -45,7 +49,11 @@ class ThemeRouteDispatcher {
 
   getAllBySubjectid(id) {
     return new Promise((resolve, reject) => {
-      fetch(`${this.route}/${id}`)
+      fetch(`${this.route}/${id}`, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+      })
         .then((response) => {
           if (!response.ok)
             return resolve({

@@ -8,6 +8,7 @@ class QuestionRouteDispatcher {
       fetch(this.route, {
         method: 'GET',
         mode: 'cors',
+        credentials: 'include',
       })
         .then((response) => {
           if (!response.ok)
@@ -56,6 +57,7 @@ class QuestionRouteDispatcher {
       fetch(`${this.route}/filter/${subjectid}`, {
         method: 'GET',
         mode: 'cors',
+        credentials: 'include',
       })
         .then((response) => {
           if (!response.ok)
@@ -92,6 +94,7 @@ class QuestionRouteDispatcher {
       fetch(`${this.route}/${id}`, {
         method: 'GET',
         mode: 'cors',
+        credentials: 'include',
       })
         .then((response) => {
           if (response.status === 404)
@@ -136,6 +139,7 @@ class QuestionRouteDispatcher {
       fetch(this.route, {
         method: 'POST',
         mode: 'cors',
+        credentials: 'include',
         body: bodyData,
       })
         .then((response) => {
@@ -185,6 +189,7 @@ class QuestionRouteDispatcher {
       fetch(`${this.route}/${id}`, {
         method: 'DELETE',
         mode: 'cors',
+        credentials: 'include',
       })
         .then((response) => {
           if (!response.ok)
