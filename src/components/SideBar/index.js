@@ -2,13 +2,10 @@ import React from 'react'
 import './styles.css'
 
 function SideBar(props) {
-  // page format { name: string, repr: string }
-  const pages = props.pages.map((page, i) => {
-    return (
-      <div key={i} onClick={() => props.handlePageChange(page.name)}>
-        {page.repr}
-      </div>
-    )
+  const pages = props.pages.map((page) => {
+    return (<div key={page.id} onClick={() => props.handlePageChange(page.id)}>
+      {page.repr}
+    </div>)
   })
 
   return (
