@@ -44,8 +44,10 @@ class App extends React.Component {
   async login(email, password) {
     try {
       const success = await dispatcher.session.authenticate(email, password)
-      if (!success)
+      if (!success) {
+        alert('Wrong credentials')
         return
+      }
       
       const account = await dispatcher.session.getActiveSession()
       this.setState({ account, currentPage: this.pages.questions })
