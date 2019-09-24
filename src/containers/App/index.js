@@ -7,6 +7,7 @@ import SideBar from '../../components/SideBar'
 import QuestionsPage from '../QuestionsPage'
 import LoginPage from '../LoginPage'
 import LoadingComponent from '../../components/LoadingComponent'
+import AccountsPage from '../AccountsPage'
 
 class App extends React.Component {
   constructor(props) {
@@ -91,7 +92,7 @@ class App extends React.Component {
           page = <QuestionsPage />
           break
         case 'ACCOUNTS_PAGE':
-          page = <h1>Not Implemented</h1>
+          page = <AccountsPage />
           break
         default:
           page = <h1>An error has occurred?!</h1>
