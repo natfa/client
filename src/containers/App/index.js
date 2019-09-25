@@ -8,6 +8,7 @@ import QuestionsPage from '../QuestionsPage'
 import LoginPage from '../LoginPage'
 import LoadingComponent from '../../components/LoadingComponent'
 import AccountsPage from '../AccountsPage'
+import TestsPage from '../TestsPage'
 
 class App extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class App extends React.Component {
       login: { id: 'LOGIN_PAGE', repr: 'Влез' },
       questions: { id: 'QUESTIONS_PAGE', repr: 'Въпроси' },
       accounts: { id: 'ACCOUNTS_PAGE', repr: 'Акаунти' },
+      tests: { id: 'TESTS_PAGE', repr: 'Тестове' },
     }
     
     this.state = {
@@ -73,10 +75,16 @@ class App extends React.Component {
     let sidebarPages = []
 
     if (this.state.account) {
-      sidebarPages = [this.pages.questions]
+      sidebarPages = [
+        this.pages.questions,
+        this.pages.tests,
+      ]
 
       if (this.state.account.isAdmin) {
-        sidebarPages = [...sidebarPages, this.pages.accounts]
+        sidebarPages = [
+          ...sidebarPages,
+          this.pages.accounts,
+        ]
       }
     }
 
@@ -93,6 +101,9 @@ class App extends React.Component {
           break
         case 'ACCOUNTS_PAGE':
           page = <AccountsPage />
+          break
+        case 'TESTS_PAGE':
+          page = <TestsPage />
           break
         default:
           page = <h1>An error has occurred?!</h1>
