@@ -24,6 +24,7 @@ class TestQuestionCountForm extends React.Component {
           key={subject.id}
           selectedSubject={subject}
           onSubjectParamChange={this.props.onSubjectParamChange}
+          onSubjectParamCountChange={this.props.onSubjectParamCountChange}
           onSubjectParamDelete={() => this.props.onSubjectParamDelete(subject.id)}
         />
       )

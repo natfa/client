@@ -17,12 +17,8 @@ class TestSubjectCountForm extends React.Component {
     if(value !== '' && isNaN(Number(value)))
       return
     
-    this.props.onSubjectParamChange(this.props.selectedSubject.id, {
-      id: this.props.selectedSubject.id,
-      name: this.props.selectedSubject.name,
-      count: value === '' ? 0 : Number(value),
-      themes: this.props.selectedSubject.themes,
-    })
+    const count = value === '' ? 0 : Number(value)
+    this.props.onSubjectParamCountChange(this.props.selectedSubject.id, count)
   }
 
   handleSubjectChange(e) {
@@ -31,12 +27,7 @@ class TestSubjectCountForm extends React.Component {
 
     const newSubject = this.props.availableSubjects.find((s) => s.id === subjectid)
 
-    this.props.onSubjectParamChange(this.props.selectedSubject.id, {
-      id: newSubject.id,
-      name: newSubject.name,
-      count: this.props.selectedSubject.count,
-      themes: this.props.selectedSubject.themes,
-    })
+    this.props.onSubjectParamChange(this.props.selectedSubject.id, newSubject.id)
   }
 
   handleSubjectDelete() {

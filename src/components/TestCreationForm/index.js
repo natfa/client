@@ -1,4 +1,5 @@
 import React from 'react'
+import dispatcher from '../../dispatcher'
 
 import './styles.css'
 
@@ -26,6 +27,7 @@ class TestCreationForm extends React.Component {
     this.onQuestionTotalChange = this.onQuestionTotalChange.bind(this)
     this.addSubjectParam = this.addSubjectParam.bind(this)
     this.onSubjectParamChange = this.onSubjectParamChange.bind(this)
+    this.onSubjectParamCountChange = this.onSubjectParamCountChange.bind(this)
     this.onSubjectParamDelete = this.onSubjectParamDelete.bind(this)
   }
 
@@ -56,7 +58,7 @@ class TestCreationForm extends React.Component {
     }))
   }
 
-  addSubjectParam() {
+  async addSubjectParam() {
     let rest = this.state.subjects.filter((subject) => {
       return !this.state.params.subjects.find(s => s.id === subject.id)
     })
@@ -65,28 +67,78 @@ class TestCreationForm extends React.Component {
       alert('No more subjects available')
       return
     }
-    
-    const newSubject = {
-      id: rest[0].id,
-      name: rest[0].name,
-      count: 0,
-      themes: [],
+
+    try {
+      const subject = rest[0]
+      const result = await dispatcher.themes.getAllBySubjectid(subject.id)
+
+      const themes = result.data
+      
+      const newSubject = {
+        id: subject.id,
+        name: subject.name,
+        count: 0,
+        themes: themes,
+      }
+  
+      this.setState((state) => ({
+        params: Object.assign({}, state.params, {
+          subjects: [...state.params.subjects, newSubject]
+        })
+      }))
+    }
+    catch (err) {
+      alert('Server not responding or subject with that id was not found')
+      console.error(err)
+    }
+  }
+
+  // updates a subject object from this.state.params.subjects
+  async onSubjectParamChange(id, newSubjectid) {
+    let subjects = []
+
+    for (let subject of this.state.params.subjects) {
+      if (subject.id !== id) {
+        subjects = [...subjects, subject]
+      }
+
+      try {
+        const newSubject = this.state.subjects.find(s => s.id === newSubjectid)
+
+        const result = await dispatcher.themes.getAllBySubjectid(newSubject.id)
+        const themes = result.data
+
+        subjects = [...subjects, {
+          id: newSubject.id,
+          name: newSubject.name,
+          count: 0,
+          themes: themes,
+        }]
+      }
+      catch(err) {
+        alert('Server not responding or subject with that id was not found')
+        throw err
+      }
     }
 
     this.setState((state) => ({
       params: Object.assign({}, state.params, {
-        subjects: [...state.params.subjects, newSubject]
+        subjects: subjects
       })
     }))
   }
 
-  // updates a subject object from this.state.params.subjects
-  onSubjectParamChange(id, newSubject) {
+  onSubjectParamCountChange(id, count) {
     const subjects = this.state.params.subjects.map((subject) => {
-      if (subject.id === id) {
-        return newSubject
+      if (subject.id !== id)
+        return subject
+      
+      return {
+        id: subject.id,
+        name: subject.name,
+        count: count,
+        themes: subject.themes,
       }
-      return subject
     })
 
     this.setState((state) => ({
@@ -119,6 +171,7 @@ class TestCreationForm extends React.Component {
         selectedSubjects={this.state.params.subjects}
         addSubjectParam={this.addSubjectParam}
         onSubjectParamChange={this.onSubjectParamChange}
+        onSubjectParamCountChange={this.onSubjectParamCountChange}
         onSubjectParamDelete={this.onSubjectParamDelete}
       /> :
       <TestDetailsForm
