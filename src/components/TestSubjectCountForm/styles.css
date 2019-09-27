@@ -24,3 +24,7 @@
 .TestSubjectCountForm > div.last-row {
     justify-items: start;
 }
+
+.TestSubjectCountForm input.error {
+    box-shadow: 0 0 2px 1px red;
+}

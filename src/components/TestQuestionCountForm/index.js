@@ -26,6 +26,7 @@ class TestQuestionCountForm extends React.Component {
           onSubjectParamChange={this.props.onSubjectParamChange}
           onSubjectParamCountChange={this.props.onSubjectParamCountChange}
           onSubjectParamDelete={() => this.props.onSubjectParamDelete(subject.id)}
+          onSubjectParamThemeChange={this.props.onSubjectParamThemeChange}
         />
       )
     })
@@ -36,7 +37,7 @@ class TestQuestionCountForm extends React.Component {
 
     if(value !== '' && isNaN(Number(value)))
       return
-    console.log('calling update')
+
     this.props.onQuestionTotalChange(value === '' ? 0 : Number(value))
   }
 

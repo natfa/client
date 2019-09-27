@@ -29,6 +29,7 @@ class TestCreationForm extends React.Component {
     this.onSubjectParamChange = this.onSubjectParamChange.bind(this)
     this.onSubjectParamCountChange = this.onSubjectParamCountChange.bind(this)
     this.onSubjectParamDelete = this.onSubjectParamDelete.bind(this)
+    this.onSubjectParamThemeChange = this.onSubjectParamThemeChange.bind(this)
   }
 
   componentDidUpdate(prevProps) {
@@ -161,6 +162,41 @@ class TestCreationForm extends React.Component {
     }))
   }
 
+  onSubjectParamThemeChange(subjectid, themeid, count) {
+    const subjects = this.state.params.subjects.map((subject) => {
+      if (subject.id !== subjectid)
+        return subject
+      
+      const themes = subject.themes.map((theme) => {
+        if (theme.id !== themeid)
+          return theme
+        
+        const newTheme = {
+          id: theme.id,
+          name: theme.name,
+          subjectid: theme.subjectid,
+        }
+
+        if (count !== null)
+          newTheme.count = count        
+        return newTheme
+      })
+
+      return {
+        id: subject.id,
+        name: subject.name,
+        count: subject.count,
+        themes: themes,
+      }
+    })
+
+    this.setState((state) => ({
+      params: Object.assign({}, state.params, {
+        subjects: subjects,
+      })
+    }))
+  }
+
   render () {
     const component = this.state.isTestDefined ?
       <TestQuestionCountForm
@@ -173,6 +209,8 @@ class TestCreationForm extends React.Component {
         onSubjectParamChange={this.onSubjectParamChange}
         onSubjectParamCountChange={this.onSubjectParamCountChange}
         onSubjectParamDelete={this.onSubjectParamDelete}
+
+        onSubjectParamThemeChange={this.onSubjectParamThemeChange}
       /> :
       <TestDetailsForm
         name={this.state.params.name}
