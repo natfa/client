@@ -11,19 +11,20 @@ class TestQuestionCountForm extends React.Component {
   }
 
   renderTestSubjectCountForms() {
-    return this.props.selectedSubjects.map((s) => {
+    return this.props.selectedSubjects.map((subject) => {
 
       const availableSubjects = this.props.allSubjects.filter((subject) => {
-        return !this.props.selectedSubjects.find(s => s.subject.id === subject.id)
+        return !this.props.selectedSubjects
+          .find(selectedSubject => selectedSubject.id === subject.id)
       })
 
       return (
         <TestSubjectCountForm
           availableSubjects={availableSubjects}
-          key={s.subject.id}
-          selectedSubject={s}
+          key={subject.id}
+          selectedSubject={subject}
           onSubjectParamChange={this.props.onSubjectParamChange}
-          onSubjectParamDelete={() => this.props.onSubjectParamDelete(s.subject.id)}
+          onSubjectParamDelete={() => this.props.onSubjectParamDelete(subject.id)}
         />
       )
     })

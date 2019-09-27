@@ -10,7 +10,7 @@ class TestCreationForm extends React.Component {
     super(props)
 
 
-    // params.subjects { subject: { id: 1, name: 'Math' }, count: 10 }
+    // params.subjects { id: 1, name: 'Math', count: 10, themes: [ { id: 1, name: 'Geometry', count: 10 } ] }
     this.state = {
       isTestDefined: false,
       subjects: [],
@@ -58,7 +58,7 @@ class TestCreationForm extends React.Component {
 
   addSubjectParam() {
     let rest = this.state.subjects.filter((subject) => {
-      return !this.state.params.subjects.find(s => s.subject.id === subject.id)
+      return !this.state.params.subjects.find(s => s.id === subject.id)
     })
 
     if (rest.length === 0) {
@@ -67,11 +67,10 @@ class TestCreationForm extends React.Component {
     }
     
     const newSubject = {
-      subject: {
-        id: rest[0].id,
-        name: rest[0].name,
-      },
+      id: rest[0].id,
+      name: rest[0].name,
       count: 0,
+      themes: [],
     }
 
     this.setState((state) => ({
@@ -81,30 +80,31 @@ class TestCreationForm extends React.Component {
     }))
   }
 
-  onSubjectParamChange(id, newParam) {
-    const subjectParams = this.state.params.subjects.map((subjectParam) => {
-      if (subjectParam.subject.id === id) {
-        return newParam
+  // updates a subject object from this.state.params.subjects
+  onSubjectParamChange(id, newSubject) {
+    const subjects = this.state.params.subjects.map((subject) => {
+      if (subject.id === id) {
+        return newSubject
       }
-      return subjectParam
+      return subject
     })
 
     this.setState((state) => ({
       params: Object.assign({}, state.params, {
-        subjects: subjectParams
+        subjects: subjects
       })
     }))
   }
 
+  // deletes a subject object from this.state.params.subjects
   onSubjectParamDelete(id) {
-    console.log(id)
-    const subjectParams = this.state.params.subjects.filter((subjectParam) => {
-      return subjectParam.subject.id !== id
+    const rest = this.state.params.subjects.filter((subject) => {
+      return subject.id !== id
     })
 
     this.setState((state) => ({
       params: Object.assign({}, state.params, {
-        subjects: subjectParams
+        subjects: rest
       })
     }))
   }

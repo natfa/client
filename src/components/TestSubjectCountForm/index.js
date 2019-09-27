@@ -17,9 +17,11 @@ class TestSubjectCountForm extends React.Component {
     if(value !== '' && isNaN(Number(value)))
       return
     
-    this.props.onSubjectParamChange(this.props.selectedSubject.subject.id, {
-      subject: this.props.selectedSubject.subject,
+    this.props.onSubjectParamChange(this.props.selectedSubject.id, {
+      id: this.props.selectedSubject.id,
+      name: this.props.selectedSubject.name,
       count: value === '' ? 0 : Number(value),
+      themes: this.props.selectedSubject.themes,
     })
   }
 
@@ -29,9 +31,11 @@ class TestSubjectCountForm extends React.Component {
 
     const newSubject = this.props.availableSubjects.find((s) => s.id === subjectid)
 
-    this.props.onSubjectParamChange(this.props.selectedSubject.subject.id, {
-      subject: newSubject,
+    this.props.onSubjectParamChange(this.props.selectedSubject.id, {
+      id: newSubject.id,
+      name: newSubject.name,
       count: this.props.selectedSubject.count,
+      themes: this.props.selectedSubject.themes,
     })
   }
 
@@ -42,14 +46,14 @@ class TestSubjectCountForm extends React.Component {
   renderSubjectSelector() {
     return (
       <select
-        value={this.props.selectedSubject.subject.name}
+        value={this.props.selectedSubject.name}
         onChange={this.handleSubjectChange}
       >
         <option
-          data-subjectid={this.props.selectedSubject.subject.id}
-          key={this.props.selectedSubject.subject.id}
+          data-subjectid={this.props.selectedSubject.id}
+          key={this.props.selectedSubject.id}
         >
-          {this.props.selectedSubject.subject.name}
+          {this.props.selectedSubject.name}
         </option>
         {this.props.availableSubjects.map((subject) => {
           return <option data-subjectid={subject.id} key={subject.id}>{subject.name}</option>
@@ -71,6 +75,8 @@ class TestSubjectCountForm extends React.Component {
           />
           <i onClick={this.handleSubjectDelete} className="material-icons" style={{color: 'red'}}>delete</i>
         </div>
+
+        {/*themes*/}
 
         <div className="last-row">
           <button>+ ТЕМА</button>
