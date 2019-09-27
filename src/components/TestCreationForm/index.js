@@ -2,8 +2,8 @@ import React from 'react'
 
 import './styles.css'
 
-import TestDefinition from '../TestDefinition'
-import QuestionDefinition from '../QuestionDefinition'
+import TestDetailsForm from '../TestDetailsForm'
+import TestQuestionCountForm from '../TestQuestionCountForm'
 
 class TestCreationForm extends React.Component {
   constructor(props) {
@@ -111,7 +111,7 @@ class TestCreationForm extends React.Component {
 
   render () {
     const component = this.state.isTestDefined ?
-      <QuestionDefinition
+      <TestQuestionCountForm
         questionTotal={this.state.params.questionTotal}
         onQuestionTotalChange={this.onQuestionTotalChange}
 
@@ -121,7 +121,7 @@ class TestCreationForm extends React.Component {
         onSubjectParamChange={this.onSubjectParamChange}
         onSubjectParamDelete={this.onSubjectParamDelete}
       /> :
-      <TestDefinition
+      <TestDetailsForm
         name={this.state.params.name}
         onNameChange={this.onNameChange}
         onProceed={this.onProceed}

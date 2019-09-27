@@ -1,8 +1,8 @@
-.SubjectDefinition i:hover {
+.TestSubjectCountForm i:hover {
     cursor: pointer;
 }
 
-.SubjectDefinition {
+.TestSubjectCountForm {
     width: 100%;
     border-bottom: 1px solid grey;
     padding: 0.75rem 0;
@@ -13,7 +13,7 @@
     row-gap: 0.75rem;
 }
 
-.SubjectDefinition > div[class*=row] {
+.TestSubjectCountForm > div[class*=row] {
     display: grid;
     grid-template-columns: 3fr 1fr 1fr;
     column-gap: 5rem;
@@ -21,6 +21,6 @@
     align-items: center;
 }
 
-.SubjectDefinition > div.last-row {
+.TestSubjectCountForm > div.last-row {
     justify-items: start;
 }

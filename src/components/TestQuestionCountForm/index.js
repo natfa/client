@@ -1,16 +1,16 @@
 import React from 'react'
 
 import './styles.css'
-import SubjectDefinition from '../SubjectDefinition'
+import TestSubjectCountForm from '../TestSubjectCountForm'
 
-class QuestionDefinition extends React.Component {
+class TestQuestionCountForm extends React.Component {
   constructor(props) {
     super(props)
 
     this.handleTotalChange = this.handleTotalChange.bind(this)
   }
 
-  renderSubjectDefinitions() {
+  renderTestSubjectCountForms() {
     return this.props.selectedSubjects.map((s) => {
 
       const availableSubjects = this.props.allSubjects.filter((subject) => {
@@ -18,7 +18,7 @@ class QuestionDefinition extends React.Component {
       })
 
       return (
-        <SubjectDefinition
+        <TestSubjectCountForm
           availableSubjects={availableSubjects}
           key={s.subject.id}
           selectedSubject={s}
@@ -40,7 +40,7 @@ class QuestionDefinition extends React.Component {
 
   render() {
     return (
-      <div className="QuestionDefinition">
+      <div className="TestQuestionCountForm">
         <div className="total">
           <label htmlFor="questions-total">Брой въпроси</label>
           <input
@@ -52,7 +52,7 @@ class QuestionDefinition extends React.Component {
         </div>
 
         <div className="subject-definitioins">
-          {this.renderSubjectDefinitions()}
+          {this.renderTestSubjectCountForms()}
         </div>
 
         <div className="end">
@@ -64,4 +64,4 @@ class QuestionDefinition extends React.Component {
   }
 }
 
-export default QuestionDefinition
+export default TestQuestionCountForm

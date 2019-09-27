@@ -2,7 +2,7 @@ import React from 'react'
 
 import './styles.css'
 
-class SubjectDefinition extends React.Component {
+class TestSubjectCountForm extends React.Component {
   constructor(props) {
     super(props)
 
@@ -60,7 +60,7 @@ class SubjectDefinition extends React.Component {
 
   render() {
     return (
-      <div className="SubjectDefinition">
+      <div className="TestSubjectCountForm">
         
         <div className="subject-row">
           {this.renderSubjectSelector()}
@@ -81,4 +81,4 @@ class SubjectDefinition extends React.Component {
   }
 }
 
-export default SubjectDefinition
+export default TestSubjectCountForm

@@ -2,9 +2,9 @@ import React from 'react'
 
 import './styles.css'
 
-function TestDefinition(props) {
+function TestDefailsForm(props) {
   return (
-    <div className="TestDefinition">
+    <div className="TestDefailsForm">
       <label id="name-label" htmlFor="name">Име</label>
       <input
         value={props.name}
@@ -29,4 +29,4 @@ function TestDefinition(props) {
   )
 }
 
-export default TestDefinition
+export default TestDefailsForm

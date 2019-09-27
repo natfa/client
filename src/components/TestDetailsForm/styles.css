@@ -1,4 +1,4 @@
-.TestDefinition {
+.TestDefailsForm {
     width: 50%;
     margin: 1rem auto;
     padding: 1rem;
@@ -17,30 +17,30 @@
     align-items: center;
 }
 
-.TestDefinition > #name-label {
+.TestDefailsForm > #name-label {
     grid-area: name-label;
 }
-.TestDefinition > #name {
+.TestDefailsForm > #name {
     grid-area: name;
 }
-.TestDefinition > #start-label {
+.TestDefailsForm > #start-label {
     grid-area: start-label;
 }
-.TestDefinition > #start {
+.TestDefailsForm > #start {
     grid-area: start;
 }
-.TestDefinition > #end-label {
+.TestDefailsForm > #end-label {
     grid-area: end-label;
 }
-.TestDefinition > #end {
+.TestDefailsForm > #end {
     grid-area: end;
 }
-.TestDefinition > #duration-label {
+.TestDefailsForm > #duration-label {
     grid-area: duration-label;
 }
-.TestDefinition > #duration {
+.TestDefailsForm > #duration {
     grid-area: duration;
 }
-.TestDefinition > #proceed {
+.TestDefailsForm > #proceed {
     grid-area: proceed;
 }
