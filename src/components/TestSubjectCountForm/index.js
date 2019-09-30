@@ -66,7 +66,6 @@ class TestSubjectCountForm extends React.Component {
       return
     }
 
-    console.log('sending')
     // send the correct update upstream
     this.setState({ newThemeInput: null })
     this.props.onSubjectParamThemeChange(this.props.selectedSubject.id, themeObj.id, 0)
@@ -132,7 +131,7 @@ class TestSubjectCountForm extends React.Component {
             type="text"
             value={theme.name}
             list={datalistID}
-            readOnly={true}
+            disabled={true}
           />
           <input
             type="text"
@@ -154,7 +153,6 @@ class TestSubjectCountForm extends React.Component {
           <input
             type="text"
             value={this.state.newThemeInput}
-            readOnly={false}
             onBlur={this.handleThemeBlur}
             list={datalistID}
             onChange={this.handleThemeChange}
@@ -162,7 +160,7 @@ class TestSubjectCountForm extends React.Component {
           <input
             type="text"
             value={0}
-            readOnly={true}
+            disabled={true}
           />
           {/* <i onClick={() => this.handleThemeDelete()} className="material-icons">delete</i> */}
         </div>
