@@ -1,5 +1,5 @@
 import React from 'react'
-import dispatcher from '../../dispatcher/'
+import dispatcher from '../../dispatcher'
 
 import './styles.css'
 
@@ -7,7 +7,7 @@ import QuestionForm from '../../components/QuestionForm'
 import QuestionList from '../../components/QuestionList'
 import Modal from '../../components/Modal'
 
-class QuestionsPage extends React.Component {
+class Questions extends React.Component {
   constructor(props) {
     super(props)
 
@@ -190,4 +190,4 @@ class QuestionsPage extends React.Component {
   }
 }
 
-export default QuestionsPage
+export default Questions

@@ -4,7 +4,7 @@ import dispatcher from '../../dispatcher'
 import Modal from '../../components/Modal'
 import AccountCreationForm from '../../components/AccountCreationForm'
 
-class AccountsPage extends React.Component {
+class Accounts extends React.Component {
   constructor(props) {
     super(props)
     
@@ -68,4 +68,4 @@ class AccountsPage extends React.Component {
   }
 }
 
-export default AccountsPage
+export default Accounts

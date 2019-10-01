@@ -4,7 +4,7 @@ import './styles.css'
 
 import LoginForm from '../../components/LoginForm'
 
-class LoginPage extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props)
 
@@ -27,4 +27,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage
+export default Login

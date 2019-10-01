@@ -5,7 +5,7 @@ import './styles.css'
 
 import TestCreationForm from '../../components/TestCreationForm'
 
-class TestsPage extends React.Component {
+class Tests extends React.Component {
   constructor(props) {
     super(props)
 
@@ -37,4 +37,4 @@ class TestsPage extends React.Component {
   }
 }
 
-export default TestsPage
+export default Tests
