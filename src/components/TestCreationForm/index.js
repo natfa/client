@@ -97,8 +97,9 @@ class TestCreationForm extends React.Component {
   // updates a subject object from this.state.params.subjects
   async onSubjectParamChange(id, newSubjectid) {
     let subjects = []
+    let subject
 
-    for (let subject of this.state.params.subjects) {
+    for (subject of this.state.params.subjects) {
       if (subject.id !== id) {
         subjects = [...subjects, subject]
       }
