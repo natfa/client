@@ -96,13 +96,14 @@ class App extends React.Component {
 
   async login(email, password) {
     try {
-      const authenticated = await dispatcher.session.authenticate(email, password)
-      if (!authenticated) {
+      const authAccount = await dispatcher.session.authenticate(email, password)
+
+      if (!authAccount) {
         alert('Wrong credentials')
         return
       }
-      const account = await dispatcher.session.getActiveSession()
-      this.setState({ account })
+
+      this.setState({ account: authAccount })
       router.push('/')
     }
     catch (err) {

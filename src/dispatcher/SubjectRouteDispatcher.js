@@ -1,51 +1,20 @@
-class SubjectRouteDispatcher {
-  constructor(route) {
-    this.route = route
-  }
+let route
 
-  getAll() {
-    return new Promise((resolve, reject) => {
-      fetch(this.route, {
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
-      })
-        .then((response) => {
-          if (!response.ok)
-            return resolve({
-              success: false,
-              data: null,
-              message: 'Internal server error',
-            })
+const getAll = async () => {
+  const response = await fetch(route, {
+    method: 'GET',
+    mode: 'cors',
+    credentials: 'include',
+  })
 
-          return response.json()
-        })
-        .then((data) => {
-          if (!data)
-            return
-
-          return resolve({
-            success: true,
-            data: data,
-            message: '',
-          })
-        })
-        .catch((err) => {
-          if (err instanceof TypeError)
-            return reject({
-              success: false,
-              message: 'Server not responding',
-              data: err,
-            })
-          else
-            return reject({
-              success: false,
-              message: 'Unknown error',
-              data: err,
-            })
-        })
-    })
-  }
+  if (!response.ok)
+    return null
+  return await response.json()
 }
 
-export default SubjectRouteDispatcher
+export default r => {
+  route = r
+  return {
+    getAll
+  }
+}

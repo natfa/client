@@ -1,28 +1,27 @@
-class AccountRouteDispatcher {
-  constructor(route) {
-    this.route = route
-  }
+let route;
 
-  async createOne(email, password, isAdmin) {
-    const data = { email, password, isAdmin }
+const createOne = async (email, password, isAdmin) => {
+  const data = { email, password, isAdmin }
 
-    const response = await fetch(`${this.route}/create`, {
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
+  const response = await fetch(`${route}/create`, {
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
 
-    if (!response.ok) {
-      console.log(await response.text())
-      return false
-    }
-
-    return true
+  return {
+    success: response.ok,
+    data: await response.json(),
   }
 }
 
-export default AccountRouteDispatcher
+export default r => {
+  route = r
+  return {
+    createOne,
+  }
+}
