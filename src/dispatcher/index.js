@@ -1,15 +1,15 @@
 import config from '../config/default'
 
-import QuestionRouteDispatcher from './QuestionRouteDispatcher'
-import SubjectRouteDispatcher from './SubjectRouteDispatcher'
-import ThemeRouteDispatcher from './ThemeRouteDispatcher'
-import SessionRouteDispatcher from './SessionRouteDispatcher'
-import AccountRouteDispatcher from './AccountRouteDispatcher'
+import questionRoute from './QuestionRouteDispatcher'
+import subjectRoute from './SubjectRouteDispatcher'
+import themeRoute from './ThemeRouteDispatcher'
+import sessionRoute from './SessionRouteDispatcher'
+import accountRoute from './AccountRouteDispatcher'
 
 export default {
-  questions: new QuestionRouteDispatcher(`${config.api}/api/question`),
-  subjects: new SubjectRouteDispatcher(`${config.api}/api/subject`),
-  themes: new ThemeRouteDispatcher(`${config.api}/api/theme`),
-  session: new SessionRouteDispatcher(`${config.api}/api/auth`),
-  accounts: new AccountRouteDispatcher(`${config.api}/api/auth`),
+  questions: questionRoute(`${config.api}/api/question`),
+  subjects: subjectRoute(`${config.api}/api/subject`),
+  themes: themeRoute(`${config.api}/api/theme`),
+  session: sessionRoute(`${config.api}/api/auth`),
+  accounts: accountRoute(`${config.api}/api/auth`),
 }
