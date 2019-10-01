@@ -26,89 +26,83 @@ class Questions extends React.Component {
     this.closeUpdateModal = this.closeUpdateModal.bind(this)
   }
 
-  componentDidMount() {
-    dispatcher.questions.getAll()
-      .then((res) => {
-        if (!res.success) {
-          alert('Implement proper user feedback!')
-          console.log(res)
-          return
-        }
+  async componentDidMount() {
+    try {
+      const [questions, subjects] = await Promise.all([
+        dispatcher.questions.getAll(),
+        dispatcher.subjects.getAll(),
+      ])
 
-        this.setState({ questions: res.data })
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+      if (!questions) {
+        console.error(`dispatcher.themes.getAll() returned ${questions}`)
+        return
+      }
 
-    dispatcher.subjects.getAll()
-      .then((res) => {
-        if (!res.success) {
-          alert('Implement proper user feedback!')
-          console.error(res)
-          return
-        }
+      if (!subjects) {
+        console.error(`dispatcher.themes.getAll() returned ${subjects}`)
+        return
+      }
 
-        this.setState({ subjects: res.data })
-      })
-      .catch((err) => {
-      })
+      this.setState({ questions, subjects })
+    }
+    catch(err) {
+      alert('Something went wrong')
+      console.error(err)
+    }
   }
 
-  getThemes(subject) {
-    return new Promise((resolve, reject) => {
-      dispatcher.themes.getAllBySubjectid(subject.id)
-        .then((res) => {
-          if (!res.success) {
-            alert('Implement proper user feedback!')
-            console.error(res)
-            return
-          }
+  async getThemes(subject) {
+    try {
+      const themes = await dispatcher.themes.getAllBySubjectid(subject.id)
 
-          return resolve(res.data)
-        })
-        .catch((err) => {
-          alert('Implement proper user feedback!')
-          console.error(err)
-        })
-    })
+      if (!themes) {
+        console.error(`dispatcher.themes.getAllBySubjectid(${subject.id}) returned ${themes}`)
+        return
+      }
+
+      return themes
+    }
+    catch(err) {
+      alert('Something went wrong')
+      console.error(err)
+    }
   }
 
-  createQuestion(formData) {
-    dispatcher.questions.createOne(formData)
-      .then((res) => {
-        if (!res.success) {
-          alert('Implement proper user feedback!')
-          console.error(res)
-          return
-        }
+  async createQuestion(formData) {
+    try {
+      const response = await dispatcher.questions.createOne(formData)
 
-        this.setState((state) => ({ questions: [...state.questions, res.data] }))
-      })
-      .catch((err) => {
-        alert('Implement proper user feedback!')
-        console.error(err)
-      })
+      if (!response.success) {
+        console.error(response.data)
+      }
+
+      this.setState((state) => ({ questions: [...state.questions, response.data] }))
+    }
+    catch(err) {
+      alert('Something went wrong')
+      console.error(err)
+    }
   }
 
-  deleteQuestion(id) {
-    dispatcher.questions.deleteById(id)
-      .then((res) => {
-        if (!res.success) {
-          alert('Implement proper user feedback!')
-          console.error(res)
-          return
-        }
+  async deleteQuestion(id) {
+    try {
+      const success = await dispatcher.questions.deleteById(id)
 
-        this.setState((state) => {
-          const questions = state.questions.filter((q) => q.id !== id)
-          return { questions: questions }
-        })
+      if (!success) {
+        alert('Deletion failed')
+        console.error(`dispatcher.questions.deleteById(${id}) failed`)
+        return
+      }
+
+      this.setState((state) => {
+        const questions = state.questions.filter((q) => q.id !== id)
+        return { questions: questions }
       })
-      .catch((err) => {
-        alert('Implement proper user feedback!')
-        console.error(err)
-      })
+    }
+    catch(err) {
+      alert('Something went wrong')
+      console.error(err)
+    }
   }
 
   updateQuestion(questionId, formData) {
@@ -117,18 +111,21 @@ class Questions extends React.Component {
     this.closeUpdateModal()
   }
 
-  openEditQuestion(id) {
-    dispatcher.questions.getById(id)
-      .then((res) => {
-        if (!res.success) {
-          alert('Implement proper user feedback!')
-          console.error(res)
-          return
-        }
+  async openEditQuestion(id) {
+    try {
+      const question = await dispatcher.questions.getById(id)
 
-        const question = res.data
-        this.setState({ question: { updating: true, data: question }})
-      })
+      if (!question) {
+        console.error(`dispatcher.questions.getById(${id}) returned ${question}`)
+        return
+      }
+
+      this.setState({ question: { updating: true, data: question }})
+    }
+    catch(err) {
+      alert('Something went wrong')
+      console.error(err)
+    }
   }
 
   closeUpdateModal() {

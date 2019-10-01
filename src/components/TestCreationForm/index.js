@@ -71,9 +71,10 @@ class TestCreationForm extends React.Component {
 
     try {
       const subject = rest[0]
-      const result = await dispatcher.themes.getAllBySubjectid(subject.id)
+      const themes = await dispatcher.themes.getAllBySubjectid(subject.id)
 
-      const themes = result.data
+      if (!themes)
+        throw new Error(`dispatcher.themes.getAllBySubjectid(${subject.id}) returned ${themes}`)
       
       const newSubject = {
         id: subject.id,
@@ -107,8 +108,10 @@ class TestCreationForm extends React.Component {
       try {
         const newSubject = this.state.subjects.find(s => s.id === newSubjectid)
 
-        const result = await dispatcher.themes.getAllBySubjectid(newSubject.id)
-        const themes = result.data
+        const themes = await dispatcher.themes.getAllBySubjectid(newSubject.id)
+
+        if (!themes)
+          throw new Error(`dispatcher.themes.getAllBySubjectid(${subject.id}) returned ${themes}`)
 
         subjects = [...subjects, {
           id: newSubject.id,

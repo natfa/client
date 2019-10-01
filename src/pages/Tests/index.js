@@ -17,7 +17,8 @@ class Tests extends React.Component {
   async componentDidMount() {
     try {
       const subjects = await dispatcher.subjects.getAll()
-      this.setState({ subjects: subjects.data })
+
+      this.setState({ subjects })
     }
     catch(err) {
       alert("Server probably not responding")
