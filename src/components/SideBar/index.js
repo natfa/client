@@ -1,19 +1,25 @@
 import React from 'react'
+
 import './styles.css'
 
-function SideBar(props) {
-  const pages = props.pages.map((page) => {
-    return (<div key={page.id} onClick={() => props.handlePageChange(page.id)}>
-      {page.repr}
-    </div>)
-  })
+import Link from '../../components/common/Link'
 
-  return (
-    <div className="SideBar">
-      <div><h2>Logo</h2></div>
-      {pages}
+const SideBar = props => (
+  <div className="SideBar">
+    <div>
+      <Link href="/">
+        <h2>Logo</h2>
+      </Link>
     </div>
-  )
-}
+
+    {/* [{pathname: ..., name: ...,}] */}
+    {props.links.map(link => (
+      <div key={link.pathname}>
+        <Link href={link.pathname}>{link.name}</Link>
+      </div>
+    ))}
+
+  </div>
+)
 
 export default SideBar
