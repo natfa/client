@@ -34,12 +34,12 @@ class Questions extends React.Component {
       ])
 
       if (!questions) {
-        console.error(`dispatcher.themes.getAll() returned ${questions}`)
+        console.error(`dispatcher.questions.getAll() returned ${questions}`)
         return
       }
 
       if (!subjects) {
-        console.error(`dispatcher.themes.getAll() returned ${subjects}`)
+        console.error(`dispatcher.subjects.getAll() returned ${subjects}`)
         return
       }
 
