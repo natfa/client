@@ -24,9 +24,9 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|.git|build)/,
-        use: {
-          loader: 'babel-loader',
-        },
+        use: [
+          'babel-loader',
+        ],
       },
 
       {
@@ -37,6 +37,13 @@ module.exports = {
           'css-loader',
         ],
       },
+
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
+      },
     ],
   },
   plugins: [
@@ -45,25 +52,25 @@ module.exports = {
       chunks: ['landing'],
       title: 'Log In',
       filename: 'landing.html',
-      template: path.resolve(__dirname, 'templates/index.html'),
+      template: path.resolve(__dirname, 'public/index.html'),
     }),
     new HtmlWebpackPlugin({
       chunks: ['teacher'],
       title: 'Teachers',
       filename: 'teacher.html',
-      template: path.resolve(__dirname, 'templates/index.html'),
+      template: path.resolve(__dirname, 'public/index.html'),
     }),
     new HtmlWebpackPlugin({
       chunks: ['student'],
       title: 'Students',
       filename: 'student.html',
-      template: path.resolve(__dirname, 'templates/index.html'),
+      template: path.resolve(__dirname, 'public/index.html'),
     }),
     new HtmlWebpackPlugin({
       chunks: ['admin'],
       title: 'Admin Panel',
       filename: 'admin.html',
-      template: path.resolve(__dirname, 'templates/index.html'),
+      template: path.resolve(__dirname, 'public/index.html'),
     }),
   ],
 };
