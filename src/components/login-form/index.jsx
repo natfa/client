@@ -15,57 +15,58 @@ const LoginForm = ({
   onPasswordChange,
   onSubmit,
 }) => (
-  <Grid
-    className="LoginForm"
-    container
-    direction="column"
-    spacing={1}
-  >
+  <form onSubmit={onSubmit}>
+    <Grid
+      className="LoginForm"
+      container
+      direction="column"
+      spacing={1}
+    >
 
-    <Grid item>
-      <TextField
-        value={email}
-        onChange={onEmailChange}
-        error={!isEmailValid}
-        type="email"
-        required
+      <Grid item>
+        <TextField
+          value={email}
+          onChange={onEmailChange}
+          error={!isEmailValid}
+          type="email"
+          required
 
-        label="Email"
+          label="Email"
 
-        margin="dense"
-        autoFocus
-        fullWidth
-        variant="outlined"
-      />
+          margin="dense"
+          autoFocus
+          fullWidth
+          variant="outlined"
+        />
+      </Grid>
+
+      <Grid item>
+        <TextField
+          value={password}
+          onChange={onPasswordChange}
+          type="password"
+          required
+
+          label="Password"
+
+          margin="dense"
+          fullWidth
+          variant="outlined"
+        />
+      </Grid>
+
+      <Grid item>
+        <Button
+          variant="contained"
+          fullWidth
+          type="submit"
+        >
+          Log In
+        </Button>
+      </Grid>
+
     </Grid>
-
-    <Grid item>
-      <TextField
-        value={password}
-        onChange={onPasswordChange}
-        type="password"
-        required
-
-        label="Password"
-
-        margin="dense"
-        fullWidth
-        variant="outlined"
-      />
-    </Grid>
-
-    <Grid item>
-      <Button
-        onClick={onSubmit}
-        variant="contained"
-        fullWidth
-        type="submit"
-      >
-        Log In
-      </Button>
-    </Grid>
-
-  </Grid>
+  </form>
 );
 
 LoginForm.propTypes = {
