@@ -1,10 +1,9 @@
 import React from 'react';
 
-import Container from '@material-ui/core/Container';
-
 import LoginForm from '../../components/login-form';
 
 import { authenticate } from '../../api/session';
+import withLayout from '../../utils/withLayout';
 
 import './styles.css';
 
@@ -53,21 +52,16 @@ class LandingApp extends React.Component {
     const { email, password, isEmailValid } = this.state;
 
     return (
-      <Container
-        maxWidth="sm"
-        className="LandingApp"
-      >
-        <LoginForm
-          email={email}
-          isEmailValid={isEmailValid}
-          onEmailChange={this.handleEmailChange}
-          password={password}
-          onPasswordChange={this.handlePasswordChange}
-          onSubmit={this.handleSubmit}
-        />
-      </Container>
+      <LoginForm
+        email={email}
+        isEmailValid={isEmailValid}
+        onEmailChange={this.handleEmailChange}
+        password={password}
+        onPasswordChange={this.handlePasswordChange}
+        onSubmit={this.handleSubmit}
+      />
     );
   }
 }
 
-export default LandingApp;
+export default withLayout(LandingApp);
