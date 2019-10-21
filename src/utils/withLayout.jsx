@@ -7,7 +7,19 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  CssBaseline,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
+
+const PaddedContainer = withStyles({
+  root: {
+    paddingTop: '96px',
+  },
+})(Container);
 
 const withLayout = (Component) => (
   class extends React.Component {
@@ -29,7 +41,8 @@ const withLayout = (Component) => (
       const { drawerOpen } = this.state;
 
       return (
-        <div>
+        <>
+          <CssBaseline />
           <AppBar position="fixed">
             <Toolbar disableGutters>
               <IconButton onClick={this.toggleDrawer} aria-label="menu">
@@ -54,10 +67,10 @@ const withLayout = (Component) => (
             </List>
           </Drawer>
 
-          <Container>
+          <PaddedContainer>
             <Component {...this.props} />
-          </Container>
-        </div>
+          </PaddedContainer>
+        </>
       );
     }
   }
