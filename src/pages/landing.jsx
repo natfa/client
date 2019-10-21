@@ -11,7 +11,13 @@ import LandingApp from '../containers/landing-app';
 
   ReactDOM.render(<LoadingAnimation />, rootNode);
 
-  const authenticated = await getActiveSession();
+  let authenticated = null;
+  try {
+    authenticated = await getActiveSession();
+  } catch (err) {
+    console.error(err);
+    alert('Server not responding!');
+  }
 
   if (authenticated) {
     window.location.pathname = '/teacher';
