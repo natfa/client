@@ -21,7 +21,7 @@ const PaddedContainer = withStyles({
   },
 })(Container);
 
-const withLayout = (Component) => (
+const withLayout = (Component, pages) => (
   class extends React.Component {
     constructor(props) {
       super(props);
@@ -40,32 +40,42 @@ const withLayout = (Component) => (
     render() {
       const { drawerOpen } = this.state;
 
+      const renderDrawer = () => (
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          variant="temporary"
+          onClose={this.toggleDrawer}
+        >
+          <List>
+            {pages.map((page) => (
+              <ListItem key={page.pathname}>
+                <ListItemText>{page.name}</ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      );
+
       return (
         <>
           <CssBaseline />
           <AppBar position="fixed">
-            <Toolbar disableGutters>
-              <IconButton onClick={this.toggleDrawer} aria-label="menu">
-                <MenuIcon />
-              </IconButton>
+            <Toolbar>
+              {pages
+              && (
+                <IconButton onClick={this.toggleDrawer} aria-label="menu">
+                  <MenuIcon />
+                </IconButton>
+              )}
               <Typography variant="h6">
                 Company Logo
               </Typography>
             </Toolbar>
           </AppBar>
 
-          <Drawer
-            anchor="left"
-            open={drawerOpen}
-            variant="temporary"
-            onClose={this.toggleDrawer}
-          >
-            <List>
-              <ListItem>
-                <ListItemText>Some text as long as I need it to be, Im pretty sure :)</ListItemText>
-              </ListItem>
-            </List>
-          </Drawer>
+          {pages
+          && renderDrawer()}
 
           <PaddedContainer>
             <Component {...this.props} />
