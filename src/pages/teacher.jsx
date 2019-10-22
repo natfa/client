@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { getActiveSession } from '../api/session';
 
 import LoadingAnimation from '../components/loading-animation';
-import TeacherApp from '../containers/teacher-app';
+import TeacherApp from '../apps/teacher-app';
 
 (async function IIFE() {
   const rootNode = document.getElementById('root');
