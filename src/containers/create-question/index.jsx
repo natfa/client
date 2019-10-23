@@ -2,6 +2,7 @@ import React from 'react';
 import uuid from 'uuid/v1';
 
 import QuestionForm from '../../components/question-form';
+import questionAPI from '../../api/question';
 
 
 class CreateQuestion extends React.Component {
@@ -188,9 +189,37 @@ class CreateQuestion extends React.Component {
     }));
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
-    console.error('Not implemented');
+    const { subjects, themes, question } = this.state;
+
+    const data = {
+      text: question.text,
+      points: question.points,
+      subject: (subjects.find((s) => s.id === question.subjectid)).name,
+      theme: (themes.find((t) => t.id === question.themeid)).name,
+      correctAnswers: question.answers.filter((a) => a.correct).map((a) => a.text),
+      incorrectAnswers: question.answers.filter((a) => !a.correct).map((a) => a.text),
+    };
+
+    const jsonData = JSON.stringify(data);
+
+    console.log(jsonData);
+    console.log(data);
+
+    try {
+      const response = await questionAPI.createOne(jsonData);
+      if (!response.success) {
+        alert('You did something wrong');
+        console.error(response.data);
+      } else {
+        alert('Success!');
+        console.log(response.data);
+      }
+    } catch (err) {
+      alert('Something went wrong');
+      console.error(err);
+    }
   }
 
   render() {
