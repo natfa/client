@@ -1,6 +1,6 @@
 import React from 'react';
 import withLayout from '../../utils/withLayout';
-import QuestionForm from '../../components/question-form';
+import CreateQuestion from '../../containers/create-question';
 
 const PAGES = [
   { pathname: '/questions', name: 'Въпроси' },
@@ -8,7 +8,7 @@ const PAGES = [
 ];
 
 const TeacherApp = () => (
-  <QuestionForm />
+  <CreateQuestion />
 );
 
 export default withLayout(TeacherApp, PAGES);
