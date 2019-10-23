@@ -83,7 +83,7 @@ const QuestionForm = ({
                 variant="outlined"
               />
             </Grid>
-            <Grid item xs={1}>
+            <Grid style={{ textAlign: 'center' }} item xs={1}>
               <IconButton onClick={() => onAnswerDelete(answer.id)}><DeleteIcon /></IconButton>
             </Grid>
           </Grid>
