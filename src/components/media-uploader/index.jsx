@@ -6,7 +6,7 @@ import { Button } from '@material-ui/core';
 import './styles.css';
 
 const MediaUploader = ({
-  handleChange,
+  onUpload,
 }) => (
   <div className="media-uploader">
     <label htmlFor="media-uploader-input">
@@ -15,14 +15,14 @@ const MediaUploader = ({
         id="media-uploader-input"
         type="file"
         multiple
-        onChange={handleChange}
+        onChange={onUpload}
       />
     </label>
   </div>
 );
 
 MediaUploader.propTypes = {
-  handleChange: PropTypes.func.isRequired,
+  onUpload: PropTypes.func.isRequired,
 };
 
 export default MediaUploader;
