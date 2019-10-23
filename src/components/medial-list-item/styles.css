@@ -1,0 +1,21 @@
+.media-list-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.media-list-item > img {
+    position: absolute;
+    width: 100%;
+    max-height: 100%;
+    z-index: -1;
+    border-radius: 0.75rem;
+}
+
+.media-list-item > span {
+    background-color: grey;
+    border-radius: 100%;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}

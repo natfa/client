@@ -1,0 +1,3 @@
+.media-uploader > label > input[type="file"] {
+    display: none;
+}

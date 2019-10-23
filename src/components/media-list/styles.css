@@ -1,0 +1,9 @@
+.media-list {
+    display: flex;
+
+    flex-direction: row;
+}
+
+.media-list > * {
+    margin: 0 0.25rem;
+}
