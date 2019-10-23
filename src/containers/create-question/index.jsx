@@ -41,6 +41,7 @@ class CreateQuestion extends React.Component {
     this.handlePointsChange = this.handlePointsChange.bind(this);
     this.handleAnswerChange = this.handleAnswerChange.bind(this);
     this.handleAddAnswer = this.handleAddAnswer.bind(this);
+    this.handleAnswerDelete = this.handleAnswerDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -149,7 +150,42 @@ class CreateQuestion extends React.Component {
   }
 
   handleAnswerChange(e, answerid) {
-    console.error('Not implemented');
+    const { value } = e.target;
+    const { question } = this.state;
+
+    const answers = question.answers.map((answer) => {
+      if (answer.id === answerid) {
+        return {
+          id: answer.id,
+          text: value,
+          correct: answer.correct,
+        };
+      }
+
+      return answer;
+    });
+
+    this.setState((state) => ({
+      ...state,
+      question: {
+        ...state.question,
+        answers,
+      },
+    }));
+  }
+
+  handleAnswerDelete(answerid) {
+    const { question } = this.state;
+
+    const answers = question.answers.filter((a) => a.id !== answerid);
+
+    this.setState((state) => ({
+      ...state,
+      question: {
+        ...state.question,
+        answers,
+      },
+    }));
   }
 
   handleSubmit(e) {
@@ -184,6 +220,7 @@ class CreateQuestion extends React.Component {
 
         answers={question.answers}
         onAnswerChange={this.handleAnswerChange}
+        onAnswerDelete={this.handleAnswerDelete}
         onAddAnswer={this.handleAddAnswer}
 
         onSubmit={this.handleSubmit}

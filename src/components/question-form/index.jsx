@@ -7,7 +7,10 @@ import {
   Divider,
   Button,
   Typography,
+  IconButton,
 } from '@material-ui/core';
+
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import './styles.css';
 
@@ -29,6 +32,7 @@ const QuestionForm = ({
 
   answers,
   onAnswerChange,
+  onAnswerDelete,
   onAddAnswer,
 
   onSubmit,
@@ -48,6 +52,51 @@ const QuestionForm = ({
       ))}
     </datalist>
   );
+
+  const renderAnswers = (correct) => {
+    const header = `${correct ? 'Correct' : 'Incorrect'} answers`;
+
+    return (
+      <Grid
+        container
+        item
+        direction="column"
+        wrap="nowrap"
+        xs={12}
+        spacing={1}
+      >
+        <Grid item xs={12}><Typography>{header}</Typography></Grid>
+
+        {answers.filter((a) => a.correct === correct).map((answer) => (
+          <Grid
+            container
+            item
+            key={answer.id}
+            xs={12}
+          >
+            <Grid item xs={11}>
+              <TextField
+                value={answer.text}
+                onChange={(e) => onAnswerChange(e, answer.id)}
+                fullWidth
+                type="text"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={1}>
+              <IconButton onClick={() => onAnswerDelete(answer.id)}><DeleteIcon /></IconButton>
+            </Grid>
+          </Grid>
+        ))}
+
+        <Grid item xs={12}>
+          <Button onClick={() => onAddAnswer(correct)} startIcon="+" color="secondary">
+            add answer
+          </Button>
+        </Grid>
+      </Grid>
+    );
+  };
 
   return (
     <form onSubmit={onSubmit}>
@@ -127,61 +176,11 @@ const QuestionForm = ({
 
         <Divider />
 
-        <Grid
-          container
-          item
-          direction="column"
-          wrap="nowrap"
-          xs={12}
-          spacing={1}
-        >
-          <Grid item xs={12}><Typography>Correct answers</Typography></Grid>
-          {answers.filter((a) => a.correct).map((answer) => (
-            <Grid key={answer.id} item xs={12}>
-              <TextField
-                value={answer.text}
-                onChange={(e) => onAnswerChange(e, answer.id)}
-                fullWidth
-                type="text"
-                variant="outlined"
-              />
-            </Grid>
-          ))}
-          <Grid item xs={12}>
-            <Button onClick={() => onAddAnswer(true)} startIcon="+" color="secondary">
-              add answer
-            </Button>
-          </Grid>
-        </Grid>
+        {renderAnswers(true)}
 
         <Divider />
 
-        <Grid
-          container
-          item
-          direction="column"
-          wrap="nowrap"
-          spacing={1}
-          xs={12}
-        >
-          <Grid item xs={12}><Typography>Incorrect answers</Typography></Grid>
-          {answers.filter((a) => !a.correct).map((answer) => (
-            <Grid key={answer.id} item xs={12}>
-              <TextField
-                value={answer.text}
-                onChange={(e) => onAnswerChange(e, answer.id)}
-                fullWidth
-                type="text"
-                variant="outlined"
-              />
-            </Grid>
-          ))}
-          <Grid item xs={12}>
-            <Button onClick={() => onAddAnswer(false)} startIcon="+" color="secondary">
-              add answer
-            </Button>
-          </Grid>
-        </Grid>
+        {renderAnswers(false)}
 
         <Divider />
 
@@ -228,6 +227,7 @@ QuestionForm.propTypes = {
 
   answers: PropTypes.arrayOf(PropTypes.object).isRequired,
   onAnswerChange: PropTypes.func.isRequired,
+  onAnswerDelete: PropTypes.func.isRequired,
   onAddAnswer: PropTypes.func.isRequired,
 
   onSubmit: PropTypes.func.isRequired,
