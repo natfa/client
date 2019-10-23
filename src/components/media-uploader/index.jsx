@@ -10,7 +10,9 @@ const MediaUploader = ({
 }) => (
   <div className="media-uploader">
     <label htmlFor="media-uploader-input">
-      <Button component="span" variant="outlined" />
+      <Button component="span" variant="outlined">
+        Upload
+      </Button>
       <input
         id="media-uploader-input"
         type="file"
