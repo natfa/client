@@ -1,4 +1,6 @@
 import React from 'react';
+import uuid from 'uuid/v1';
+
 import QuestionForm from '../../components/question-form';
 
 
@@ -38,6 +40,7 @@ class CreateQuestion extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handlePointsChange = this.handlePointsChange.bind(this);
     this.handleAnswerChange = this.handleAnswerChange.bind(this);
+    this.handleAddAnswer = this.handleAddAnswer.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -133,10 +136,22 @@ class CreateQuestion extends React.Component {
     ));
   }
 
+  handleAddAnswer(correct) {
+    const id = uuid();
+
+    this.setState((state) => ({
+      ...state,
+      question: {
+        ...state.question,
+        answers: [...state.question.answers, { id, text: '', correct }],
+      },
+    }));
+  }
+
   handleAnswerChange(e, answerid) {
     console.error('Not implemented');
   }
-  
+
   handleSubmit(e) {
     e.preventDefault();
     console.error('Not implemented');
@@ -169,6 +184,7 @@ class CreateQuestion extends React.Component {
 
         answers={question.answers}
         onAnswerChange={this.handleAnswerChange}
+        onAddAnswer={this.handleAddAnswer}
 
         onSubmit={this.handleSubmit}
       />

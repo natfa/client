@@ -29,6 +29,7 @@ const QuestionForm = ({
 
   answers,
   onAnswerChange,
+  onAddAnswer,
 
   onSubmit,
 }) => {
@@ -146,6 +147,11 @@ const QuestionForm = ({
               />
             </Grid>
           ))}
+          <Grid item xs={12}>
+            <Button onClick={() => onAddAnswer(true)} startIcon="+" color="secondary">
+              add answer
+            </Button>
+          </Grid>
         </Grid>
 
         <Divider />
@@ -170,6 +176,11 @@ const QuestionForm = ({
               />
             </Grid>
           ))}
+          <Grid item xs={12}>
+            <Button onClick={() => onAddAnswer(false)} startIcon="+" color="secondary">
+              add answer
+            </Button>
+          </Grid>
         </Grid>
 
         <Divider />
@@ -189,7 +200,11 @@ const QuestionForm = ({
           justify="flex-end"
           spacing={1}
         >
-          <Grid item xs={12} sm={4}><Button type="submit" variant="contained" fullWidth>Submit</Button></Grid>
+          <Grid item xs={12} sm={4}>
+            <Button color="primary" type="submit" variant="contained" fullWidth>
+              Submit
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </form>
@@ -213,6 +228,7 @@ QuestionForm.propTypes = {
 
   answers: PropTypes.arrayOf(PropTypes.object).isRequired,
   onAnswerChange: PropTypes.func.isRequired,
+  onAddAnswer: PropTypes.func.isRequired,
 
   onSubmit: PropTypes.func.isRequired,
 };
