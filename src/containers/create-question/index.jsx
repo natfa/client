@@ -33,6 +33,7 @@ class CreateQuestion extends React.Component {
           { id: '3', text: 'Incorrect 3', correct: false },
           { id: '4', text: 'Incorrect 4', correct: false },
         ],
+        media: [],
       },
     };
 
@@ -40,9 +41,14 @@ class CreateQuestion extends React.Component {
     this.handleThemeChange = this.handleThemeChange.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handlePointsChange = this.handlePointsChange.bind(this);
+
     this.handleAnswerChange = this.handleAnswerChange.bind(this);
     this.handleAddAnswer = this.handleAddAnswer.bind(this);
     this.handleAnswerDelete = this.handleAnswerDelete.bind(this);
+
+    this.handleMediaUpload = this.handleMediaUpload.bind(this);
+    this.handleMediaDelete = this.handleMediaDelete.bind(this);
+
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -189,6 +195,43 @@ class CreateQuestion extends React.Component {
     }));
   }
 
+  // TODO: make this work with the multiple attribute
+  // clarification: currently, the file reader reads only the last file
+  // since the multiple readAsArrayBuffer calls overwrite the previous ones
+  handleMediaUpload(e) {
+    const { files } = e.target;
+    const reader = new FileReader();
+
+    reader.onload = (loadEvent) => {
+      const { result } = loadEvent.target;
+      const blob = new Blob([result], { type: 'image/*' });
+      const imageURL = window.URL.createObjectURL(blob);
+
+      this.setState((state) => ({
+        ...state,
+        question: {
+          ...state.question,
+          media: [
+            ...state.question.media,
+            { url: imageURL, data: result },
+          ],
+        },
+      }));
+    }
+
+    reader.onerror = (errorEvent) => {
+      console.error(errorEvent);
+    }
+
+    for (let i = 0; i < files.length; i += 1) {
+      reader.readAsArrayBuffer(files[i]);
+    }
+  }
+
+  handleMediaDelete(mediaURL) {
+    console.error('Not implemented');
+  }
+
   async handleSubmit(e) {
     e.preventDefault();
     const { subjects, themes, question } = this.state;
@@ -251,6 +294,10 @@ class CreateQuestion extends React.Component {
         onAnswerChange={this.handleAnswerChange}
         onAnswerDelete={this.handleAnswerDelete}
         onAddAnswer={this.handleAddAnswer}
+
+        media={question.media}
+        onMediaUpload={this.handleMediaUpload}
+        onMediaDelete={this.handleMediaDelete}
 
         onSubmit={this.handleSubmit}
       />

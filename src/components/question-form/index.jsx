@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Grid,
   TextField,
@@ -9,8 +8,11 @@ import {
   Typography,
   IconButton,
 } from '@material-ui/core';
-
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import MediaUploader from '../media-uploader';
+import MediaList from '../media-list';
+import MediaListItem from '../medial-list-item';
 
 import './styles.css';
 
@@ -34,6 +36,10 @@ const QuestionForm = ({
   onAnswerChange,
   onAnswerDelete,
   onAddAnswer,
+
+  media,
+  onMediaUpload,
+  onMediaDelete,
 
   onSubmit,
 }) => {
@@ -187,8 +193,18 @@ const QuestionForm = ({
         <Grid
           container
           item
+          spacing={1}
         >
-          <Grid item xs={12}><Typography align="center" color="error" gutterBottom>Implmenet media selector</Typography></Grid>
+          <Grid item xs={12}>
+            <MediaUploader onUpload={onMediaUpload} />
+          </Grid>
+          <Grid item xs={12}>
+            <MediaList>
+              {media.map((m) => (
+                <MediaListItem src={m.url} onRemove={() => onMediaDelete(m.url)} />
+              ))}
+            </MediaList>
+          </Grid>
         </Grid>
 
         <Divider />
@@ -229,6 +245,10 @@ QuestionForm.propTypes = {
   onAnswerChange: PropTypes.func.isRequired,
   onAnswerDelete: PropTypes.func.isRequired,
   onAddAnswer: PropTypes.func.isRequired,
+
+  media: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onMediaUpload: PropTypes.func.isRequired,
+  onMediaDelete: PropTypes.func.isRequired,
 
   onSubmit: PropTypes.func.isRequired,
 };
