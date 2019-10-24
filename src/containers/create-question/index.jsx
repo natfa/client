@@ -127,6 +127,8 @@ class CreateQuestion extends React.Component {
   handleTextChange(e) {
     const { value } = e.target;
 
+    if (value.length > 150) return;
+
     this.setState((state) => (
       {
         ...state,
