@@ -195,41 +195,48 @@ class CreateQuestion extends React.Component {
     }));
   }
 
-  // TODO: make this work with the multiple attribute
-  // clarification: currently, the file reader reads only the last file
-  // since the multiple readAsArrayBuffer calls overwrite the previous ones
   handleMediaUpload(e) {
     const { files } = e.target;
-    const reader = new FileReader();
-
-    reader.onload = (loadEvent) => {
-      const { result } = loadEvent.target;
-      const blob = new Blob([result], { type: 'image/*' });
-      const imageURL = window.URL.createObjectURL(blob);
-
-      this.setState((state) => ({
-        ...state,
-        question: {
-          ...state.question,
-          media: [
-            ...state.question.media,
-            { url: imageURL, data: result },
-          ],
-        },
-      }));
-    }
-
-    reader.onerror = (errorEvent) => {
-      console.error(errorEvent);
-    }
 
     for (let i = 0; i < files.length; i += 1) {
+      const reader = new FileReader();
+
+      reader.onload = (loadEvent) => {
+        const { result } = loadEvent.target;
+        const blob = new Blob([result], { type: 'image/*' });
+        const imageURL = window.URL.createObjectURL(blob);
+
+        this.setState((state) => ({
+          ...state,
+          question: {
+            ...state.question,
+            media: [
+              ...state.question.media,
+              { url: imageURL, data: result },
+            ],
+          },
+        }));
+      };
+
+      reader.onerror = (errorEvent) => {
+        console.error(errorEvent);
+      };
       reader.readAsArrayBuffer(files[i]);
     }
   }
 
   handleMediaDelete(mediaURL) {
-    console.error('Not implemented');
+    const { question } = this.state;
+
+    const media = question.media.filter((m) => m.url !== mediaURL);
+
+    this.setState((state) => ({
+      ...state,
+      question: {
+        ...state.question,
+        media,
+      },
+    }));
   }
 
   async handleSubmit(e) {
