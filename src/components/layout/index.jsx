@@ -21,6 +21,25 @@ const PaddedContainer = withStyles({
   },
 })(Container);
 
+// TODO: figure out why this works
+const ListItemLink = ({ to, text, onClick }) => {
+  const link = React.forwardRef((props, ref) => (
+    <Link to={to} {...props} ref={ref} />
+  ));
+
+  return (
+    <li>
+      <ListItem onClick={onClick} button component={link}>
+        <ListItemText primary={text} />
+      </ListItem>
+    </li>
+  );
+};
+
+ListItemLink.propTypes = {
+  to: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+};
 
 class Layout extends React.Component {
   constructor(props) {
@@ -50,9 +69,12 @@ class Layout extends React.Component {
       >
         <List>
           {pages.map((page) => (
-            <ListItem key={page.pathname} button>
-              <ListItemText primary={page.name} />
-            </ListItem>
+            <ListItemLink
+              onClick={this.toggleDrawer}
+              key={page.pathname}
+              to={page.pathname}
+              text={page.name}
+            />
           ))}
         </List>
       </Drawer>
@@ -74,7 +96,7 @@ class Layout extends React.Component {
               </IconButton>
             )}
             <Typography variant="h6">
-              Company Logo
+              Some Logo
             </Typography>
           </Toolbar>
         </AppBar>

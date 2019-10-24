@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { getActiveSession } from '../api/session';
-
 import LoadingAnimation from '../components/loading-animation';
 import TeacherApp from '../apps/teacher-app';
+
+import { getActiveSession } from '../api/session';
+import withRouter from '../utils/withRouter';
 
 (async function IIFE() {
   const rootNode = document.getElementById('root');
@@ -16,8 +17,6 @@ import TeacherApp from '../apps/teacher-app';
     authenticated = await getActiveSession();
   } catch (err) {
     console.error(err);
-    // temp, remove after development
-    authenticated = true;
   }
 
   if (!authenticated) {
@@ -25,5 +24,7 @@ import TeacherApp from '../apps/teacher-app';
     return;
   }
 
-  ReactDOM.render(<TeacherApp />, rootNode);
+  const TeacherAppWithRouter = withRouter(TeacherApp, '/teacher');
+
+  ReactDOM.render(<TeacherAppWithRouter />, rootNode);
 }());
