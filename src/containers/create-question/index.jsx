@@ -2,7 +2,10 @@ import React from 'react';
 import uuid from 'uuid/v1';
 
 import QuestionForm from '../../components/question-form';
+
 import questionAPI from '../../api/question';
+import subjectAPI from '../../api/subject';
+import themeAPI from '../../api/theme';
 
 
 class CreateQuestion extends React.Component {
@@ -10,29 +13,16 @@ class CreateQuestion extends React.Component {
     super(props);
 
     this.state = {
-      subjects: [
-        { id: '1', name: 'Math' },
-        { id: '2', name: 'Programming' },
-      ],
-      themes: [
-        { id: '1', subjectid: '1', name: 'Algebra' },
-        { id: '2', subjectid: '1', name: 'Geometry' },
-        { id: '3', subjectid: '2', name: 'Web' },
-        { id: '4', subjectid: '2', name: 'Soft' },
-      ],
+      subjects: [],
+      themes: [],
       subjectText: '',
       themeText: '',
       question: {
         subjectid: null,
         themeid: null,
-        text: 'Some text',
+        text: '',
         points: 0,
-        answers: [
-          { id: '1', text: 'Correct 1', correct: true },
-          { id: '2', text: 'Correct 2', correct: true },
-          { id: '3', text: 'Incorrect 3', correct: false },
-          { id: '4', text: 'Incorrect 4', correct: false },
-        ],
+        answers: [],
         media: [],
       },
     };
@@ -52,19 +42,51 @@ class CreateQuestion extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubjectChange(e) {
+  async componentDidMount() {
+    try {
+      const subjects = await subjectAPI.getAll();
+
+      if (!subjects) {
+        console.error('Subjects is undefined...');
+        return;
+      }
+
+      this.setState((state) => ({
+        ...state,
+        subjects,
+      }));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async handleSubjectChange(e) {
     const { value } = e.target;
     const { subjects } = this.state;
 
     const found = subjects.find((subject) => subject.name === value);
 
+    if (found) {
+      try {
+        const themes = await themeAPI.getAllBySubjectid(found.id);
+        this.setState((state) => ({
+          ...state,
+          themes,
+        }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     this.setState((state) => {
       const newState = {
         ...state,
         subjectText: value,
+        themeText: '',
         question: {
           ...state.question,
           subjectid: null,
+          themeid: null,
         },
       };
 
@@ -72,10 +94,6 @@ class CreateQuestion extends React.Component {
         newState.question.subjectid = found.id;
       }
 
-      // TODO: Themes depend on subjects
-      // as it currently is, the handleSubjectChange doesn't consider the theme input
-      // think of the different scenarios possible and solve this problem
-      console.error('Please implement TODO comment above this line');
       return { ...newState };
     });
   }
@@ -102,10 +120,6 @@ class CreateQuestion extends React.Component {
         newState.question.themeid = found.id;
       }
 
-      // TODO: Themes depend on subjects
-      // as it currently is, the handleSubjectChange doesn't consider the theme input
-      // think of the different scenarios possible and solve this problem
-      console.error('Please implement TODO comment above this line');
       return { ...newState };
     });
   }
@@ -254,20 +268,14 @@ class CreateQuestion extends React.Component {
 
     const jsonData = JSON.stringify(data);
 
-    console.log(jsonData);
-    console.log(data);
-
     try {
       const response = await questionAPI.createOne(jsonData);
       if (!response.success) {
-        alert('You did something wrong');
         console.error(response.data);
       } else {
-        alert('Success!');
         console.log(response.data);
       }
     } catch (err) {
-      alert('Something went wrong');
       console.error(err);
     }
   }
