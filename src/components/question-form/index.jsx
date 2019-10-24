@@ -201,7 +201,7 @@ const QuestionForm = ({
           <Grid item xs={12}>
             <MediaList>
               {media.map((m) => (
-                <MediaListItem src={m.url} onRemove={() => onMediaDelete(m.url)} />
+                <MediaListItem key={m.url} src={m.url} onRemove={() => onMediaDelete(m.url)} />
               ))}
             </MediaList>
           </Grid>
