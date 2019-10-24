@@ -19,23 +19,27 @@ export const createOne = async (data) => {
   };
 };
 
-export default {
-  createOne,
-};
-
-/*
-const getAll = async () => {
-  const response = await fetch(route, {
+export const getAll = async () => {
+  const response = await fetch(questionApiRoute, {
     method: 'GET',
     mode: 'cors',
     credentials: 'include',
-  })
+  });
 
-  if (!response.ok)
-    return null
+  if (!response.ok) {
+    return null;
+  }
 
-  return await response.json()
-}
+  const data = await response.json();
+  return data;
+};
+
+export default {
+  createOne,
+  getAll,
+};
+
+/*
 
 const getBySubjectid = async subjectid => {
   const response = await fetch(`${route}/filter/${subjectid}`, {
@@ -73,17 +77,5 @@ const deleteById = async id => {
   if (!response.ok)
     return false
   return true
-}
-
-export default r => {
-  route = r
-
-  return {
-    getAll,
-    getBySubjectid,
-    getById,
-    createOne,
-    deleteById,
-  }
 }
 */
