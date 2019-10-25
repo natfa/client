@@ -12,12 +12,11 @@ module.exports = {
   entry: {
     landing: path.resolve(__dirname, 'src/pages/landing.jsx'),
     teacher: path.resolve(__dirname, 'src/pages/teacher.jsx'),
-    student: path.resolve(__dirname, 'src/pages/student.jsx'),
-    admin: path.resolve(__dirname, 'src/pages/admin.jsx'),
   },
   output: {
-    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'build'),
+    filename: '[name]/index.bundle.js',
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -51,25 +50,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       chunks: ['landing'],
       title: 'Log In',
-      filename: 'landing.html',
+      filename: 'landing/index.html',
       template: path.resolve(__dirname, 'public/index.html'),
     }),
     new HtmlWebpackPlugin({
       chunks: ['teacher'],
       title: 'Teachers',
-      filename: 'teacher.html',
-      template: path.resolve(__dirname, 'public/index.html'),
-    }),
-    new HtmlWebpackPlugin({
-      chunks: ['student'],
-      title: 'Students',
-      filename: 'student.html',
-      template: path.resolve(__dirname, 'public/index.html'),
-    }),
-    new HtmlWebpackPlugin({
-      chunks: ['admin'],
-      title: 'Admin Panel',
-      filename: 'admin.html',
+      filename: 'teacher/index.html',
       template: path.resolve(__dirname, 'public/index.html'),
     }),
   ],
