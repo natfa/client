@@ -3,13 +3,13 @@ import { apiRoute } from '../constants';
 const questionApiRoute = `${apiRoute}/question`;
 
 export const createOne = async (data) => {
+  // let the fetch function decide on the content type itself
+  // since if you put the content type yourself
+  // the multipart/form-data bountry won't be set correctly
   const response = await fetch(questionApiRoute, {
     method: 'POST',
     mode: 'cors',
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: data,
   });
 
