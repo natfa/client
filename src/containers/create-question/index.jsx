@@ -215,29 +215,19 @@ class CreateQuestion extends React.Component {
     const { files } = e.target;
 
     for (let i = 0; i < files.length; i += 1) {
-      const reader = new FileReader();
+      const file = files[i];
+      const url = window.URL.createObjectURL(file);
 
-      reader.onload = (loadEvent) => {
-        const { result } = loadEvent.target;
-        const blob = new Blob([result], { type: 'image/*' });
-        const imageURL = window.URL.createObjectURL(blob);
-
-        this.setState((state) => ({
-          ...state,
-          question: {
-            ...state.question,
-            media: [
-              ...state.question.media,
-              { url: imageURL, data: result },
-            ],
-          },
-        }));
-      };
-
-      reader.onerror = (errorEvent) => {
-        console.error(errorEvent);
-      };
-      reader.readAsArrayBuffer(files[i]);
+      this.setState((state) => ({
+        ...state,
+        question: {
+          ...state.question,
+          media: [
+            ...state.question.media,
+            { url, file },
+          ],
+        },
+      }));
     }
   }
 
@@ -257,21 +247,20 @@ class CreateQuestion extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    const { subjects, themes, question } = this.state;
+    const { subjectText, themeText, question } = this.state;
 
-    const data = {
-      text: question.text,
-      points: question.points,
-      subject: (subjects.find((s) => s.id === question.subjectid)).name,
-      theme: (themes.find((t) => t.id === question.themeid)).name,
-      correctAnswers: question.answers.filter((a) => a.correct).map((a) => a.text),
-      incorrectAnswers: question.answers.filter((a) => !a.correct).map((a) => a.text),
-    };
+    const formData = new FormData();
 
-    const jsonData = JSON.stringify(data);
+    formData.append('text', question.text);
+    formData.append('points', question.points);
+    formData.append('subjectName', subjectText);
+    formData.append('themeName', themeText);
+
+    question.answers.map((answer) => formData.append('answers', answer.text));
+    question.media.map((media) => formData.append('media', media.file));
 
     try {
-      const response = await questionAPI.createOne(jsonData);
+      const response = await questionAPI.createOne(formData);
       if (!response.success) {
         console.error(response.data);
       } else {

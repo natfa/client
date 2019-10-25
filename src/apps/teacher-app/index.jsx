@@ -22,7 +22,7 @@ const TeacherApp = () => (
 
     <Route path="/">
       {/* TODO: this should eventually be a dashboard */}
-      <QuestionList />
+      <CreateQuestion />
     </Route>
   </Switch>
 );
