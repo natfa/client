@@ -45,11 +45,7 @@ class CreateQuestion extends React.Component {
   async componentDidMount() {
     try {
       const subjects = await subjectAPI.getAll();
-
-      if (!subjects) {
-        console.error('Subjects is undefined...');
-        return;
-      }
+      if (!subjects) return;
 
       this.setState((state) => ({
         ...state,
@@ -245,9 +241,12 @@ class CreateQuestion extends React.Component {
     }));
   }
 
-  async handleSubmit(e) {
+  handleSubmit(e) {
     e.preventDefault();
     const { subjectText, themeText, question } = this.state;
+
+    const correctAnswers = question.answers.filter((a) => a.correct);
+    const incorrectAnswers = question.answers.filter((a) => !a.correct);
 
     const formData = new FormData();
 
@@ -256,19 +255,12 @@ class CreateQuestion extends React.Component {
     formData.append('subjectName', subjectText);
     formData.append('themeName', themeText);
 
-    question.answers.map((answer) => formData.append('answers', answer.text));
+    correctAnswers.map((a) => formData.append('correctAnswers[]', a.text));
+    incorrectAnswers.map((a) => formData.append('incorrectAnswers[]', a.text));
     question.media.map((media) => formData.append('media', media.file));
 
-    try {
-      const response = await questionAPI.createOne(formData);
-      if (!response.success) {
-        console.error(response.data);
-      } else {
-        console.log(response.data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    questionAPI.createOne(formData)
+      .catch((err) => console.error(err));
   }
 
   render() {
