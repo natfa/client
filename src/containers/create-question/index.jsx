@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import uuid from 'uuid/v1';
 
 import QuestionForm from '../../components/question-form';
@@ -42,18 +43,58 @@ class CreateQuestion extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async componentDidMount() {
-    try {
-      const subjects = await subjectAPI.getAll();
-      if (!subjects) return;
+  componentDidMount() {
+    const { questionId } = this.props;
 
-      this.setState((state) => ({
-        ...state,
-        subjects,
-      }));
-    } catch (err) {
-      console.error(err);
+    if (questionId) {
+      questionAPI.getOneById(questionId)
+        .then((question) => {
+          // get needed themes
+          themeAPI.getAllBySubjectid(question.subject.id)
+            .then((themes) => {
+              this.setState((state) => ({
+                ...state,
+                themes,
+              }));
+            })
+            .catch((err) => console.error(err));
+
+          // handle media
+          const media = question.media.map((m) => {
+            const uintarray = new Uint8Array(m.data);
+            const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
+            const url = window.URL.createObjectURL(file);
+
+            return { url, file };
+          });
+
+          // populate data structure
+          this.setState((state) => ({
+            ...state,
+            subjectText: question.subject.name,
+            themeText: question.theme.name,
+            question: {
+              ...state.question,
+              subjectid: question.subject.id,
+              themeid: question.theme.id,
+              text: question.text,
+              points: question.points,
+              answers: question.answers,
+              media,
+            },
+          }));
+        })
+        .catch((err) => console.error(err));
     }
+
+    subjectAPI.getAll()
+      .then((subjects) => {
+        this.setState((state) => ({
+          ...state,
+          subjects,
+        }));
+      })
+      .catch((err) => console.error(err));
   }
 
   async handleSubjectChange(e) {
@@ -214,6 +255,9 @@ class CreateQuestion extends React.Component {
       const file = files[i];
       const url = window.URL.createObjectURL(file);
 
+      console.log(file);
+      console.log(url);
+
       this.setState((state) => ({
         ...state,
         question: {
@@ -302,5 +346,13 @@ class CreateQuestion extends React.Component {
     );
   }
 }
+
+CreateQuestion.propTypes = {
+  questionId: PropTypes.string,
+};
+
+CreateQuestion.defaultProps = {
+  questionId: null,
+};
 
 export default CreateQuestion;
