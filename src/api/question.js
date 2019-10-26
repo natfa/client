@@ -28,13 +28,39 @@ export const getAll = async () => {
     return null;
   }
 
-  const data = await response.json();
-  return data;
+  return response.json();
+};
+
+export const getOneById = async (id) => {
+  const response = await fetch(`${questionApiRoute}/${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
+};
+
+export const deleteOneById = async (id) => {
+  const response = await fetch(`${questionApiRoute}/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+  return true;
 };
 
 export default {
   createOne,
   getAll,
+  getOneById,
+  deleteOneById,
 };
 
 /*
@@ -50,30 +76,5 @@ const getBySubjectid = async subjectid => {
     return null
 
   return await response.json()
-}
-
-const getById = async id => {
-  const response = await fetch(`${route}/${id}`, {
-    method: 'GET',
-    mode: 'cors',
-    credentials: 'include',
-  })
-
-  if (!response.ok)
-    return null
-
-  return await response.json()
-}
-
-const deleteById = async id => {
-  const response = await fetch(`${route}/${id}`, {
-    method: 'DELETE',
-    mode: 'cors',
-    credentials: 'include',
-  })
-
-  if (!response.ok)
-    return false
-  return true
 }
 */

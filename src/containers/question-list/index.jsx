@@ -1,10 +1,9 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-
 import QuestionListItem from '../../components/question-list-item';
 import questionAPI from '../../api/question';
+
+import './styles.css';
 
 class QuestionList extends React.Component {
   constructor(props) {
@@ -13,32 +12,48 @@ class QuestionList extends React.Component {
     this.state = {
       questions: [],
     };
+
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   async componentDidMount() {
     try {
       const questions = await questionAPI.getAll();
-      console.log(questions);
-
       this.setState({ questions });
     } catch (err) {
       console.error(err);
     }
   }
 
+  handleUpdate(id) {
+    console.error('Not implemented');
+  }
+
+  handleDelete(id) {
+    questionAPI.deleteOneById(id);
+
+    this.setState((state) => ({
+      questions: state.questions.filter((q) => q.id !== id),
+    }));
+  }
+
   render() {
     const { questions } = this.state;
 
     return (
-      <Grid
-        container
-        direction="column"
-        spacing={2}
-      >
+      <div className="question-list">
         {questions.map((question) => (
-          <QuestionListItem key={question.id} text={question.text} />
+          <QuestionListItem
+            key={question.id}
+            text={question.text}
+            subject={question.subject.name}
+            theme={question.theme.name}
+            onUpdate={() => this.handleUpdate(question.id)}
+            onDelete={() => this.handleDelete(question.id)}
+          />
         ))}
-      </Grid>
+      </div>
     );
   }
 }

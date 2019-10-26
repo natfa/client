@@ -10,47 +10,71 @@ import { withStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Loop';
 
-const FullWidthPaper = withStyles({
+// TODO: find a way to use the theme's spacing
+const PaddedPaper = withStyles({
   root: {
     padding: '1rem',
-    width: '100%',
-  }
+  },
 })(Paper);
 
 const QuestionListItem = ({
-  text,
-}) => (
-  <Grid
-    container
-    item
-  >
-    <FullWidthPaper
-      elevation={2}
-      square
-    >
-      <Grid
-        container
-        justify="space-between"
-      >
-        <Grid item>
-          <Typography>{text}</Typography>
-        </Grid>
+  updating,
 
-        <Grid item>
-          <IconButton>
-            <UpdateIcon />
-          </IconButton>
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Grid>
+  text,
+  subject,
+  theme,
+
+  onUpdate,
+  onDelete,
+}) => (
+  <PaddedPaper
+    elevation={2}
+    square
+  >
+    <Grid
+      container
+      spacing={1}
+      direction="row"
+    >
+
+      <Grid item>
+        <CreateQuestion />
       </Grid>
-    </FullWidthPaper>
-  </Grid>
+    </Grid>
+
+
+    <Grid
+      container
+      spacing={1}
+      direction="row"
+      alignItems="center"
+    >
+      <Grid xs={10} item>
+        <Typography variant="body1" color="textPrimary" gutterBottom paragraph>{text}</Typography>
+        <Typography variant="subtitle1" color="textSecondary">{`${subject} • ${theme}`}</Typography>
+      </Grid>
+
+      <Grid style={{ textAlign: 'right' }} xs={1} sm item>
+        <IconButton onClick={onUpdate}>
+          <UpdateIcon />
+        </IconButton>
+        <IconButton onClick={onDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </Grid>
+    </Grid>
+  </PaddedPaper>
 );
 
 QuestionListItem.propTypes = {
+  updating: PropTypes.bool.isRequired,
+
   text: PropTypes.string.isRequired,
+  subject: PropTypes.string.isRequired,
+  theme: PropTypes.string.isRequired,
+
+  onUpdate: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default QuestionListItem;
