@@ -11,7 +11,7 @@ const MediaUploader = ({
   <div className="media-uploader">
     <label htmlFor="media-uploader-input">
       <Button component="span" variant="outlined">
-        Upload
+        качи
       </Button>
       <input
         id="media-uploader-input"

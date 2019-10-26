@@ -31,7 +31,7 @@ const LoginForm = ({
           type="email"
           required
 
-          label="Email"
+          label="Имейл"
 
           margin="dense"
           autoFocus
@@ -47,7 +47,7 @@ const LoginForm = ({
           type="password"
           required
 
-          label="Password"
+          label="Парола"
 
           margin="dense"
           fullWidth
@@ -61,7 +61,7 @@ const LoginForm = ({
           fullWidth
           type="submit"
         >
-          Log In
+          влез
         </Button>
       </Grid>
 

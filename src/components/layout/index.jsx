@@ -96,7 +96,7 @@ class Layout extends React.Component {
               </IconButton>
             )}
             <Typography variant="h6">
-              Some Logo
+              Система за оценяване НАТФИЗ
             </Typography>
           </Toolbar>
         </AppBar>

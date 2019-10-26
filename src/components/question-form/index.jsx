@@ -60,7 +60,7 @@ const QuestionForm = ({
   );
 
   const renderAnswers = (correct) => {
-    const header = `${correct ? 'Correct' : 'Incorrect'} answers`;
+    const header = `${correct ? 'Верни' : 'Неверни'} отговори`;
 
     return (
       <Grid
@@ -96,7 +96,7 @@ const QuestionForm = ({
 
         <Grid item xs={12}>
           <Button onClick={() => onAddAnswer(correct)} startIcon="+" color="secondary">
-            add answer
+            отговор
           </Button>
         </Grid>
       </Grid>
@@ -124,7 +124,7 @@ const QuestionForm = ({
               onChange={onSubjectChange}
               inputProps={{ list: 'subjects-list' }}
               fullWidth
-              label="Subject"
+              label="Предмет"
               type="text"
               variant="outlined"
             />
@@ -135,7 +135,7 @@ const QuestionForm = ({
               onChange={onThemeChange}
               inputProps={{ list: 'themes-list' }}
               fullWidth
-              label="Theme"
+              label="Тема"
               type="text"
               variant="outlined"
             />
@@ -148,7 +148,7 @@ const QuestionForm = ({
               value={points}
               onChange={onPointsChange}
               fullWidth
-              label="Points"
+              label="Точки"
               type="text"
               variant="outlined"
             />
@@ -173,7 +173,7 @@ const QuestionForm = ({
               fullWidth
               multiline
               rows={3}
-              label="Question text"
+              label="Текст"
               variant="outlined"
             />
           </Grid>
@@ -216,7 +216,7 @@ const QuestionForm = ({
         >
           <Grid item xs={12} sm={4}>
             <Button color="primary" type="submit" variant="contained" fullWidth>
-              Submit
+              запази
             </Button>
           </Grid>
         </Grid>
