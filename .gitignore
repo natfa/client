@@ -11,6 +11,7 @@
 # production
 /build
 **/config/
+**/constants/
 
 # misc
 .DS_Store
