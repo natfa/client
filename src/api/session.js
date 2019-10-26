@@ -7,7 +7,6 @@ export const authenticate = async (email, password) => {
 
   const response = await fetch(sessionApiRoute, {
     method: 'POST',
-    mode: 'cors',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
@@ -26,7 +25,6 @@ export const authenticate = async (email, password) => {
 export const getActiveSession = async () => {
   const response = await fetch(sessionApiRoute, {
     method: 'GET',
-    mode: 'cors',
     credentials: 'include',
   });
 

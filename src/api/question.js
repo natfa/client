@@ -8,7 +8,6 @@ export const createOne = async (data) => {
   // the multipart/form-data bountry won't be set correctly
   const response = await fetch(questionApiRoute, {
     method: 'POST',
-    mode: 'cors',
     credentials: 'include',
     body: data,
   });
@@ -22,7 +21,6 @@ export const createOne = async (data) => {
 export const getAll = async () => {
   const response = await fetch(questionApiRoute, {
     method: 'GET',
-    mode: 'cors',
     credentials: 'include',
   });
 
