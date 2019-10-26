@@ -10,6 +10,7 @@ class QuestionList extends React.Component {
     super(props);
 
     this.state = {
+      questionId: null,
       questions: [],
     };
 
@@ -27,7 +28,7 @@ class QuestionList extends React.Component {
   }
 
   handleUpdate(id) {
-    console.error('Not implemented');
+    this.setState((state) => ({ ...state, questionId: id }));
   }
 
   handleDelete(id) {
@@ -39,12 +40,13 @@ class QuestionList extends React.Component {
   }
 
   render() {
-    const { questions } = this.state;
+    const { questionId, questions } = this.state;
 
     return (
       <div className="question-list">
         {questions.map((question) => (
           <QuestionListItem
+            updating={question.id === questionId ? question.id : null}
             key={question.id}
             text={question.text}
             subject={question.subject.name}
