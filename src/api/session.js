@@ -7,7 +7,6 @@ export const authenticate = async (email, password) => {
 
   const response = await fetch(sessionApiRoute, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -25,7 +24,6 @@ export const authenticate = async (email, password) => {
 export const getActiveSession = async () => {
   const response = await fetch(sessionApiRoute, {
     method: 'GET',
-    credentials: 'include',
   });
 
   if (!response.ok) {

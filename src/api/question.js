@@ -8,7 +8,6 @@ export const createOne = async (data) => {
   // the multipart/form-data bountry won't be set correctly
   const response = await fetch(questionApiRoute, {
     method: 'POST',
-    credentials: 'include',
     body: data,
   });
 
@@ -21,7 +20,6 @@ export const createOne = async (data) => {
 export const getAll = async () => {
   const response = await fetch(questionApiRoute, {
     method: 'GET',
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -34,7 +32,6 @@ export const getAll = async () => {
 export const getOneById = async (id) => {
   const response = await fetch(`${questionApiRoute}/${id}`, {
     method: 'GET',
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -47,7 +44,6 @@ export const getOneById = async (id) => {
 export const deleteOneById = async (id) => {
   const response = await fetch(`${questionApiRoute}/${id}`, {
     method: 'DELETE',
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -69,7 +65,6 @@ const getBySubjectid = async subjectid => {
   const response = await fetch(`${route}/filter/${subjectid}`, {
     method: 'GET',
     mode: 'cors',
-    credentials: 'include',
   })
 
   if (!response.ok)

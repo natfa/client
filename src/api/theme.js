@@ -5,7 +5,6 @@ const themeApiRoute = `${apiRoute}/theme`;
 export const getAll = async () => {
   const response = await fetch(themeApiRoute, {
     method: 'GET',
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -19,7 +18,6 @@ export const getAll = async () => {
 export const getAllBySubjectid = async (subjectid) => {
   const response = await fetch(`${themeApiRoute}/${subjectid}`, {
     method: 'GET',
-    credentials: 'include',
   });
 
   if (!response.ok) {

@@ -5,7 +5,6 @@ const subjectApiRoute = `${apiRoute}/subject`;
 export const getAll = async () => {
   const response = await fetch(subjectApiRoute, {
     method: 'GET',
-    credentials: 'include',
   });
 
   if (!response.ok) {
