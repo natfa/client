@@ -37,23 +37,27 @@ class QuestionList extends React.Component {
     this.setState({ questionId: undefined });
   }
 
-  async handleUpdate(id, formData) {
-    const response = await questionAPI.createOne(formData);
-    if (!response.success) {
-      alert('Something went wrong');
-      console.error(response.data);
-      return;
-    }
-
-    const question = response.data;
-    questionAPI.deleteOneById(id);
+  async handleUpdate(oldId, newId) {
+    questionAPI.deleteOneById(oldId);
+    const question = await questionAPI.getOneById(newId);
 
     this.setState((state) => {
-      const questions = state.questions.filter((q) => q.id !== id);
+      const questions = state.questions.map((q) => {
+        if (q.id === oldId) {
+          return {
+            id: question.id,
+            points: Number(question.points),
+            text: question.text,
+            subject: question.subject,
+            theme: question.theme,
+          };
+        }
+        return q;
+      });
 
       return {
         questionId: undefined,
-        questions: [...questions, question],
+        questions: [...questions],
       };
     });
   }
@@ -81,7 +85,7 @@ class QuestionList extends React.Component {
             theme={question.theme.name}
             onOpen={() => this.handleOpen(question.id)}
             onClose={this.handleClose}
-            onUpdate={(formData) => this.handleUpdate(question.id, formData)}
+            onUpdate={this.handleUpdate}
             onDelete={() => this.handleDelete(question.id)}
           />
         ))}

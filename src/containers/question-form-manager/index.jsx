@@ -322,35 +322,37 @@ class QuestionFormManager extends React.Component {
     incorrect.map((a) => formData.append('incorrectAnswers[]', a.text));
     question.media.map((media) => formData.append('media', media.file));
 
-    if (onSubmit) {
-      onSubmit(formData);
-    } else {
-      questionAPI.createOne(formData)
-        .then((response) => {
-          if (!response.success) {
-            const {
-              subject,
-              theme,
-              text,
-              points,
-              correctAnswers,
-              incorrectAnswers,
-            } = response.data;
+    questionAPI.createOne(formData)
+      .then((response) => {
+        if (!response.success) {
+          const {
+            subject,
+            theme,
+            text,
+            points,
+            correctAnswers,
+            incorrectAnswers,
+          } = response.data;
 
-            console.log(response.data);
+          this.setState((state) => ({
+            ...state,
+            subjectError: subject,
+            themeError: theme,
+            textError: text,
+            pointsError: points,
+            correctAnswersError: correctAnswers,
+            incorrectAnswersError: incorrectAnswers,
+          }));
+          return;
+        }
 
-            this.setState((state) => ({
-              ...state,
-              subjectError: subject,
-              themeError: theme,
-              textError: text,
-              pointsError: points,
-              correctAnswersError: correctAnswers,
-              incorrectAnswersError: incorrectAnswers,
-            }));
-            return;
-          }
-
+        if (onSubmit) {
+          // IMPORTANT: what's going on here is a bit risky
+          // easy to mess up if you don't know how the system works:
+          // the onSubmit function is passed whenever the question created
+          // should actually be an update
+          onSubmit(response.data.id);
+        } else {
           const newQuestion = response.data;
           this.setState((state) => ({
             ...state,
@@ -363,9 +365,9 @@ class QuestionFormManager extends React.Component {
               media: [],
             },
           }));
-        })
-        .catch((err) => console.error(err));
-    }
+        }
+      })
+      .catch((err) => console.error(err));
   }
 
   render() {
