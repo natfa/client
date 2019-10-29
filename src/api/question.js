@@ -13,7 +13,7 @@ export const createOne = async (data) => {
 
   return {
     success: response.ok,
-    data: await response.text(),
+    data: await response.json(),
   };
 };
 
