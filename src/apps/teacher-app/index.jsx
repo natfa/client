@@ -2,7 +2,8 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import withLayout from '../../utils/withLayout';
-import CreateQuestion from '../../containers/create-question';
+
+import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
 const PAGES = [
@@ -13,7 +14,7 @@ const PAGES = [
 const TeacherApp = () => (
   <Switch>
     <Route path="/new">
-      <CreateQuestion />
+      <QuestionFormManager />
     </Route>
 
     <Route path="/all">
@@ -21,8 +22,7 @@ const TeacherApp = () => (
     </Route>
 
     <Route path="/">
-      {/* TODO: this should eventually be a dashboard */}
-      <CreateQuestion />
+      <QuestionFormManager />
     </Route>
   </Switch>
 );

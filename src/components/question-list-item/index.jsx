@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Loop';
 
-import CreateQuestion from '../../containers/create-question';
+import QuestionFormManager from '../../containers/question-form-manager';
 
 // TODO: find a way to use the theme's spacing
 const PaddedPaper = withStyles({
@@ -65,7 +65,7 @@ const QuestionListItem = ({
 
       {updating !== null && (
         <Grid item>
-          <CreateQuestion
+          <QuestionFormManager
             questionId={updating}
           />
         </Grid>

@@ -9,7 +9,7 @@ import subjectAPI from '../../api/subject';
 import themeAPI from '../../api/theme';
 
 
-class CreateQuestion extends React.Component {
+class QuestionFormManager extends React.Component {
   constructor(props) {
     super(props);
 
@@ -347,12 +347,12 @@ class CreateQuestion extends React.Component {
   }
 }
 
-CreateQuestion.propTypes = {
+QuestionFormManager.propTypes = {
   questionId: PropTypes.string,
 };
 
-CreateQuestion.defaultProps = {
+QuestionFormManager.defaultProps = {
   questionId: null,
 };
 
-export default CreateQuestion;
+export default QuestionFormManager;
