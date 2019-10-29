@@ -26,6 +26,12 @@ class QuestionFormManager extends React.Component {
         answers: [],
         media: [],
       },
+      subjectError: undefined,
+      themeError: undefined,
+      textError: undefined,
+      pointsError: undefined,
+      correctAnswersError: undefined,
+      incorrectAnswersError: undefined,
     };
 
     this.handleSubjectChange = this.handleSubjectChange.bind(this);
@@ -47,44 +53,7 @@ class QuestionFormManager extends React.Component {
     const { questionId } = this.props;
 
     if (questionId) {
-      questionAPI.getOneById(questionId)
-        .then((question) => {
-          // get needed themes
-          themeAPI.getAllBySubjectid(question.subject.id)
-            .then((themes) => {
-              this.setState((state) => ({
-                ...state,
-                themes,
-              }));
-            })
-            .catch((err) => console.error(err));
-
-          // handle media
-          const media = question.media.map((m) => {
-            const uintarray = new Uint8Array(m.data);
-            const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
-            const url = window.URL.createObjectURL(file);
-
-            return { url, file };
-          });
-
-          // populate data structure
-          this.setState((state) => ({
-            ...state,
-            subjectText: question.subject.name,
-            themeText: question.theme.name,
-            question: {
-              ...state.question,
-              subjectid: question.subject.id,
-              themeid: question.theme.id,
-              text: question.text,
-              points: question.points,
-              answers: question.answers,
-              media,
-            },
-          }));
-        })
-        .catch((err) => console.error(err));
+      this.fetchQuestion(questionId);
     }
 
     subjectAPI.getAll()
@@ -92,6 +61,56 @@ class QuestionFormManager extends React.Component {
         this.setState((state) => ({
           ...state,
           subjects,
+        }));
+      })
+      .catch((err) => console.error(err));
+  }
+
+  componentDidUpdate(prevProps) {
+    const { questionId } = this.props;
+    if (prevProps.questionId === undefined) {
+      if (questionId) {
+        this.fetchQuestion(questionId);
+      }
+    }
+  }
+
+  fetchQuestion(id) {
+    questionAPI.getOneById(id)
+      .then((question) => {
+        // get needed themes
+        themeAPI.getAllBySubjectid(question.subject.id)
+          .then((themes) => {
+            this.setState((state) => ({
+              ...state,
+              themes,
+            }));
+          })
+          .catch((err) => console.error(err));
+
+        // handle media
+        const media = question.media.map((m) => {
+          const uintarray = new Uint8Array(m.data);
+          const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
+          const url = window.URL.createObjectURL(file);
+
+          return { url, file };
+        });
+
+        // populate data structure
+        this.setState((state) => ({
+          ...state,
+          subjectText: question.subject.name,
+          themeText: question.theme.name,
+          question: {
+            ...state.question,
+            subjectid: question.subject.id,
+            themeid: question.theme.id,
+            text: question.text,
+            points: question.points,
+            answers: question.answers,
+            media,
+          },
         }));
       })
       .catch((err) => console.error(err));
@@ -118,6 +137,7 @@ class QuestionFormManager extends React.Component {
     this.setState((state) => {
       const newState = {
         ...state,
+        subjectError: undefined,
         subjectText: value,
         themeText: '',
         question: {
@@ -146,6 +166,7 @@ class QuestionFormManager extends React.Component {
     this.setState((state) => {
       const newState = {
         ...state,
+        themeError: undefined,
         themeText: value,
         question: {
           ...state.question,
@@ -166,15 +187,14 @@ class QuestionFormManager extends React.Component {
 
     if (value.length > 150) return;
 
-    this.setState((state) => (
-      {
-        ...state,
-        question: {
-          ...state.question,
-          text: value,
-        },
-      }
-    ));
+    this.setState((state) => ({
+      ...state,
+      textError: undefined,
+      question: {
+        ...state.question,
+        text: value,
+      },
+    }));
   }
 
   handlePointsChange(e) {
@@ -186,15 +206,14 @@ class QuestionFormManager extends React.Component {
 
     const numericalValue = Number(value);
 
-    this.setState((state) => (
-      {
-        ...state,
-        question: {
-          ...state.question,
-          points: numericalValue,
-        },
-      }
-    ));
+    this.setState((state) => ({
+      ...state,
+      pointsError: undefined,
+      question: {
+        ...state.question,
+        points: numericalValue,
+      },
+    }));
   }
 
   handleAddAnswer(correct) {
@@ -202,6 +221,8 @@ class QuestionFormManager extends React.Component {
 
     this.setState((state) => ({
       ...state,
+      correctAnswersError: correct ? undefined : state.correctAnswersError,
+      incorrectAnswersError: correct ? state.correctAnswersError : undefined,
       question: {
         ...state.question,
         answers: [...state.question.answers, { id, text: '', correct }],
@@ -255,9 +276,6 @@ class QuestionFormManager extends React.Component {
       const file = files[i];
       const url = window.URL.createObjectURL(file);
 
-      console.log(file);
-      console.log(url);
-
       this.setState((state) => ({
         ...state,
         question: {
@@ -288,9 +306,10 @@ class QuestionFormManager extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     const { subjectText, themeText, question } = this.state;
+    const { onSubmit } = this.props;
 
-    const correctAnswers = question.answers.filter((a) => a.correct);
-    const incorrectAnswers = question.answers.filter((a) => !a.correct);
+    const correct = question.answers.filter((a) => a.correct);
+    const incorrect = question.answers.filter((a) => !a.correct);
 
     const formData = new FormData();
 
@@ -299,12 +318,54 @@ class QuestionFormManager extends React.Component {
     formData.append('subjectName', subjectText);
     formData.append('themeName', themeText);
 
-    correctAnswers.map((a) => formData.append('correctAnswers[]', a.text));
-    incorrectAnswers.map((a) => formData.append('incorrectAnswers[]', a.text));
+    correct.map((a) => formData.append('correctAnswers[]', a.text));
+    incorrect.map((a) => formData.append('incorrectAnswers[]', a.text));
     question.media.map((media) => formData.append('media', media.file));
 
-    questionAPI.createOne(formData)
-      .catch((err) => console.error(err));
+    if (onSubmit) {
+      onSubmit(formData);
+    } else {
+      questionAPI.createOne(formData)
+        .then((response) => {
+          if (!response.success) {
+            const {
+              subject,
+              theme,
+              text,
+              points,
+              correctAnswers,
+              incorrectAnswers,
+            } = response.data;
+
+            console.log(response.data);
+
+            this.setState((state) => ({
+              ...state,
+              subjectError: subject,
+              themeError: theme,
+              textError: text,
+              pointsError: points,
+              correctAnswersError: correctAnswers,
+              incorrectAnswersError: incorrectAnswers,
+            }));
+            return;
+          }
+
+          const newQuestion = response.data;
+          this.setState((state) => ({
+            ...state,
+            question: {
+              subjectid: newQuestion.subject.id,
+              themeid: newQuestion.theme.id,
+              text: '',
+              points: 0,
+              answers: [],
+              media: [],
+            },
+          }));
+        })
+        .catch((err) => console.error(err));
+    }
   }
 
   render() {
@@ -314,10 +375,24 @@ class QuestionFormManager extends React.Component {
       themes,
       themeText,
       question,
+
+      subjectError,
+      themeError,
+      textError,
+      pointsError,
+      correctAnswersError,
+      incorrectAnswersError,
     } = this.state;
 
     return (
       <QuestionForm
+        subjectError={subjectError}
+        themeError={themeError}
+        textError={textError}
+        pointsError={pointsError}
+        correctAnswersError={correctAnswersError}
+        incorrectAnswersError={incorrectAnswersError}
+
         subjects={subjects}
         subject={subjectText}
         onSubjectChange={this.handleSubjectChange}
@@ -349,10 +424,12 @@ class QuestionFormManager extends React.Component {
 
 QuestionFormManager.propTypes = {
   questionId: PropTypes.string,
+  onSubmit: PropTypes.func,
 };
 
 QuestionFormManager.defaultProps = {
-  questionId: null,
+  questionId: undefined,
+  onSubmit: undefined,
 };
 
 export default QuestionFormManager;
