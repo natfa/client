@@ -10,10 +10,12 @@ class QuestionList extends React.Component {
     super(props);
 
     this.state = {
-      questionId: null,
+      questionId: undefined,
       questions: [],
     };
 
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
@@ -27,8 +29,33 @@ class QuestionList extends React.Component {
     }
   }
 
-  handleUpdate(id) {
+  handleOpen(id) {
     this.setState((state) => ({ ...state, questionId: id }));
+  }
+
+  handleClose() {
+    this.setState({ questionId: undefined });
+  }
+
+  async handleUpdate(id, formData) {
+    const response = await questionAPI.createOne(formData);
+    if (!response.success) {
+      alert('Something went wrong');
+      console.error(response.data);
+      return;
+    }
+
+    const question = response.data;
+    questionAPI.deleteOneById(id);
+
+    this.setState((state) => {
+      const questions = state.questions.filter((q) => q.id !== id);
+
+      return {
+        questionId: undefined,
+        questions: [...questions, question],
+      };
+    });
   }
 
   handleDelete(id) {
@@ -46,12 +73,15 @@ class QuestionList extends React.Component {
       <div className="question-list">
         {questions.map((question) => (
           <QuestionListItem
-            updating={question.id === questionId ? question.id : null}
+            open={question.id === questionId}
+            questionId={question.id}
             key={question.id}
             text={question.text}
             subject={question.subject.name}
             theme={question.theme.name}
-            onUpdate={() => this.handleUpdate(question.id)}
+            onOpen={() => this.handleOpen(question.id)}
+            onClose={this.handleClose}
+            onUpdate={(formData) => this.handleUpdate(question.id, formData)}
             onDelete={() => this.handleDelete(question.id)}
           />
         ))}

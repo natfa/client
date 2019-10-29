@@ -5,11 +5,12 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
+import Collapse from '@material-ui/core/Collapse';
 import { withStyles } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Loop';
+import CloseIcon from '@material-ui/icons/Close';
 
 import QuestionFormManager from '../../containers/question-form-manager';
 
@@ -21,11 +22,15 @@ const PaddedPaper = withStyles({
 })(Paper);
 
 const QuestionListItem = ({
-  updating,
+  open,
+  questionId,
 
   text,
   subject,
   theme,
+
+  onOpen,
+  onClose,
 
   onUpdate,
   onDelete,
@@ -52,41 +57,51 @@ const QuestionListItem = ({
         </Grid>
 
         <Grid style={{ textAlign: 'right' }} xs={1} sm item>
-          <IconButton onClick={onUpdate}>
-            <UpdateIcon />
-          </IconButton>
+          {open ? (
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          ) : (
+            <IconButton onClick={onOpen}>
+              <UpdateIcon />
+            </IconButton>
+          )}
           <IconButton onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Grid>
       </Grid>
 
-      <Divider />
 
-      {updating !== null && (
-        <Grid item>
+      <Grid item>
+        <Collapse in={open}>
           <QuestionFormManager
-            questionId={updating}
+            questionId={open ? questionId : undefined}
+            onSubmit={onUpdate}
           />
-        </Grid>
-      )}
+        </Collapse>
+      </Grid>
     </Grid>
   </PaddedPaper>
 );
 
 QuestionListItem.propTypes = {
-  updating: PropTypes.string,
+  open: PropTypes.bool,
+  questionId: PropTypes.string,
 
   text: PropTypes.string.isRequired,
   subject: PropTypes.string.isRequired,
   theme: PropTypes.string.isRequired,
 
+  onOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 
 QuestionListItem.defaultProps = {
-  updating: null,
+  open: false,
+  questionId: undefined,
 };
 
 export default QuestionListItem;
