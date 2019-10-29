@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  TextField,
-  Divider,
-  Button,
-  Typography,
-  IconButton,
-} from '@material-ui/core';
+
+import Zoom from '@material-ui/core/Zoom';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import MediaUploader from '../media-uploader';
@@ -18,6 +19,13 @@ import './styles.css';
 
 
 const QuestionForm = ({
+  subjectError,
+  themeError,
+  textError,
+  pointsError,
+  correctAnswersError,
+  incorrectAnswersError,
+
   subjects,
   subject,
   onSubjectChange,
@@ -60,7 +68,12 @@ const QuestionForm = ({
   );
 
   const renderAnswers = (correct) => {
-    const header = `${correct ? 'Верни' : 'Неверни'} отговори`;
+    const errorMessage = correct ? correctAnswersError : incorrectAnswersError;
+
+    let header = `${correct ? 'Верни' : 'Неверни'} отговори`;
+    if (errorMessage) {
+      header += ` * ${errorMessage}`;
+    }
 
     return (
       <Grid
@@ -70,7 +83,13 @@ const QuestionForm = ({
         wrap="nowrap"
         spacing={1}
       >
-        <Grid item xs={12}><Typography>{header}</Typography></Grid>
+        <Grid item xs={12}>
+          <Typography
+            color={errorMessage !== undefined ? 'error' : 'textPrimary'}
+          >
+            {header}
+          </Typography>
+        </Grid>
 
         {answers.filter((a) => a.correct === correct).map((answer) => (
           <Grid
@@ -127,6 +146,8 @@ const QuestionForm = ({
               label="Предмет"
               type="text"
               variant="outlined"
+              error={subjectError !== undefined}
+              helperText={subjectError}
             />
           </Grid>
           <Grid item xs={12} sm={5}>
@@ -138,6 +159,8 @@ const QuestionForm = ({
               label="Тема"
               type="text"
               variant="outlined"
+              error={themeError !== undefined}
+              helperText={themeError}
             />
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -151,6 +174,8 @@ const QuestionForm = ({
               label="Точки"
               type="text"
               variant="outlined"
+              error={pointsError !== undefined}
+              helperText={pointsError}
             />
           </Grid>
           {subjectsList()}
@@ -175,6 +200,8 @@ const QuestionForm = ({
               rows={3}
               label="Текст"
               variant="outlined"
+              error={textError !== undefined}
+              helperText={textError}
             />
           </Grid>
         </Grid>
@@ -200,7 +227,9 @@ const QuestionForm = ({
           <Grid item xs={12}>
             <MediaList>
               {media.map((m) => (
-                <MediaListItem key={m.url} src={m.url} onRemove={() => onMediaDelete(m.url)} />
+                <Zoom in key={m.url}>
+                  <MediaListItem src={m.url} onRemove={() => onMediaDelete(m.url)} />
+                </Zoom>
               ))}
             </MediaList>
           </Grid>
@@ -226,6 +255,13 @@ const QuestionForm = ({
 };
 
 QuestionForm.propTypes = {
+  subjectError: PropTypes.string,
+  themeError: PropTypes.string,
+  textError: PropTypes.string,
+  pointsError: PropTypes.string,
+  correctAnswersError: PropTypes.string,
+  incorrectAnswersError: PropTypes.string,
+
   subjects: PropTypes.arrayOf(PropTypes.object).isRequired,
   subject: PropTypes.string.isRequired,
   onSubjectChange: PropTypes.func.isRequired,
@@ -250,6 +286,15 @@ QuestionForm.propTypes = {
   onMediaDelete: PropTypes.func.isRequired,
 
   onSubmit: PropTypes.func.isRequired,
+};
+
+QuestionForm.defaultProps = {
+  subjectError: undefined,
+  themeError: undefined,
+  textError: undefined,
+  pointsError: undefined,
+  correctAnswersError: undefined,
+  incorrectAnswersError: undefined,
 };
 
 export default QuestionForm;
