@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import withLayout from '../../utils/withLayout';
 
+import TeacherDashboard from '../../containers/teacher-dashboard';
 import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
@@ -22,7 +23,7 @@ const TeacherApp = () => (
     </Route>
 
     <Route path="/">
-      <QuestionFormManager />
+      <TeacherDashboard />
     </Route>
   </Switch>
 );
