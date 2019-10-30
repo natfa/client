@@ -8,17 +8,17 @@ import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
 const PAGES = [
-  { pathname: '/all', name: 'Въпроси' },
-  { pathname: '/new', name: 'Нов въпрос' },
+  { pathname: '/question', name: 'Нов въпрос' },
+  { pathname: '/questions', name: 'Въпроси' },
 ];
 
 const TeacherApp = () => (
   <Switch>
-    <Route path="/new">
+    <Route path="/question">
       <QuestionFormManager />
     </Route>
 
-    <Route path="/all">
+    <Route path="/questions">
       <QuestionList />
     </Route>
 
