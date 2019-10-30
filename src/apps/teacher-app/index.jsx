@@ -8,8 +8,10 @@ import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
 const PAGES = [
-  { pathname: '/question', name: 'Нов въпрос' },
-  { pathname: '/questions', name: 'Въпроси' },
+  { pathname: '/question', name: 'Създай нов въпрос' },
+  { pathname: '/questions', name: 'Всички въпроси' },
+
+  { pathname: '/test', name: 'Създай нов тест' },
 ];
 
 const TeacherApp = () => (
@@ -20,6 +22,10 @@ const TeacherApp = () => (
 
     <Route path="/questions">
       <QuestionList />
+    </Route>
+
+    <Route path="/test">
+      <p>New test route</p>
     </Route>
 
     <Route path="/">
