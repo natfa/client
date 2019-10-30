@@ -13,7 +13,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import MediaUploader from '../media-uploader';
 import MediaList from '../media-list';
-import MediaListItem from '../medial-list-item';
+import MediaListItem from '../media-list-item';
 
 import './styles.css';
 
