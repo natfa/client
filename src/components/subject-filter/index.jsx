@@ -1,14 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const pointValues = [1, 2, 3, 4, 5];
+
+const PaddedPaper = withStyles({
+  root: {
+    padding: '1rem',
+  },
+})(Paper);
 
 const SubjectFilter = ({ subjectFilter }) => {
   const { themeFilters } = subjectFilter;
@@ -28,40 +38,68 @@ const SubjectFilter = ({ subjectFilter }) => {
       .find((ttc) => ttc.themeId === themeFilter.theme.id);
 
     return (
-      <Grid
-        key={themeFilter.theme.id}
-        container
-        item
-        direction="column"
-        style={{
-          border: '1px solid grey',
-        }}
-      >
+      <React.Fragment key={themeFilter.theme.id}>
         <Grid
           container
           item
-          direction="row"
-          justify="space-between"
+          direction="column"
+          wrap="nowrap"
         >
-          <Typography>{themeFilter.theme.name}</Typography>
-          <Typography>{count}</Typography>
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
+          <Grid
+            container
+            item
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+            xs={12}
+          >
+            <Grid item xs={2}>
+              <Typography variant="h6">{themeFilter.theme.name}</Typography>
+            </Grid>
+
+            <Grid item xs={1}>
+              <Typography>{count}</Typography>
+            </Grid>
+
+            <Grid item xs={1}>
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+            </Grid>
+
+          </Grid>
+
+          {pointValues.map((n) => (
+            <Grid
+              key={n}
+              item
+              container
+              direction="row"
+              wrap="nowrap"
+              xs={12}
+              justify="center"
+              alignItems="center"
+            >
+              <Grid item xs={3} sm={2} md={1}>
+                <Typography>{`${n} ${n === 1 ? 'точка' : 'точки'}`}</Typography>
+              </Grid>
+
+              <Grid item xs={3} sm={2} md={1}>
+                <TextField
+                  value={themeFilter[n]}
+                  variant="outlined"
+                  margin="dense"
+                />
+              </Grid>
+
+            </Grid>
+          ))}
         </Grid>
 
-        {pointValues.map((n) => (
-          <Grid
-            key={n}
-            item
-            container
-            direction="row"
-          >
-            <Typography>{`${n} ${n === 1 ? 'точка' : 'точки'}`}</Typography>
-            <TextField value={themeFilter[n]} />
-          </Grid>
-        ))}
-      </Grid>
+        <Grid item>
+          <Divider />
+        </Grid>
+      </React.Fragment>
     );
   });
 
@@ -69,27 +107,61 @@ const SubjectFilter = ({ subjectFilter }) => {
     .reduce((acc, curr) => (acc + curr.count), 0);
 
   return (
-    <Grid
-      container
-      item
-      direction="column"
-      spacing={2}
+    <PaddedPaper
+      elevation={2}
+      square
     >
       <Grid
         container
-        item
-        direciton="row"
-        justify="space-between"
+        direction="column"
+        spacing={3}
       >
-        <Typography>{subjectFilter.subject.name}</Typography>
-        <Typography>{totalSubjectCount}</Typography>
-        <IconButton>
-          <DeleteIcon />
-        </IconButton>
-      </Grid>
+        <Grid
+          container
+          item
+          direciton="row"
+          justify="space-between"
+          alignItems="center"
+          xs={12}
+        >
+          <Grid item xs={2}>
+            <Typography
+              variant="h5"
+              color="primary"
+            >
+              {subjectFilter.subject.name}
+            </Typography>
+          </Grid>
 
-      {renderThemeFilters()}
-    </Grid>
+          <Grid item xs={1}>
+            <Typography>{totalSubjectCount}</Typography>
+          </Grid>
+
+          <Grid item xs={1}>
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+
+        </Grid>
+
+        <Grid item>
+          <Divider />
+        </Grid>
+
+        {renderThemeFilters()}
+
+        <Grid item>
+          <Button
+            startIcon="+"
+            color="secondary"
+            variant="text"
+          >
+            тема
+          </Button>
+        </Grid>
+      </Grid>
+    </PaddedPaper>
   );
 };
 
