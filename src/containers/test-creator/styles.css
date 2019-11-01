@@ -1,3 +1,10 @@
 .test-creator > div {
   margin: 0 0 1rem 0;
 }
+
+.test-creator > .button-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}

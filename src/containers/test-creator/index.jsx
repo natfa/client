@@ -112,13 +112,20 @@ class TestCreator extends React.Component {
           />
         ))}
 
-        <div>
+        <div className="button-row">
           <Button
             startIcon="+"
             color="secondary"
             variant="outlined"
           >
             филтър
+          </Button>
+
+          <Button
+            color="primary"
+            variant="contained"
+          >
+            продължи
           </Button>
         </div>
       </div>
