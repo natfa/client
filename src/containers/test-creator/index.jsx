@@ -3,6 +3,9 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 
 import SubjectFilter from '../../components/subject-filter';
+import AddSubjectFilterDialog from '../../components/add-subject-filter-dialog';
+
+import subjectAPI from '../../api/subject';
 
 import './styles.css';
 
@@ -11,6 +14,8 @@ class TestCreator extends React.Component {
     super(props);
 
     this.state = {
+      subjects: [],
+      dialogOpen: false,
       filters: [
         {
           subject: { id: '1', name: 'Math' },
@@ -33,82 +38,92 @@ class TestCreator extends React.Component {
             },
           ],
         },
-        {
-          subject: { id: '2', name: 'Programming' },
-          themeFilters: [
-            {
-              theme: { id: '3', subjectId: '2', name: 'Web development' },
-              1: 10,
-              2: 20,
-              3: 10,
-              4: 10,
-              5: 5,
-            },
-            {
-              theme: { id: '4', subjectId: '2', name: 'Software development' },
-              1: 10,
-              2: 0,
-              3: 0,
-              4: 0,
-              5: 1,
-            },
-          ],
-        },
-        {
-          subject: { id: '3', name: 'Art' },
-          themeFilters: [
-            {
-              theme: { id: '5', subjectId: '3', name: 'LUL' },
-              1: 10,
-              2: 20,
-              3: 10,
-              4: 10,
-              5: 5,
-            },
-            {
-              theme: { id: '6', subjectId: '3', name: 'SOME ART SOME' },
-              1: 10,
-              2: 0,
-              3: 0,
-              4: 0,
-              5: 1,
-            },
-          ],
-        },
-        {
-          subject: { id: '4', name: 'Films' },
-          themeFilters: [
-            {
-              theme: { id: '7', subjectId: '4', name: 'Film history of the spanish cinema' },
-              1: 10,
-              2: 20,
-              3: 10,
-              4: 10,
-              5: 5,
-            },
-            {
-              theme: { id: '8', subjectId: '4', name: 'SOME ART SOME' },
-              1: 10,
-              2: 0,
-              3: 0,
-              4: 0,
-              5: 1,
-            },
-          ],
-        },
       ],
     };
+
+    this.openDialog = this.openDialog.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+
+    this.handleSubjectFilterInsert = this.handleSubjectFilterInsert.bind(this);
+    this.handleSubjectFilterUpdate = this.handleSubjectFilterUpdate.bind(this);
+    this.handleSubjectFilterDelete = this.handleSubjectFilterDelete.bind(this);
+  }
+
+  async componentDidMount() {
+    try {
+      const subjects = await subjectAPI.getAll();
+      this.setState((state) => ({ ...state, subjects }));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  openDialog() {
+    this.setState((state) => ({ ...state, dialogOpen: true }));
+  }
+
+  closeDialog() {
+    this.setState((state) => ({ ...state, dialogOpen: false }));
+  }
+
+  handleSubjectFilterInsert(subject) {
+    this.setState((state) => ({
+      ...state,
+      filters: [
+        ...state.filters,
+        {
+          subject,
+          themeFilters: [],
+        },
+      ],
+    }));
+  }
+
+  handleSubjectFilterUpdate(filter) {
+    console.error('Not tested');
+    this.setState((state) => {
+      const filters = state.filters
+        .map((f) => {
+          if (f.subject.id === filter.subject.id) {
+            return filter;
+          }
+          return f;
+        });
+
+      return {
+        ...state,
+        filters,
+      };
+    });
+  }
+
+  handleSubjectFilterDelete(filter) {
+    this.setState((state) => {
+      const filters = state.filters
+        .filter((f) => f.subject.id !== filter.subject.id);
+
+      return {
+        ...state,
+        filters,
+      };
+    });
   }
 
   render() {
-    const { filters } = this.state;
+    const { filters, subjects, dialogOpen } = this.state;
+    const unusedSubjects = subjects.filter((subject) => {
+      const found = filters.find((filter) => filter.subject.id === subject.id);
+      return !found;
+    });
 
     return (
       <div className="test-creator">
         {filters.map((filter) => (
           <SubjectFilter
             key={filter.subject.id}
-            subjectFilter={filter}
+            filter={filter}
+
+            onDelete={this.handleSubjectFilterDelete}
           />
         ))}
 
@@ -117,6 +132,8 @@ class TestCreator extends React.Component {
             startIcon="+"
             color="secondary"
             variant="outlined"
+            disabled={unusedSubjects.length === 0}
+            onClick={this.openDialog}
           >
             филтър
           </Button>
@@ -124,10 +141,18 @@ class TestCreator extends React.Component {
           <Button
             color="primary"
             variant="contained"
+            disabled={filters.length === 0}
           >
             продължи
           </Button>
         </div>
+
+        <AddSubjectFilterDialog
+          open={dialogOpen}
+          onClose={this.closeDialog}
+          subjects={unusedSubjects}
+          onSubjectClick={this.handleSubjectFilterInsert}
+        />
       </div>
     );
   }

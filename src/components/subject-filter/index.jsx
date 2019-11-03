@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const pointValues = [1, 2, 3, 4, 5];
+import { pointValues } from '../../constants';
 
 const PaddedPaper = withStyles({
   root: {
@@ -20,8 +20,12 @@ const PaddedPaper = withStyles({
   },
 })(Paper);
 
-const SubjectFilter = ({ subjectFilter }) => {
-  const { themeFilters } = subjectFilter;
+const SubjectFilter = ({
+  filter,
+
+  onDelete,
+}) => {
+  const { themeFilters } = filter;
 
   const themeTotalCounts = themeFilters.map((themeFilter) => {
     const count = pointValues
@@ -57,8 +61,8 @@ const SubjectFilter = ({ subjectFilter }) => {
               <Typography variant="h6">{themeFilter.theme.name}</Typography>
             </Grid>
 
-            <Grid item xs={1}>
-              <Typography>{count}</Typography>
+            <Grid item xs={2}>
+              <Typography>{`Брой въпроси: ${count}`}</Typography>
             </Grid>
 
             <Grid item xs={1}>
@@ -129,16 +133,16 @@ const SubjectFilter = ({ subjectFilter }) => {
               variant="h5"
               color="primary"
             >
-              {subjectFilter.subject.name}
+              {filter.subject.name}
             </Typography>
           </Grid>
 
-          <Grid item xs={1}>
-            <Typography>{totalSubjectCount}</Typography>
+          <Grid item xs={2}>
+            <Typography>{`Брой въпроси: ${totalSubjectCount}`}</Typography>
           </Grid>
 
           <Grid item xs={1}>
-            <IconButton>
+            <IconButton onClick={() => onDelete(filter)}>
               <DeleteIcon />
             </IconButton>
           </Grid>
@@ -166,7 +170,7 @@ const SubjectFilter = ({ subjectFilter }) => {
 };
 
 SubjectFilter.propTypes = {
-  subjectFilter: PropTypes.shape({
+  filter: PropTypes.shape({
     subject: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
@@ -184,6 +188,8 @@ SubjectFilter.propTypes = {
       5: PropTypes.number,
     })),
   }).isRequired,
+
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default SubjectFilter;
