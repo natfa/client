@@ -21,6 +21,7 @@
         "react"
     ],
     "rules": {
+        "no-console": ["error", {"allow": ["error"]}],
         "react/jsx-props-no-spreading": "off",
         "import/no-named-as-default-member": "off"
     }
