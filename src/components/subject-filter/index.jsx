@@ -24,6 +24,9 @@ const SubjectFilter = ({
   filter,
 
   onDelete,
+  onThemeInsert,
+  onThemeDelete,
+  onCountChange,
 }) => {
   const { themeFilters } = filter;
 
@@ -66,7 +69,7 @@ const SubjectFilter = ({
             </Grid>
 
             <Grid item xs={1}>
-              <IconButton>
+              <IconButton onClick={() => onThemeDelete(themeFilter.theme.id)}>
                 <DeleteIcon />
               </IconButton>
             </Grid>
@@ -93,6 +96,7 @@ const SubjectFilter = ({
                   value={themeFilter[n]}
                   variant="outlined"
                   margin="dense"
+                  onChange={(e) => onCountChange(themeFilter.theme.id, n, e.target.value)}
                 />
               </Grid>
 
@@ -160,6 +164,7 @@ const SubjectFilter = ({
             startIcon="+"
             color="secondary"
             variant="text"
+            onClick={onThemeInsert}
           >
             тема
           </Button>
@@ -190,6 +195,9 @@ SubjectFilter.propTypes = {
   }).isRequired,
 
   onDelete: PropTypes.func.isRequired,
+  onThemeInsert: PropTypes.func.isRequired,
+  onThemeDelete: PropTypes.func.isRequired,
+  onCountChange: PropTypes.func.isRequired,
 };
 
 export default SubjectFilter;

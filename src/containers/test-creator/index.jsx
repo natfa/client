@@ -2,7 +2,7 @@ import React from 'react';
 
 import Button from '@material-ui/core/Button';
 
-import SubjectFilter from '../../components/subject-filter';
+import SubjectFilter from '../subject-filter';
 import AddSubjectFilterDialog from '../../components/add-subject-filter-dialog';
 
 import subjectAPI from '../../api/subject';
@@ -123,6 +123,7 @@ class TestCreator extends React.Component {
             key={filter.subject.id}
             filter={filter}
 
+            onUpdate={this.handleSubjectFilterUpdate}
             onDelete={this.handleSubjectFilterDelete}
           />
         ))}
