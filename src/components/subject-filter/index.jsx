@@ -1,18 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
-
 import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import ThemeFilter from '../theme-filter';
 
 import { pointValues } from '../../constants';
+import themeApi from '../../api/theme';
 
 const PaddedPaper = withStyles({
   root: {
@@ -20,161 +26,197 @@ const PaddedPaper = withStyles({
   },
 })(Paper);
 
-const SubjectFilter = ({
-  filter,
+class SubjectFilter extends React.Component {
+  constructor(props) {
+    super(props);
 
-  canAddThemes,
-  onDelete,
-  onThemeInsert,
-  onThemeDelete,
-  onCountChange,
-}) => {
-  const { themeFilters } = filter;
-
-  const themeTotalCounts = themeFilters.map((themeFilter) => {
-    const count = pointValues
-      .reduce((total, current) => (total + themeFilter[current]), 0);
-
-    return {
-      themeId: themeFilter.theme.id,
-      count,
+    this.state = {
+      themes: [],
+      dialogOpen: false,
     };
-  });
 
-  const renderThemeFilters = () => themeFilters.map((themeFilter) => {
-    const { count } = themeTotalCounts
-      .find((ttc) => ttc.themeId === themeFilter.theme.id);
+    this.openDialog = this.openDialog.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+
+    this.handleThemeInsert = this.handleThemeInsert.bind(this);
+    this.handleThemeDelete = this.handleThemeDelete.bind(this);
+    this.handleCountChange = this.handleCountChange.bind(this);
+  }
+
+  async componentDidMount() {
+    const { filter } = this.props;
+
+    try {
+      const themes = await themeApi.getAllBySubjectId(filter.subject.id);
+      this.setState((state) => ({ ...state, themes }));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  openDialog() {
+    this.setState((state) => ({ ...state, dialogOpen: true }));
+  }
+
+  closeDialog() {
+    this.setState((state) => ({ ...state, dialogOpen: false }));
+  }
+
+  handleThemeInsert(theme) {
+    const { filter, onUpdate } = this.props;
+
+    const newFilter = {
+      ...filter,
+      themeFilters: [
+        ...filter.themeFilters,
+        {
+          theme,
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+        },
+      ],
+    };
+
+    onUpdate(newFilter);
+  }
+
+  handleThemeDelete(themeId) {
+    const { filter, onUpdate } = this.props;
+
+    const newFilter = {
+      ...filter,
+      themeFilters: filter.themeFilters
+        .filter((themeFilter) => themeFilter.theme.id !== themeId),
+    };
+
+    onUpdate(newFilter);
+  }
+
+  handleCountChange(themeId, pointValue, count) {
+    if (Number.isNaN(Number(count))) return;
+
+    const { filter, onUpdate } = this.props;
+    const numberValue = Number(count);
+
+    const themeFilters = filter.themeFilters.map((themeFilter) => {
+      if (themeFilter.theme.id === themeId) {
+        return {
+          ...themeFilter,
+          [pointValue]: numberValue,
+        };
+      }
+
+      return themeFilter;
+    });
+
+    const newFilter = {
+      ...filter,
+      themeFilters,
+    };
+
+    onUpdate(newFilter);
+  }
+
+  render() {
+    const { themes, dialogOpen } = this.state;
+    const { filter, onDelete } = this.props;
+
+    const unusedThemes = themes.filter((theme) => {
+      const found = filter.themeFilters
+        .find((themeFilter) => themeFilter.theme.id === theme.id);
+
+      return !found;
+    });
+
+    const totalQuestionCount = filter.themeFilters.reduce((acc, themeFilter) => {
+      const themeQuestionCount = pointValues
+        .reduce((innerAcc, pointValue) => innerAcc + themeFilter[pointValue], 0);
+
+      return acc + themeQuestionCount;
+    }, 0);
 
     return (
-      <React.Fragment key={themeFilter.theme.id}>
-        <Grid
-          container
-          item
-          direction="column"
-          wrap="nowrap"
-        >
+      <PaddedPaper elevation={2} square>
+        <Grid container direction="column" spacing={3}>
           <Grid
             container
             item
-            direction="row"
+            direciton="row"
             justify="space-between"
             alignItems="center"
             xs={12}
           >
             <Grid item xs={2}>
-              <Typography variant="h6">{themeFilter.theme.name}</Typography>
+              <Typography variant="h5" color="primary">
+                {filter.subject.name}
+              </Typography>
             </Grid>
 
             <Grid item xs={2}>
-              <Typography>{`Брой въпроси: ${count}`}</Typography>
+              <Typography>{`Брой въпроси: ${totalQuestionCount}`}</Typography>
             </Grid>
 
             <Grid item xs={1}>
-              <IconButton onClick={() => onThemeDelete(themeFilter.theme.id)}>
+              <IconButton onClick={() => onDelete(filter)}>
                 <DeleteIcon />
               </IconButton>
             </Grid>
 
           </Grid>
 
-          {pointValues.map((n) => (
-            <Grid
-              key={n}
-              item
-              container
-              direction="row"
-              wrap="nowrap"
-              xs={12}
-              justify="center"
-              alignItems="center"
-            >
-              <Grid item xs={3} sm={2} md={1}>
-                <Typography>{`${n} ${n === 1 ? 'точка' : 'точки'}`}</Typography>
-              </Grid>
+          <Grid item>
+            <Divider />
+          </Grid>
 
-              <Grid item xs={3} sm={2} md={1}>
-                <TextField
-                  value={themeFilter[n]}
-                  variant="outlined"
-                  margin="dense"
-                  onChange={(e) => onCountChange(themeFilter.theme.id, n, e.target.value)}
-                />
-              </Grid>
-
+          {filter.themeFilters.map((themeFilter) => (
+            <Grid key={themeFilter.theme.id} item>
+              <ThemeFilter
+                filter={themeFilter}
+                onDelete={this.handleThemeDelete}
+                onCountChange={this.handleCountChange}
+              />
             </Grid>
           ))}
-        </Grid>
 
-        <Grid item>
-          <Divider />
-        </Grid>
-      </React.Fragment>
-    );
-  });
-
-  const totalSubjectCount = themeTotalCounts
-    .reduce((acc, curr) => (acc + curr.count), 0);
-
-  return (
-    <PaddedPaper
-      elevation={2}
-      square
-    >
-      <Grid
-        container
-        direction="column"
-        spacing={3}
-      >
-        <Grid
-          container
-          item
-          direciton="row"
-          justify="space-between"
-          alignItems="center"
-          xs={12}
-        >
-          <Grid item xs={2}>
-            <Typography
-              variant="h5"
-              color="primary"
+          <Grid item>
+            <Button
+              disabled={unusedThemes.length === 0}
+              startIcon="+"
+              color="secondary"
+              variant="text"
+              onClick={this.openDialog}
             >
-              {filter.subject.name}
-            </Typography>
+              тема
+            </Button>
           </Grid>
-
-          <Grid item xs={2}>
-            <Typography>{`Брой въпроси: ${totalSubjectCount}`}</Typography>
-          </Grid>
-
-          <Grid item xs={1}>
-            <IconButton onClick={() => onDelete(filter)}>
-              <DeleteIcon />
-            </IconButton>
-          </Grid>
-
         </Grid>
 
-        <Grid item>
-          <Divider />
-        </Grid>
+        <Dialog open={dialogOpen} onClose={this.closeDialog}>
+          <DialogTitle>Изберете тема</DialogTitle>
+          <List>
+            {unusedThemes.map((theme) => (
+              <ListItem
+                key={theme.id}
+                button
+                onClick={() => {
+                  this.handleThemeInsert(theme);
+                  this.closeDialog();
+                }}
+              >
+                <ListItemText>{theme.name}</ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        </Dialog>
 
-        {renderThemeFilters()}
+      </PaddedPaper>
+    );
+  }
+}
 
-        <Grid item>
-          <Button
-            disabled={!canAddThemes}
-            startIcon="+"
-            color="secondary"
-            variant="text"
-            onClick={onThemeInsert}
-          >
-            тема
-          </Button>
-        </Grid>
-      </Grid>
-    </PaddedPaper>
-  );
-};
 
 SubjectFilter.propTypes = {
   filter: PropTypes.shape({
@@ -196,11 +238,8 @@ SubjectFilter.propTypes = {
     })),
   }).isRequired,
 
-  canAddThemes: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onThemeInsert: PropTypes.func.isRequired,
-  onThemeDelete: PropTypes.func.isRequired,
-  onCountChange: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default SubjectFilter;
