@@ -1,9 +1,11 @@
 import React from 'react';
 
 import Button from '@material-ui/core/Button';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import SubjectFilter from '../subject-filter';
-import AddSubjectFilterDialog from '../../components/add-subject-filter-dialog';
+import ListDialog from '../../components/list-dialog';
 
 import subjectAPI from '../../api/subject';
 
@@ -16,29 +18,7 @@ class TestCreator extends React.Component {
     this.state = {
       subjects: [],
       dialogOpen: false,
-      filters: [
-        {
-          subject: { id: '1', name: 'Math' },
-          themeFilters: [
-            {
-              theme: { id: '1', subjectId: '1', name: 'Algebra' },
-              1: 10,
-              2: 20,
-              3: 10,
-              4: 10,
-              5: 5,
-            },
-            {
-              theme: { id: '2', subjectId: '1', name: 'Geometry' },
-              1: 10,
-              2: 0,
-              3: 0,
-              4: 0,
-              5: 1,
-            },
-          ],
-        },
-      ],
+      filters: [],
     };
 
     this.openDialog = this.openDialog.bind(this);
@@ -80,7 +60,6 @@ class TestCreator extends React.Component {
   }
 
   handleSubjectFilterUpdate(filter) {
-    console.error('Not tested');
     this.setState((state) => {
       const filters = state.filters
         .map((f) => {
@@ -148,12 +127,24 @@ class TestCreator extends React.Component {
           </Button>
         </div>
 
-        <AddSubjectFilterDialog
+        <ListDialog
           open={dialogOpen}
+          title="Изберете предмет"
           onClose={this.closeDialog}
-          subjects={unusedSubjects}
-          onSubjectClick={this.handleSubjectFilterInsert}
-        />
+        >
+          {unusedSubjects.map((subject) => (
+            <ListItem
+              key={subject.id}
+              button
+              onClick={() => {
+                this.handleSubjectFilterInsert(subject);
+                this.closeDialog();
+              }}
+            >
+              <ListItemText>{subject.name}</ListItemText>
+            </ListItem>
+          ))}
+        </ListDialog>
       </div>
     );
   }

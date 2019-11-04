@@ -23,6 +23,7 @@ const PaddedPaper = withStyles({
 const SubjectFilter = ({
   filter,
 
+  canAddThemes,
   onDelete,
   onThemeInsert,
   onThemeDelete,
@@ -161,6 +162,7 @@ const SubjectFilter = ({
 
         <Grid item>
           <Button
+            disabled={!canAddThemes}
             startIcon="+"
             color="secondary"
             variant="text"
@@ -194,6 +196,7 @@ SubjectFilter.propTypes = {
     })),
   }).isRequired,
 
+  canAddThemes: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onThemeInsert: PropTypes.func.isRequired,
   onThemeDelete: PropTypes.func.isRequired,

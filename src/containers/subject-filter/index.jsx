@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
 import SubjectFilterComponent from '../../components/subject-filter';
+import ListDialog from '../../components/list-dialog';
 
 import themeApi from '../../api/theme';
 
@@ -11,7 +15,15 @@ class SubjectFilterContainer extends React.Component {
 
     this.state = {
       themes: [],
+      dialogOpen: false,
     };
+
+    this.openDialog = this.openDialog.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+
+    this.handleThemeInsert = this.handleThemeInsert.bind(this);
+    this.handleThemeDelete = this.handleThemeDelete.bind(this);
+    this.handleCountChange = this.handleCountChange.bind(this);
   }
 
   async componentDidMount() {
@@ -25,30 +37,112 @@ class SubjectFilterContainer extends React.Component {
     }
   }
 
-  handleThemeInsert() {
-    alert('Inserting a theme');
+  openDialog() {
+    this.setState((state) => ({ ...state, dialogOpen: true }));
+  }
+
+  closeDialog() {
+    this.setState((state) => ({ ...state, dialogOpen: false }));
+  }
+
+  handleThemeInsert(theme) {
+    const { filter, onUpdate } = this.props;
+
+    const newFilter = {
+      ...filter,
+      themeFilters: [
+        ...filter.themeFilters,
+        {
+          theme,
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+        },
+      ],
+    };
+
+    onUpdate(newFilter);
   }
 
   handleThemeDelete(themeId) {
-    alert(`Deleting theme with ${themeId}`);
+    const { filter, onUpdate } = this.props;
+
+    const newFilter = {
+      ...filter,
+      themeFilters: filter.themeFilters
+        .filter((themeFilter) => themeFilter.theme.id !== themeId),
+    };
+
+    onUpdate(newFilter);
   }
 
   handleCountChange(themeId, pointValue, value) {
-    alert(`Changing ${themeId} ${pointValue} point to ${value}`);
+    if (Number.isNaN(Number(value))) return;
+
+    const { filter, onUpdate } = this.props;
+    const numberValue = Number(value);
+
+    const themeFilters = filter.themeFilters.map((themeFilter) => {
+      if (themeFilter.theme.id === themeId) {
+        return {
+          ...themeFilter,
+          [pointValue]: numberValue,
+        };
+      }
+
+      return themeFilter;
+    });
+
+    const newFilter = {
+      ...filter,
+      themeFilters,
+    };
+
+    onUpdate(newFilter);
   }
 
   render() {
+    const { themes, dialogOpen } = this.state;
     const { filter, onDelete } = this.props;
+    const unusedThemes = themes.filter((theme) => {
+      const found = filter.themeFilters
+        .find((themeFilter) => themeFilter.theme.id === theme.id);
+
+      return !found;
+    });
 
     return (
-      <SubjectFilterComponent
-        filter={filter}
+      <>
+        <SubjectFilterComponent
+          filter={filter}
 
-        onDelete={onDelete}
-        onThemeInsert={this.handleThemeInsert}
-        onThemeDelete={this.handleThemeDelete}
-        onCountChange={this.handleCountChange}
-      />
+          canAddThemes={unusedThemes.length !== 0}
+          onDelete={onDelete}
+          onThemeInsert={this.openDialog}
+          onThemeDelete={this.handleThemeDelete}
+          onCountChange={this.handleCountChange}
+        />
+        <ListDialog
+          open={dialogOpen}
+          title="Изберете тема"
+          onClose={this.closeDialog}
+        >
+          {unusedThemes.map((theme) => (
+            <ListItem
+              key={theme.id}
+              button
+              onClick={() => {
+                this.handleThemeInsert(theme);
+                this.closeDialog();
+              }}
+            >
+              <ListItemText>{theme.name}</ListItemText>
+            </ListItem>
+          ))}
+        </ListDialog>
+      </>
     );
   }
 }
