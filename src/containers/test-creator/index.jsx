@@ -18,7 +18,8 @@ class TestCreator extends React.Component {
 
     this.state = {
       name: '',
-      date: dayjs.date(),
+      // date: dayjs.date(),
+      date: null,
       timeToSolve: dayjs.date(now),
       filters: [],
     };
