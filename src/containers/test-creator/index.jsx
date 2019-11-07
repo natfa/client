@@ -117,7 +117,7 @@ class TestCreator extends React.Component {
     }, 0);
 
     return (
-      <Grid spacing={2} container direction="row-reverse">
+      <Grid spacing={2} container direction="row-reverse" style={{ height: '100%' }}>
         <Grid item xs={12} sm={3}>
           <TestCreationSidebar
             name={name}
@@ -131,7 +131,7 @@ class TestCreator extends React.Component {
           />
         </Grid>
 
-        <Grid item xs={12} sm={9}>
+        <Grid item xs={12} sm={9} style={{ height: '100%', overflow: 'auto' }}>
           <TestCreationFilters
             filters={filters}
             onFilterInsert={this.handleFilterInsert}

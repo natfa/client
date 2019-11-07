@@ -83,6 +83,7 @@ class TestCreationFilters extends React.Component {
           </Button>
 
           <Button
+            disabled={filters.length === 0}
             color="primary"
             variant="contained"
             onClick={() => console.error('Not implemented')}
