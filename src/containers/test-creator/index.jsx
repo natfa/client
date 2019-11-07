@@ -4,6 +4,7 @@ import Dayjs from '@date-io/dayjs';
 import Grid from '@material-ui/core/Grid';
 
 import TestCreationFilters from '../test-creation-filters';
+import TestCreationGradeBoundaries from '../test-creation-grade-boundaries';
 import TestCreationSidebar from '../../components/test-creation-sidebar';
 
 import { pointValues } from '../../constants';
@@ -22,6 +23,13 @@ class TestCreator extends React.Component {
       date: null,
       timeToSolve: dayjs.date(now),
       filters: [],
+      filtersComplete: false,
+      boundaries: {
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+      },
     };
 
 
@@ -32,6 +40,12 @@ class TestCreator extends React.Component {
     this.handleFilterInsert = this.handleFilterInsert.bind(this);
     this.handleFilterUpdate = this.handleFilterUpdate.bind(this);
     this.handleFilterDelete = this.handleFilterDelete.bind(this);
+
+    this.handleFiltersSubmit = this.handleFiltersSubmit.bind(this);
+
+    this.handleBoundariesCancel = this.handleBoundariesCancel.bind(this);
+    this.handleBoundariesUpdate = this.handleBoundariesUpdate.bind(this);
+    this.handleBoundariesSubmit = this.handleBoundariesSubmit.bind(this);
   }
 
   handleNameChange(name) {
@@ -88,12 +102,56 @@ class TestCreator extends React.Component {
     });
   }
 
+  handleFiltersSubmit() {
+    this.setState((state) => ({ ...state, filtersComplete: true }));
+  }
+
+  handleBoundariesCancel() {
+    this.setState((state) => ({
+      ...state,
+      filtersComplete: false,
+      boundaries: {
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+      },
+    }));
+  }
+
+  handleBoundariesUpdate(boundaries) {
+    this.setState((state) => ({ ...state, boundaries }));
+  }
+
+  handleBoundariesSubmit() {
+    const {
+      name,
+      date,
+      timeToSolve,
+      filters,
+      boundaries,
+    } = this.state;
+
+    const requestBody = {
+      name,
+      start: date,
+      end: date,
+      timeToSolve,
+      filters,
+      boundaries,
+    };
+
+    console.log(requestBody);
+  }
+
   render() {
     const {
       name,
       date,
       timeToSolve,
       filters,
+      filtersComplete,
+      boundaries,
     } = this.state;
 
     let totalPoints = 0;
@@ -132,12 +190,27 @@ class TestCreator extends React.Component {
         </Grid>
 
         <Grid item xs={12} sm={9} style={{ height: '100%', overflow: 'auto' }}>
-          <TestCreationFilters
-            filters={filters}
-            onFilterInsert={this.handleFilterInsert}
-            onFilterUpdate={this.handleFilterUpdate}
-            onFilterDelete={this.handleFilterDelete}
-          />
+          {
+            filtersComplete
+              ? (
+                <TestCreationGradeBoundaries
+                  maxPoints={totalPoints}
+                  boundaries={boundaries}
+                  onBoundariesUpdate={this.handleBoundariesUpdate}
+                  onCancel={this.handleBoundariesCancel}
+                  onSubmit={this.handleBoundariesSubmit}
+                />
+              ) : (
+                <TestCreationFilters
+                  filters={filters}
+                  totalQuestionCount={totalQuestionCount}
+                  onFilterInsert={this.handleFilterInsert}
+                  onFilterUpdate={this.handleFilterUpdate}
+                  onFilterDelete={this.handleFilterDelete}
+                  onSubmit={this.handleFiltersSubmit}
+                />
+              )
+          }
         </Grid>
       </Grid>
     );
