@@ -46,11 +46,12 @@ class TestCreationFilters extends React.Component {
   render() {
     const { subjects, dialogOpen } = this.state;
 
-    const { filters } = this.props;
+    const { filters, totalQuestionCount } = this.props;
     const {
       onFilterInsert,
       onFilterUpdate,
       onFilterDelete,
+      onSubmit,
     } = this.props;
 
     const unusedSubjects = subjects.filter((subject) => {
@@ -83,10 +84,10 @@ class TestCreationFilters extends React.Component {
           </Button>
 
           <Button
-            disabled={filters.length === 0}
+            disabled={filters.length === 0 || totalQuestionCount === 0}
             color="primary"
             variant="contained"
-            onClick={() => console.error('Not implemented')}
+            onClick={onSubmit}
           >
             продължи
           </Button>
@@ -116,10 +117,16 @@ class TestCreationFilters extends React.Component {
 
 TestCreationFilters.propTypes = {
   filters: PropTypes.arrayOf(PropTypes.object).isRequired,
+  totalQuestionCount: PropTypes.number,
 
   onFilterInsert: PropTypes.func.isRequired,
   onFilterUpdate: PropTypes.func.isRequired,
   onFilterDelete: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
+
+TestCreationFilters.defaultProps = {
+  totalQuestionCount: 0,
 };
 
 export default TestCreationFilters;
