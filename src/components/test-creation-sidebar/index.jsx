@@ -85,7 +85,7 @@ TestCreationSidebar.propTypes = {
   onNameChange: PropTypes.func.isRequired,
 
   // Date-ing is hard...
-  date: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
+  date: PropTypes.any, // eslint-disable-line react/forbid-prop-types
   onDateChange: PropTypes.func.isRequired,
 
   // Date-ing is hard...
@@ -94,6 +94,10 @@ TestCreationSidebar.propTypes = {
 
   totalQuestionCount: PropTypes.number.isRequired,
   totalPoints: PropTypes.number.isRequired,
+};
+
+TestCreationSidebar.defaultProps = {
+  date: null,
 };
 
 export default withDateUtils(TestCreationSidebar);
