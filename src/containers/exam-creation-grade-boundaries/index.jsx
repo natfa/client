@@ -9,7 +9,7 @@ import GradeBoundary from '../../components/grade-boundary';
 
 import { possibleGrades } from '../../constants';
 
-class TestCreationGradeBoundaries extends React.Component {
+class ExamCreationGradeBoundaries extends React.Component {
   constructor(props) {
     super(props);
 
@@ -94,7 +94,7 @@ class TestCreationGradeBoundaries extends React.Component {
   }
 }
 
-TestCreationGradeBoundaries.propTypes = {
+ExamCreationGradeBoundaries.propTypes = {
   maxPoints: PropTypes.number.isRequired,
   boundaries: PropTypes.shape({
     3: PropTypes.number,
@@ -108,4 +108,4 @@ TestCreationGradeBoundaries.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default TestCreationGradeBoundaries;
+export default ExamCreationGradeBoundaries;

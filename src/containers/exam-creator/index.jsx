@@ -1,27 +1,20 @@
 import React from 'react';
-import Dayjs from '@date-io/dayjs';
 
 import Grid from '@material-ui/core/Grid';
 
-import TestCreationFilters from '../test-creation-filters';
-import TestCreationGradeBoundaries from '../test-creation-grade-boundaries';
-import TestCreationSidebar from '../../components/test-creation-sidebar';
+import ExamCreationFilters from '../exam-creation-filters';
+import ExamCreationGradeBoundaries from '../exam-creation-grade-boundaries';
+import ExamCreationSidebar from '../../components/exam-creation-sidebar';
 
 import { pointValues } from '../../constants';
 
-class TestCreator extends React.Component {
+class ExamCreator extends React.Component {
   constructor(props) {
     super(props);
 
-    const dayjs = new Dayjs();
-    const now = new Date(Date.now());
-    now.setHours(0, 0, 0);
-
     this.state = {
       name: '',
-      // date: dayjs.date(),
       date: null,
-      // timeToSolve: dayjs.date(now),
       timeToSolve: null,
       filters: [],
       filtersComplete: false,
@@ -178,7 +171,7 @@ class TestCreator extends React.Component {
     return (
       <Grid spacing={2} container direction="row-reverse" style={{ height: '100%' }}>
         <Grid item xs={12} sm={3}>
-          <TestCreationSidebar
+          <ExamCreationSidebar
             name={name}
             onNameChange={this.handleNameChange}
             date={date}
@@ -194,7 +187,7 @@ class TestCreator extends React.Component {
           {
             filtersComplete
               ? (
-                <TestCreationGradeBoundaries
+                <ExamCreationGradeBoundaries
                   maxPoints={totalPoints}
                   boundaries={boundaries}
                   onBoundariesUpdate={this.handleBoundariesUpdate}
@@ -202,7 +195,7 @@ class TestCreator extends React.Component {
                   onSubmit={this.handleBoundariesSubmit}
                 />
               ) : (
-                <TestCreationFilters
+                <ExamCreationFilters
                   filters={filters}
                   totalQuestionCount={totalQuestionCount}
                   onFilterInsert={this.handleFilterInsert}
@@ -218,4 +211,4 @@ class TestCreator extends React.Component {
   }
 }
 
-export default TestCreator;
+export default ExamCreator;

@@ -8,13 +8,13 @@ import TeacherDashboard from '../../containers/teacher-dashboard';
 import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
-import TestCreator from '../../containers/test-creator';
+import ExamCreator from '../../containers/exam-creator';
 
 const PAGES = [
   { pathname: '/question', name: 'Създай нов въпрос' },
   { pathname: '/questions', name: 'Всички въпроси' },
 
-  { pathname: '/test', name: 'Създай нов тест' },
+  { pathname: '/exam', name: 'Създай нов тест' },
 ];
 
 const TeacherApp = () => (
@@ -27,8 +27,8 @@ const TeacherApp = () => (
       <QuestionList />
     </Route>
 
-    <Route path="/test">
-      <TestCreator />
+    <Route path="/exam">
+      <ExamCreator />
     </Route>
 
     <Route path="/">

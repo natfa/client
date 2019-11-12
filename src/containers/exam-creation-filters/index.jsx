@@ -13,7 +13,7 @@ import SubjectFilter from '../../components/subject-filter';
 
 import subjectApi from '../../api/subject';
 
-class TestCreationFilters extends React.Component {
+class ExamCreationFilters extends React.Component {
   constructor(props) {
     super(props);
 
@@ -115,7 +115,7 @@ class TestCreationFilters extends React.Component {
   }
 }
 
-TestCreationFilters.propTypes = {
+ExamCreationFilters.propTypes = {
   filters: PropTypes.arrayOf(PropTypes.object).isRequired,
   totalQuestionCount: PropTypes.number,
 
@@ -125,8 +125,8 @@ TestCreationFilters.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-TestCreationFilters.defaultProps = {
+ExamCreationFilters.defaultProps = {
   totalQuestionCount: 0,
 };
 
-export default TestCreationFilters;
+export default ExamCreationFilters;

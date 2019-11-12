@@ -13,7 +13,7 @@ import {
 
 import withDateUtils from '../../utils/withDateUtils';
 
-const TestCreationSidebar = ({
+const ExamCreationSidebar = ({
   name,
   onNameChange,
 
@@ -81,7 +81,7 @@ const TestCreationSidebar = ({
   </Grid>
 );
 
-TestCreationSidebar.propTypes = {
+ExamCreationSidebar.propTypes = {
   name: PropTypes.string.isRequired,
   onNameChange: PropTypes.func.isRequired,
 
@@ -97,9 +97,9 @@ TestCreationSidebar.propTypes = {
   totalPoints: PropTypes.number.isRequired,
 };
 
-TestCreationSidebar.defaultProps = {
+ExamCreationSidebar.defaultProps = {
   date: null,
   timeToSolve: null,
 };
 
-export default withDateUtils(TestCreationSidebar);
+export default withDateUtils(ExamCreationSidebar);
