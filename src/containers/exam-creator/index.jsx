@@ -6,6 +6,7 @@ import ExamCreationFilters from '../exam-creation-filters';
 import ExamCreationGradeBoundaries from '../exam-creation-grade-boundaries';
 import ExamCreationSidebar from '../../components/exam-creation-sidebar';
 
+import examApi from '../../api/exam';
 import { pointValues } from '../../constants';
 
 class ExamCreator extends React.Component {
@@ -117,7 +118,7 @@ class ExamCreator extends React.Component {
     this.setState((state) => ({ ...state, boundaries }));
   }
 
-  handleBoundariesSubmit() {
+  async handleBoundariesSubmit() {
     const {
       name,
       date,
@@ -126,16 +127,30 @@ class ExamCreator extends React.Component {
       boundaries,
     } = this.state;
 
-    const requestBody = {
+    const data = {
       name,
-      start: date,
-      end: date,
-      timeToSolve,
+      startDate: date,
+      endDate: date,
+      timeToSolve: {
+        hours: timeToSolve.hour(),
+        minutes: timeToSolve.minute(),
+      },
       filters,
       boundaries,
     };
 
-    console.log(requestBody);
+    try {
+      const response = await examApi.compile(data);
+      if (!response.success) {
+        console.error(response.data);
+    }
+
+      // redirect to the page where you can see the created exam
+      alert('Successfuly compiled an exam');
+      console.log(response.data);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   render() {
