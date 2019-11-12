@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField';
 
 import {
   DateTimePicker,
-  KeyboardTimePicker,
+  TimePicker,
 } from '@material-ui/pickers';
 
 import withDateUtils from '../../utils/withDateUtils';
@@ -39,10 +39,11 @@ const TestCreationSidebar = ({
     </Grid>
 
     <Grid item>
-      <KeyboardTimePicker
+      <TimePicker
         value={timeToSolve}
         onChange={onTimeToSolveChange}
         ampm={false}
+        variant="inline"
         inputVariant="outlined"
 
         margin="dense"
@@ -89,7 +90,7 @@ TestCreationSidebar.propTypes = {
   onDateChange: PropTypes.func.isRequired,
 
   // Date-ing is hard...
-  timeToSolve: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
+  timeToSolve: PropTypes.any, // eslint-disable-line react/forbid-prop-types
   onTimeToSolveChange: PropTypes.func.isRequired,
 
   totalQuestionCount: PropTypes.number.isRequired,
@@ -98,6 +99,7 @@ TestCreationSidebar.propTypes = {
 
 TestCreationSidebar.defaultProps = {
   date: null,
+  timeToSolve: null,
 };
 
 export default withDateUtils(TestCreationSidebar);
