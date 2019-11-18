@@ -9,17 +9,20 @@ import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
 import ExamCreator from '../../containers/exam-creator';
+import ExamList from '../../containers/exam-list';
+import ExamView from '../../containers/exam-view';
 
 const PAGES = [
-  { pathname: '/question', name: 'Създай нов въпрос' },
+  { pathname: '/create-question', name: 'Създай нов въпрос' },
   { pathname: '/questions', name: 'Всички въпроси' },
 
-  { pathname: '/exam', name: 'Създай нов тест' },
+  { pathname: '/create-exam', name: 'Създай нов тест' },
+  { pathname: '/exams', name: 'Всички тестове' },
 ];
 
 const TeacherApp = () => (
   <Switch>
-    <Route path="/question">
+    <Route path="/create-question">
       <QuestionFormManager />
     </Route>
 
@@ -27,8 +30,16 @@ const TeacherApp = () => (
       <QuestionList />
     </Route>
 
-    <Route path="/exam">
+    <Route path="/create-exam">
       <ExamCreator />
+    </Route>
+
+    <Route path="/exams">
+      <ExamList />
+    </Route>
+
+    <Route path="/exam/:id">
+      <ExamView />
     </Route>
 
     <Route path="/">
