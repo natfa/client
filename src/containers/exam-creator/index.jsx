@@ -1,4 +1,5 @@
 import React from 'react';
+import dayjs from 'dayjs';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -127,10 +128,17 @@ class ExamCreator extends React.Component {
       boundaries,
     } = this.state;
 
+    // setup start and end date
+    const startDate = dayjs(date);
+    // add enough time for students to solve the exam
+    const endDate = dayjs(date)
+      .add(timeToSolve.hour(), 'hour')
+      .add(timeToSolve.minute(), 'minute');
+
     const data = {
       name,
-      startDate: date,
-      endDate: date,
+      startDate,
+      endDate,
       timeToSolve: {
         hours: timeToSolve.hour(),
         minutes: timeToSolve.minute(),
@@ -143,7 +151,7 @@ class ExamCreator extends React.Component {
       const response = await examApi.compile(data);
       if (!response.success) {
         console.error(response.data);
-    }
+      }
 
       // redirect to the page where you can see the created exam
       alert('Successfuly compiled an exam');
