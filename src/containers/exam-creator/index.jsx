@@ -1,5 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
+import { Redirect } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -26,6 +27,7 @@ class ExamCreator extends React.Component {
         5: 0,
         6: 0,
       },
+      examId: null,
     };
 
 
@@ -151,11 +153,10 @@ class ExamCreator extends React.Component {
       const response = await examApi.compile(data);
       if (!response.success) {
         console.error(response.data);
+        return;
       }
 
-      // redirect to the page where you can see the created exam
-      alert('Successfuly compiled an exam');
-      console.log(response.data);
+      this.setState((state) => ({ ...state, examId: response.data.examId }));
     } catch (err) {
       console.error(err);
     }
@@ -169,7 +170,12 @@ class ExamCreator extends React.Component {
       filters,
       filtersComplete,
       boundaries,
+      examId,
     } = this.state;
+
+    if (examId !== null) {
+      return <Redirect push to={`/exam/${examId}`} />;
+    }
 
     let totalPoints = 0;
 
