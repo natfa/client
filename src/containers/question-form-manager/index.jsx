@@ -79,7 +79,7 @@ class QuestionFormManager extends React.Component {
     questionAPI.getOneById(id)
       .then((question) => {
         // get needed themes
-        themeAPI.getAllBySubjectid(question.subject.id)
+        themeAPI.getAllBySubjectId(question.subject.id)
           .then((themes) => {
             this.setState((state) => ({
               ...state,
@@ -124,7 +124,7 @@ class QuestionFormManager extends React.Component {
 
     if (found) {
       try {
-        const themes = await themeAPI.getAllBySubjectid(found.id);
+        const themes = await themeAPI.getAllBySubjectId(found.id);
         this.setState((state) => ({
           ...state,
           themes,

@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 const PaddedContainer = withStyles({
   root: {
     paddingTop: '96px',
+    height: '100vh',
   },
 })(Container);
 

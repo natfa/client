@@ -15,8 +15,8 @@ export const getAll = async () => {
   return data;
 };
 
-export const getAllBySubjectid = async (subjectid) => {
-  const response = await fetch(`${themeApiRoute}/${subjectid}`, {
+export const getAllBySubjectId = async (subjectId) => {
+  const response = await fetch(`${themeApiRoute}/${subjectId}`, {
     method: 'GET',
   });
 
@@ -30,5 +30,5 @@ export const getAllBySubjectid = async (subjectid) => {
 
 export default {
   getAll,
-  getAllBySubjectid,
+  getAllBySubjectId,
 };
