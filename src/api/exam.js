@@ -18,6 +18,19 @@ const compile = async (data) => {
   };
 };
 
+const getOneById = async (id) => {
+  const response = await fetch(`${examApiRoute}/${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  return {
+    success: response.ok,
+    data: await response.json(),
+  };
+};
+
 export default {
   compile,
+  getOneById,
 };
