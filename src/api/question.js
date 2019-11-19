@@ -58,18 +58,3 @@ export default {
   getOneById,
   deleteOneById,
 };
-
-/*
-
-const getBySubjectid = async subjectid => {
-  const response = await fetch(`${route}/filter/${subjectid}`, {
-    method: 'GET',
-    mode: 'cors',
-  })
-
-  if (!response.ok)
-    return null
-
-  return await response.json()
-}
-*/
