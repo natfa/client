@@ -4,9 +4,10 @@ import uuid from 'uuid/v1';
 
 import QuestionForm from '../../components/question-form';
 
-import questionAPI from '../../api/question';
-import subjectAPI from '../../api/subject';
-import themeAPI from '../../api/theme';
+import questionApi from '../../api/question';
+import mediaApi from '../../api/media';
+import subjectApi from '../../api/subject';
+import themeApi from '../../api/theme';
 
 
 class QuestionFormManager extends React.Component {
@@ -56,7 +57,8 @@ class QuestionFormManager extends React.Component {
       this.fetchQuestion(questionId);
     }
 
-    subjectAPI.getAll()
+    subjectApi
+      .getAll()
       .then((subjects) => {
         this.setState((state) => ({
           ...state,
@@ -76,10 +78,11 @@ class QuestionFormManager extends React.Component {
   }
 
   fetchQuestion(id) {
-    questionAPI.getOneById(id)
+    questionApi
+      .getOneById(id)
       .then((question) => {
         // get needed themes
-        themeAPI.getAllBySubjectId(question.subject.id)
+        themeApi.getAllBySubjectId(question.subject.id)
           .then((themes) => {
             this.setState((state) => ({
               ...state,
@@ -89,29 +92,39 @@ class QuestionFormManager extends React.Component {
           .catch((err) => console.error(err));
 
         // handle media
-        const media = question.media.map((m) => {
-          const uintarray = new Uint8Array(m.data);
-          const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
-          const url = window.URL.createObjectURL(file);
+        mediaApi
+          .getManyByQuestionId(question.id)
+          .then((response) => {
+            if (!response.success) {
+              console.error(response.data);
+              return;
+            }
 
-          return { url, file };
-        });
+            const media = response.data.map((m) => {
+              const uintarray = new Uint8Array(m.data);
+              const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
+              const url = window.URL.createObjectURL(file);
 
-        // populate data structure
-        this.setState((state) => ({
-          ...state,
-          subjectText: question.subject.name,
-          themeText: question.theme.name,
-          question: {
-            ...state.question,
-            subjectid: question.subject.id,
-            themeid: question.theme.id,
-            text: question.text,
-            points: question.points,
-            answers: question.answers,
-            media,
-          },
-        }));
+              return { url, file };
+            });
+
+            // populate data structure
+            this.setState((state) => ({
+              ...state,
+              subjectText: question.subject.name,
+              themeText: question.theme.name,
+              question: {
+                ...state.question,
+                subjectid: question.subject.id,
+                themeid: question.theme.id,
+                text: question.text,
+                points: question.points,
+                answers: question.answers,
+                media,
+              },
+            }));
+          })
+          .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
   }
@@ -124,7 +137,7 @@ class QuestionFormManager extends React.Component {
 
     if (found) {
       try {
-        const themes = await themeAPI.getAllBySubjectId(found.id);
+        const themes = await themeApi.getAllBySubjectId(found.id);
         this.setState((state) => ({
           ...state,
           themes,
@@ -322,7 +335,7 @@ class QuestionFormManager extends React.Component {
     incorrect.map((a) => formData.append('incorrectAnswers[]', a.text));
     question.media.map((media) => formData.append('media', media.file));
 
-    questionAPI.createOne(formData)
+    questionApi.createOne(formData)
       .then((response) => {
         if (!response.success) {
           const {
