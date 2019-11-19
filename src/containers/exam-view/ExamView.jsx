@@ -42,17 +42,23 @@ class ExamView extends React.Component {
     }
 
     return (
-      <Grid container direction="row">
-        <Grid item sm={9}>
-          <Typography>{exam.name}</Typography>
+      <Grid spacing={2} container direction="row-reverse" style={{ height: '100%' }}>
+        <Grid item xs={12} sm={3}>
+          Sidebar
+        </Grid>
+
+        <Grid item xs={12} sm={9} style={{ height: '100%', overflow: 'auto', overflowX: 'hidden' }}>
+          <Typography
+            align="center"
+            variant="h4"
+            gutterBottom
+          >
+            {exam.name}
+          </Typography>
 
           <ExamQuestionList
             questions={exam.questions}
           />
-        </Grid>
-
-        <Grid item sm={3}>
-          Sidebar
         </Grid>
       </Grid>
     );
