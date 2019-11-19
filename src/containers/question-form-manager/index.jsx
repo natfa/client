@@ -20,8 +20,8 @@ class QuestionFormManager extends React.Component {
       subjectText: '',
       themeText: '',
       question: {
-        subjectid: null,
-        themeid: null,
+        subjectId: null,
+        themeId: null,
         text: '',
         points: 0,
         answers: [],
@@ -115,8 +115,8 @@ class QuestionFormManager extends React.Component {
               themeText: question.theme.name,
               question: {
                 ...state.question,
-                subjectid: question.subject.id,
-                themeid: question.theme.id,
+                subjectId: question.subject.id,
+                themeId: question.theme.id,
                 text: question.text,
                 points: question.points,
                 answers: question.answers,
@@ -155,13 +155,13 @@ class QuestionFormManager extends React.Component {
         themeText: '',
         question: {
           ...state.question,
-          subjectid: null,
-          themeid: null,
+          subjectId: null,
+          themeId: null,
         },
       };
 
       if (found) {
-        newState.question.subjectid = found.id;
+        newState.question.subjectId = found.id;
       }
 
       return { ...newState };
@@ -173,7 +173,7 @@ class QuestionFormManager extends React.Component {
     const { themes, question } = this.state;
 
     const found = themes
-      .filter((t) => t.subjectid === question.subjectid)
+      .filter((t) => t.subject.id === question.subjectId)
       .find((theme) => theme.name === value);
 
     this.setState((state) => {
@@ -183,12 +183,12 @@ class QuestionFormManager extends React.Component {
         themeText: value,
         question: {
           ...state.question,
-          themeid: null,
+          themeId: null,
         },
       };
 
       if (found) {
-        newState.question.themeid = found.id;
+        newState.question.themeId = found.id;
       }
 
       return { ...newState };
@@ -359,19 +359,16 @@ class QuestionFormManager extends React.Component {
           return;
         }
 
+        const questionId = response.data;
+
         if (onSubmit) {
-          // IMPORTANT: what's going on here is a bit risky
-          // easy to mess up if you don't know how the system works:
-          // the onSubmit function is passed whenever the question created
-          // should actually be an update
-          onSubmit(response.data.id);
+          onSubmit(questionId);
         } else {
-          const newQuestion = response.data;
           this.setState((state) => ({
             ...state,
             question: {
-              subjectid: newQuestion.subject.id,
-              themeid: newQuestion.theme.id,
+              subjectId: null,
+              themeId: null,
               text: '',
               points: 0,
               answers: [],
@@ -412,7 +409,7 @@ class QuestionFormManager extends React.Component {
         subject={subjectText}
         onSubjectChange={this.handleSubjectChange}
 
-        themes={themes.filter((theme) => theme.subjectid === question.subjectid)}
+        themes={themes.filter((theme) => theme.subject.id === question.subjectId)}
         theme={themeText}
         onThemeChange={this.handleThemeChange}
 
