@@ -75,10 +75,13 @@ const QuestionListItem = ({
 
       <Grid item>
         <Collapse in={open}>
-          <QuestionFormManager
-            questionId={open ? questionId : undefined}
-            onSubmit={(newId) => onUpdate(questionId, newId)}
-          />
+          {open
+          && (
+            <QuestionFormManager
+              questionId={questionId}
+              onSubmit={(newId) => onUpdate(questionId, newId)}
+            />
+          )}
         </Collapse>
       </Grid>
     </Grid>
