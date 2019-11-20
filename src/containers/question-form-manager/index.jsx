@@ -51,10 +51,58 @@ class QuestionFormManager extends React.Component {
   }
 
   componentDidMount() {
-    const { questionId } = this.props;
+    const { question } = this.props;
 
-    if (questionId) {
-      this.fetchQuestion(questionId);
+    if (question) {
+      this.setState((state) => ({
+        ...state,
+        subjectText: question.subject.name,
+        themeText: question.theme.name,
+        question: {
+          ...state.question,
+          subjectId: question.subject.id,
+          themeId: question.theme.id,
+          text: question.text,
+          points: question.points,
+          answers: question.answers,
+        },
+      }));
+
+      mediaApi
+        .getManyByQuestionId(question.id)
+        .then((response) => {
+          if (!response.success) {
+            console.error(response.data);
+            return;
+          }
+
+          const media = response.data.map((m) => {
+            const uintarray = new Uint8Array(m.data);
+            const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
+            const url = window.URL.createObjectURL(file);
+
+            return { url, file };
+          });
+
+          this.setState((state) => ({
+            ...state,
+            question: {
+              ...state.question,
+              media,
+            },
+          }));
+        })
+        .catch((err) => console.error(err));
+
+      themeApi
+        .getAllBySubjectId(question.subject.id)
+        .then((themes) => {
+          this.setState((state) => ({
+            ...state,
+            themes,
+          }));
+        })
+        .catch((err) => console.error(err));
     }
 
     subjectApi
@@ -64,67 +112,6 @@ class QuestionFormManager extends React.Component {
           ...state,
           subjects,
         }));
-      })
-      .catch((err) => console.error(err));
-  }
-
-  componentDidUpdate(prevProps) {
-    const { questionId } = this.props;
-    if (prevProps.questionId === undefined) {
-      if (questionId) {
-        this.fetchQuestion(questionId);
-      }
-    }
-  }
-
-  fetchQuestion(id) {
-    questionApi
-      .getOneById(id)
-      .then((question) => {
-        // get needed themes
-        themeApi.getAllBySubjectId(question.subject.id)
-          .then((themes) => {
-            this.setState((state) => ({
-              ...state,
-              themes,
-            }));
-          })
-          .catch((err) => console.error(err));
-
-        // handle media
-        mediaApi
-          .getManyByQuestionId(question.id)
-          .then((response) => {
-            if (!response.success) {
-              console.error(response.data);
-              return;
-            }
-
-            const media = response.data.map((m) => {
-              const uintarray = new Uint8Array(m.data);
-              const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
-              const url = window.URL.createObjectURL(file);
-
-              return { url, file };
-            });
-
-            // populate data structure
-            this.setState((state) => ({
-              ...state,
-              subjectText: question.subject.name,
-              themeText: question.theme.name,
-              question: {
-                ...state.question,
-                subjectId: question.subject.id,
-                themeId: question.theme.id,
-                text: question.text,
-                points: question.points,
-                answers: question.answers,
-                media,
-              },
-            }));
-          })
-          .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
   }
@@ -359,7 +346,7 @@ class QuestionFormManager extends React.Component {
           return;
         }
 
-        const questionId = response.data;
+        const { questionId } = response.data;
 
         if (onSubmit) {
           onSubmit(questionId);
@@ -435,13 +422,20 @@ class QuestionFormManager extends React.Component {
 }
 
 QuestionFormManager.propTypes = {
-  questionId: PropTypes.string,
+  question: PropTypes.shape({
+    id: PropTypes.string,
+    points: PropTypes.number,
+    text: PropTypes.string,
+    subject: PropTypes.object,
+    theme: PropTypes.object,
+    answers: PropTypes.arrayOf(PropTypes.object),
+  }),
   onSubmit: PropTypes.func,
 };
 
 QuestionFormManager.defaultProps = {
-  questionId: undefined,
   onSubmit: undefined,
+  question: undefined,
 };
 
 export default QuestionFormManager;
