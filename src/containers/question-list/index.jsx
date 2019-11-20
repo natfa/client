@@ -23,7 +23,7 @@ class QuestionList extends React.Component {
   async componentDidMount() {
     try {
       const questions = await questionAPI.getAll();
-      this.setState({ questions });
+      this.setState((state) => ({ ...state, questions }));
     } catch (err) {
       console.error(err);
     }
@@ -39,6 +39,7 @@ class QuestionList extends React.Component {
 
   async handleUpdate(oldId, newId) {
     questionAPI.deleteOneById(oldId);
+
     const question = await questionAPI.getOneById(newId);
 
     this.setState((state) => {
@@ -50,6 +51,7 @@ class QuestionList extends React.Component {
             text: question.text,
             subject: question.subject,
             theme: question.theme,
+            answers: question.answers,
           };
         }
         return q;
@@ -57,7 +59,7 @@ class QuestionList extends React.Component {
 
       return {
         questionId: undefined,
-        questions: [...questions],
+        questions,
       };
     });
   }
@@ -77,12 +79,9 @@ class QuestionList extends React.Component {
       <div className="question-list">
         {questions.map((question) => (
           <QuestionListItem
-            open={question.id === questionId}
-            questionId={question.id}
             key={question.id}
-            text={question.text}
-            subject={question.subject.name}
-            theme={question.theme.name}
+            open={question.id === questionId}
+            question={question}
             onOpen={() => this.handleOpen(question.id)}
             onClose={this.handleClose}
             onUpdate={this.handleUpdate}
