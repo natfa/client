@@ -37,31 +37,33 @@ class QuestionList extends React.Component {
     this.setState({ questionId: undefined });
   }
 
-  async handleUpdate(oldId, newId) {
-    questionAPI.deleteOneById(oldId);
-
-    const question = await questionAPI.getOneById(newId);
-
-    this.setState((state) => {
-      const questions = state.questions.map((q) => {
-        if (q.id === oldId) {
-          return {
-            id: question.id,
-            points: Number(question.points),
-            text: question.text,
-            subject: question.subject,
-            theme: question.theme,
-            answers: question.answers,
-          };
+  handleUpdate(data) {
+    questionAPI
+      .updateOne(data)
+      .then((response) => {
+        if (!response.success) {
+          console.error(response.data);
+          return;
         }
-        return q;
-      });
 
-      return {
-        questionId: undefined,
-        questions,
-      };
-    });
+        const question = response.data;
+
+        this.setState((state) => {
+          const questions = state.questions.map((q) => {
+            if (q.id !== question.id) return q;
+            return question;
+          });
+
+          return {
+            ...state,
+            questionId: undefined,
+            questions,
+          };
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   handleDelete(id) {

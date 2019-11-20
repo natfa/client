@@ -305,22 +305,28 @@ class QuestionFormManager extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { subjectText, themeText, question } = this.state;
-    const { onSubmit } = this.props;
+    const { subjectText, themeText, question: questionState } = this.state;
+    const { question, onSubmit } = this.props;
 
-    const correct = question.answers.filter((a) => a.correct);
-    const incorrect = question.answers.filter((a) => !a.correct);
+    const correct = questionState.answers.filter((a) => a.correct);
+    const incorrect = questionState.answers.filter((a) => !a.correct);
 
     const formData = new FormData();
 
-    formData.append('text', question.text);
-    formData.append('points', question.points);
+    formData.append('text', questionState.text);
+    formData.append('points', questionState.points);
     formData.append('subjectName', subjectText);
     formData.append('themeName', themeText);
 
     correct.map((a) => formData.append('correctAnswers[]', a.text));
     incorrect.map((a) => formData.append('incorrectAnswers[]', a.text));
-    question.media.map((media) => formData.append('media', media.file));
+    questionState.media.map((media) => formData.append('media', media.file));
+
+    if (question && onSubmit) {
+      formData.append('id', question.id);
+      onSubmit(formData);
+      return;
+    }
 
     questionApi.createOne(formData)
       .then((response) => {
@@ -346,23 +352,17 @@ class QuestionFormManager extends React.Component {
           return;
         }
 
-        const { questionId } = response.data;
-
-        if (onSubmit) {
-          onSubmit(questionId);
-        } else {
-          this.setState((state) => ({
-            ...state,
-            question: {
-              subjectId: null,
-              themeId: null,
-              text: '',
-              points: 0,
-              answers: [],
-              media: [],
-            },
-          }));
-        }
+        this.setState((state) => ({
+          ...state,
+          question: {
+            subjectId: null,
+            themeId: null,
+            text: '',
+            points: 0,
+            answers: [],
+            media: [],
+          },
+        }));
       })
       .catch((err) => console.error(err));
   }

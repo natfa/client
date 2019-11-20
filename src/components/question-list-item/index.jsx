@@ -67,7 +67,7 @@ const QuestionListItem = ({
           && (
             <QuestionFormManager
               question={question}
-              onSubmit={(newId) => onUpdate(question.id, newId)}
+              onSubmit={onUpdate}
             />
           )}
         </Collapse>
