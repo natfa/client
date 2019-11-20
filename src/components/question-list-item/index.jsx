@@ -2,32 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
-import { withStyles } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Loop';
 import CloseIcon from '@material-ui/icons/Close';
 
+import PaddedPaper from '../padded-paper';
 import QuestionFormManager from '../../containers/question-form-manager';
-
-// TODO: find a way to use the theme's spacing
-const PaddedPaper = withStyles({
-  root: {
-    padding: '1rem',
-  },
-})(Paper);
 
 const QuestionListItem = ({
   open,
-  questionId,
-
-  text,
-  subject,
-  theme,
+  question,
 
   onOpen,
   onClose,
@@ -52,8 +40,8 @@ const QuestionListItem = ({
         alignItems="center"
       >
         <Grid xs={10} item>
-          <Typography variant="body1" color="textPrimary" gutterBottom paragraph>{text}</Typography>
-          <Typography variant="subtitle1" color="textSecondary">{`${subject} • ${theme}`}</Typography>
+          <Typography variant="body1" color="textPrimary" gutterBottom paragraph>{question.text}</Typography>
+          <Typography variant="subtitle1" color="textSecondary">{`${question.subject.name} • ${question.theme.name}`}</Typography>
         </Grid>
 
         <Grid style={{ textAlign: 'right' }} xs={1} sm item>
@@ -75,10 +63,13 @@ const QuestionListItem = ({
 
       <Grid item>
         <Collapse in={open}>
-          <QuestionFormManager
-            questionId={open ? questionId : undefined}
-            onSubmit={(newId) => onUpdate(questionId, newId)}
-          />
+          {open
+          && (
+            <QuestionFormManager
+              question={question}
+              onSubmit={(newId) => onUpdate(question.id, newId)}
+            />
+          )}
         </Collapse>
       </Grid>
     </Grid>
@@ -87,11 +78,14 @@ const QuestionListItem = ({
 
 QuestionListItem.propTypes = {
   open: PropTypes.bool,
-  questionId: PropTypes.string,
-
-  text: PropTypes.string.isRequired,
-  subject: PropTypes.string.isRequired,
-  theme: PropTypes.string.isRequired,
+  question: PropTypes.shape({
+    id: PropTypes.string,
+    points: PropTypes.number,
+    text: PropTypes.string,
+    subject: PropTypes.object,
+    theme: PropTypes.object,
+    answers: PropTypes.arrayOf(PropTypes.object),
+  }).isRequired,
 
   onOpen: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -101,7 +95,6 @@ QuestionListItem.propTypes = {
 
 QuestionListItem.defaultProps = {
   open: false,
-  questionId: undefined,
 };
 
 export default QuestionListItem;

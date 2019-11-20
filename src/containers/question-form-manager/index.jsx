@@ -4,9 +4,10 @@ import uuid from 'uuid/v1';
 
 import QuestionForm from '../../components/question-form';
 
-import questionAPI from '../../api/question';
-import subjectAPI from '../../api/subject';
-import themeAPI from '../../api/theme';
+import questionApi from '../../api/question';
+import mediaApi from '../../api/media';
+import subjectApi from '../../api/subject';
+import themeApi from '../../api/theme';
 
 
 class QuestionFormManager extends React.Component {
@@ -19,8 +20,8 @@ class QuestionFormManager extends React.Component {
       subjectText: '',
       themeText: '',
       question: {
-        subjectid: null,
-        themeid: null,
+        subjectId: null,
+        themeId: null,
         text: '',
         points: 0,
         answers: [],
@@ -50,67 +51,66 @@ class QuestionFormManager extends React.Component {
   }
 
   componentDidMount() {
-    const { questionId } = this.props;
+    const { question } = this.props;
 
-    if (questionId) {
-      this.fetchQuestion(questionId);
+    if (question) {
+      this.setState((state) => ({
+        ...state,
+        subjectText: question.subject.name,
+        themeText: question.theme.name,
+        question: {
+          ...state.question,
+          subjectId: question.subject.id,
+          themeId: question.theme.id,
+          text: question.text,
+          points: question.points,
+          answers: question.answers,
+        },
+      }));
+
+      mediaApi
+        .getManyByQuestionId(question.id)
+        .then((response) => {
+          if (!response.success) {
+            console.error(response.data);
+            return;
+          }
+
+          const media = response.data.map((m) => {
+            const uintarray = new Uint8Array(m.data);
+            const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
+            const url = window.URL.createObjectURL(file);
+
+            return { url, file };
+          });
+
+          this.setState((state) => ({
+            ...state,
+            question: {
+              ...state.question,
+              media,
+            },
+          }));
+        })
+        .catch((err) => console.error(err));
+
+      themeApi
+        .getAllBySubjectId(question.subject.id)
+        .then((themes) => {
+          this.setState((state) => ({
+            ...state,
+            themes,
+          }));
+        })
+        .catch((err) => console.error(err));
     }
 
-    subjectAPI.getAll()
+    subjectApi
+      .getAll()
       .then((subjects) => {
         this.setState((state) => ({
           ...state,
           subjects,
-        }));
-      })
-      .catch((err) => console.error(err));
-  }
-
-  componentDidUpdate(prevProps) {
-    const { questionId } = this.props;
-    if (prevProps.questionId === undefined) {
-      if (questionId) {
-        this.fetchQuestion(questionId);
-      }
-    }
-  }
-
-  fetchQuestion(id) {
-    questionAPI.getOneById(id)
-      .then((question) => {
-        // get needed themes
-        themeAPI.getAllBySubjectId(question.subject.id)
-          .then((themes) => {
-            this.setState((state) => ({
-              ...state,
-              themes,
-            }));
-          })
-          .catch((err) => console.error(err));
-
-        // handle media
-        const media = question.media.map((m) => {
-          const uintarray = new Uint8Array(m.data);
-          const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
-          const url = window.URL.createObjectURL(file);
-
-          return { url, file };
-        });
-
-        // populate data structure
-        this.setState((state) => ({
-          ...state,
-          subjectText: question.subject.name,
-          themeText: question.theme.name,
-          question: {
-            ...state.question,
-            subjectid: question.subject.id,
-            themeid: question.theme.id,
-            text: question.text,
-            points: question.points,
-            answers: question.answers,
-            media,
-          },
         }));
       })
       .catch((err) => console.error(err));
@@ -124,7 +124,7 @@ class QuestionFormManager extends React.Component {
 
     if (found) {
       try {
-        const themes = await themeAPI.getAllBySubjectId(found.id);
+        const themes = await themeApi.getAllBySubjectId(found.id);
         this.setState((state) => ({
           ...state,
           themes,
@@ -142,13 +142,13 @@ class QuestionFormManager extends React.Component {
         themeText: '',
         question: {
           ...state.question,
-          subjectid: null,
-          themeid: null,
+          subjectId: null,
+          themeId: null,
         },
       };
 
       if (found) {
-        newState.question.subjectid = found.id;
+        newState.question.subjectId = found.id;
       }
 
       return { ...newState };
@@ -160,7 +160,7 @@ class QuestionFormManager extends React.Component {
     const { themes, question } = this.state;
 
     const found = themes
-      .filter((t) => t.subjectid === question.subjectid)
+      .filter((t) => t.subject.id === question.subjectId)
       .find((theme) => theme.name === value);
 
     this.setState((state) => {
@@ -170,12 +170,12 @@ class QuestionFormManager extends React.Component {
         themeText: value,
         question: {
           ...state.question,
-          themeid: null,
+          themeId: null,
         },
       };
 
       if (found) {
-        newState.question.themeid = found.id;
+        newState.question.themeId = found.id;
       }
 
       return { ...newState };
@@ -322,7 +322,7 @@ class QuestionFormManager extends React.Component {
     incorrect.map((a) => formData.append('incorrectAnswers[]', a.text));
     question.media.map((media) => formData.append('media', media.file));
 
-    questionAPI.createOne(formData)
+    questionApi.createOne(formData)
       .then((response) => {
         if (!response.success) {
           const {
@@ -346,19 +346,16 @@ class QuestionFormManager extends React.Component {
           return;
         }
 
+        const { questionId } = response.data;
+
         if (onSubmit) {
-          // IMPORTANT: what's going on here is a bit risky
-          // easy to mess up if you don't know how the system works:
-          // the onSubmit function is passed whenever the question created
-          // should actually be an update
-          onSubmit(response.data.id);
+          onSubmit(questionId);
         } else {
-          const newQuestion = response.data;
           this.setState((state) => ({
             ...state,
             question: {
-              subjectid: newQuestion.subject.id,
-              themeid: newQuestion.theme.id,
+              subjectId: null,
+              themeId: null,
               text: '',
               points: 0,
               answers: [],
@@ -399,7 +396,7 @@ class QuestionFormManager extends React.Component {
         subject={subjectText}
         onSubjectChange={this.handleSubjectChange}
 
-        themes={themes.filter((theme) => theme.subjectid === question.subjectid)}
+        themes={themes.filter((theme) => theme.subject.id === question.subjectId)}
         theme={themeText}
         onThemeChange={this.handleThemeChange}
 
@@ -425,13 +422,20 @@ class QuestionFormManager extends React.Component {
 }
 
 QuestionFormManager.propTypes = {
-  questionId: PropTypes.string,
+  question: PropTypes.shape({
+    id: PropTypes.string,
+    points: PropTypes.number,
+    text: PropTypes.string,
+    subject: PropTypes.object,
+    theme: PropTypes.object,
+    answers: PropTypes.arrayOf(PropTypes.object),
+  }),
   onSubmit: PropTypes.func,
 };
 
 QuestionFormManager.defaultProps = {
-  questionId: undefined,
   onSubmit: undefined,
+  question: undefined,
 };
 
 export default QuestionFormManager;
