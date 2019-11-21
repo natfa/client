@@ -30,7 +30,17 @@ const getOneById = async (id) => {
   };
 };
 
+const getAll = async () => {
+  const response = await fetch(examApiRoute, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  return response.json();
+};
+
 export default {
   compile,
   getOneById,
+  getAll,
 };
