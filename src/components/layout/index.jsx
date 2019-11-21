@@ -40,6 +40,7 @@ const ListItemLink = ({ to, text, onClick }) => {
 ListItemLink.propTypes = {
   to: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 class Layout extends React.Component {
@@ -119,7 +120,7 @@ Layout.propTypes = {
 };
 
 Layout.defaultProps = {
-  pages: [],
+  pages: undefined,
 };
 
 export default Layout;
