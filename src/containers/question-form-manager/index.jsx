@@ -9,6 +9,7 @@ import mediaApi from '../../api/media';
 import subjectApi from '../../api/subject';
 import themeApi from '../../api/theme';
 
+import bufferToBlob from '../../utils/bufferToBlob';
 
 class QuestionFormManager extends React.Component {
   constructor(props) {
@@ -76,13 +77,7 @@ class QuestionFormManager extends React.Component {
             return;
           }
 
-          const media = response.data.map((m) => {
-            const uintarray = new Uint8Array(m.data);
-            const file = new File([uintarray], 'profile.jpg', { type: 'image/jpeg' });
-            const url = window.URL.createObjectURL(file);
-
-            return { url, file };
-          });
+          const media = response.data.map((buffer) => bufferToBlob(buffer));
 
           this.setState((state) => ({
             ...state,
