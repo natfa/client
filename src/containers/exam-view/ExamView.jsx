@@ -12,6 +12,7 @@ import examApi from '../../api/exam';
 import mediaApi from '../../api/media';
 
 import bufferToBlob from '../../utils/bufferToBlob';
+import ttsToString from '../../utils/ttsToString';
 
 class ExamView extends React.Component {
   constructor(props) {
@@ -77,14 +78,7 @@ class ExamView extends React.Component {
 
     const start = dayjs(exam.startDate).format('DD MMM YYYY, HH:mm');
 
-
-    let timeToSolve = `${exam.timeToSolve.hours < 10
-      ? `0${exam.timeToSolve.hours}`
-      : exam.timeToSolve.hours}:`;
-
-    timeToSolve += `${exam.timeToSolve.minutes < 10
-      ? `0${exam.timeToSolve.minutes}`
-      : exam.timeToSolve.minutes}`;
+    const timeToSolve = ttsToString(exam.timeToSolve);
 
     return (
       <Grid spacing={2} container direction="row-reverse" style={{ height: '100%' }}>
