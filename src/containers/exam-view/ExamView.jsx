@@ -9,6 +9,9 @@ import Typography from '@material-ui/core/Typography';
 import ExamQuestionList from '../../components/exam-question-list';
 import LoadingAnimation from '../../components/loading-animation';
 import examApi from '../../api/exam';
+import mediaApi from '../../api/media';
+
+import bufferToBlob from '../../utils/bufferToBlob';
 
 class ExamView extends React.Component {
   constructor(props) {
@@ -29,7 +32,37 @@ class ExamView extends React.Component {
         return;
       }
 
-      this.setState((state) => ({ ...state, exam: response.data }));
+      const exam = response.data;
+
+      this.setState((state) => ({ ...state, exam }));
+
+      exam.questions.forEach((question) => {
+        mediaApi
+          .getManyByQuestionId(question.id)
+          .then((mediaResponse) => {
+            if (!mediaResponse.success || mediaResponse.data.length === 0) return;
+
+            const media = mediaResponse.data.map((buffer) => bufferToBlob(buffer));
+
+            this.setState((state) => {
+              const questions = state.exam.questions.map((q) => {
+                if (q.id !== question.id) return q;
+
+                return {
+                  ...q,
+                  media,
+                };
+              });
+
+              return {
+                exam: {
+                  ...state.exam,
+                  questions,
+                },
+              };
+            });
+          });
+      });
     } catch (err) {
       console.error(err);
     }
