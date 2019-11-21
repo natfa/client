@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 
 import DeleteIcon from '@material-ui/icons/Delete';
-import UpdateIcon from '@material-ui/icons/Loop';
+import UpdateIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 
 import PaddedPaper from '../padded-paper';
