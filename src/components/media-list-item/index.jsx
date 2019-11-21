@@ -12,11 +12,14 @@ const MediaListItem = ({
 }) => (
   <div className="media-list-item">
     <img alt="media list item" src={src} />
-    <span>
-      <IconButton onClick={onRemove} size="small" style={{ color: 'white' }}>
-        <ClearIcon />
-      </IconButton>
-    </span>
+    {onRemove
+    && (
+      <span>
+        <IconButton onClick={onRemove} size="small" style={{ color: 'white' }}>
+          <ClearIcon />
+        </IconButton>
+      </span>
+    )}
   </div>
 );
 
@@ -26,7 +29,7 @@ MediaListItem.propTypes = {
 };
 
 MediaListItem.defaultProps = {
-  onRemove: () => {},
+  onRemove: undefined,
 };
 
 export default MediaListItem;
