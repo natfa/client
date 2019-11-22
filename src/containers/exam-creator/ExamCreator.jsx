@@ -53,11 +53,11 @@ class ExamCreator extends React.Component {
   }
 
   handleDateChange(date) {
-    this.setState((state) => ({ ...state, date }));
+    this.setState((state) => ({ ...state, date: dayjs(date) }));
   }
 
   handleTimeToSolveChange(timeToSolve) {
-    this.setState((state) => ({ ...state, timeToSolve }));
+    this.setState((state) => ({ ...state, timeToSolve: dayjs(timeToSolve) }));
   }
 
   handleFilterInsert(subject) {

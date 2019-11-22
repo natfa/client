@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
 
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 
 import {
   DateTimePicker,
-  TimePicker,
+  KeyboardTimePicker,
 } from '@material-ui/pickers';
 
 import withDateUtils from '../../utils/withDateUtils';
@@ -40,13 +40,13 @@ const ExamCreationSidebar = ({
     </Grid>
 
     <Grid item>
-      <TimePicker
+      <KeyboardTimePicker
         value={timeToSolve}
         onChange={onTimeToSolveChange}
         ampm={false}
+
         variant="inline"
         inputVariant="outlined"
-
         margin="dense"
         fullWidth
         label="Време за решаване"
@@ -55,13 +55,14 @@ const ExamCreationSidebar = ({
 
     <Grid item>
       <DateTimePicker
-        format="MMM D YYYY, HH:mm"
-        ampm={false}
         value={date}
         onChange={onDateChange}
+        ampm={false}
+
+        format="dd MMM yyyy, HH:mm"
+
         variant="inline"
         inputVariant="outlined"
-
         margin="dense"
         fullWidth
         label="Дата и час на започване"
