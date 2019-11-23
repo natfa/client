@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const Component = () => (<h1>Hello student.jsx!</h1>);
+import StudentApp from '../apps/student-app';
 
-ReactDOM.render(<Component />, document.getElementById('root'));
+ReactDOM.render(<StudentApp />, document.getElementById('root'));
