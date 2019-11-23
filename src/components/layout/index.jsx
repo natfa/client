@@ -15,6 +15,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { withStyles } from '@material-ui/styles';
 import { Link } from 'react-router-dom';
 
+const WhiteIconButton = withStyles({
+  root: {
+    color: 'white',
+  },
+})(IconButton);
+
 const PaddedContainer = withStyles({
   root: {
     paddingTop: '96px',
@@ -93,9 +99,9 @@ class Layout extends React.Component {
           <Toolbar>
             {pages
             && (
-              <IconButton onClick={this.toggleDrawer} aria-label="menu">
+              <WhiteIconButton onClick={this.toggleDrawer} aria-label="menu">
                 <MenuIcon />
-              </IconButton>
+              </WhiteIconButton>
             )}
             <Typography variant="h6">
               Система за оценяване НАТФИЗ
