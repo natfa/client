@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Zoom from '@material-ui/core/Zoom';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
@@ -13,10 +12,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import MediaUploader from '../media-uploader';
 import MediaList from '../media-list';
-import MediaListItem from '../media-list-item';
 
 import './styles.css';
-
 
 const QuestionForm = ({
   subjectError,
@@ -225,13 +222,10 @@ const QuestionForm = ({
             <MediaUploader onUpload={onMediaUpload} />
           </Grid>
           <Grid item xs={12}>
-            <MediaList>
-              {media.map((m) => (
-                <Zoom in key={m.url}>
-                  <MediaListItem src={m.url} onRemove={() => onMediaDelete(m.url)} />
-                </Zoom>
-              ))}
-            </MediaList>
+            <MediaList
+              media={media}
+              onItemRemove={onMediaDelete}
+            />
           </Grid>
         </Grid>
 

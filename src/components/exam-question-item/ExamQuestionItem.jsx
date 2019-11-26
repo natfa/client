@@ -101,14 +101,7 @@ class ExamQuestionItem extends React.Component {
           >
             <DialogTitle align="center">Прикачени файлове</DialogTitle>
             <DialogContent dividers>
-              <MediaList>
-                {question.media.map((media) => (
-                  <MediaListItem
-                    key={media.url}
-                    src={media.url}
-                  />
-                ))}
-              </MediaList>
+              <MediaList media={question.media} />
             </DialogContent>
           </Dialog>
         )}

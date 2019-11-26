@@ -1,18 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './styles.css';
+import Grid from '@material-ui/core/Grid';
+
+import MediaListItem from '../media-list-item';
 
 const MediaList = ({
-  children,
+  media,
+
+  onItemRemove,
 }) => (
-  <div className="media-list">
-    {children}
-  </div>
+  <Grid container>
+    {media.map((m) => {
+      const props = {
+        src: m.url,
+      };
+
+      if (onItemRemove) {
+        props.onRemove = () => onItemRemove(m.url);
+      }
+
+      return (
+        <Grid key={m.url} item>
+          <MediaListItem {...props} />
+        </Grid>
+      );
+    })}
+  </Grid>
 );
 
 MediaList.propTypes = {
-  children: PropTypes.node.isRequired,
+  media: PropTypes.arrayOf(PropTypes.shape({
+    url: PropTypes.string,
+    file: PropTypes.instanceOf(Blob),
+  })).isRequired,
+
+  onItemRemove: PropTypes.func,
+};
+
+MediaList.defaultProps = {
+  onItemRemove: undefined,
 };
 
 export default MediaList;
