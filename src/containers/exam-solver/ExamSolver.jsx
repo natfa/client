@@ -14,10 +14,11 @@ class ExamSolver extends React.Component {
 
     this.state = {
       exam: null,
-      selectedQuestion: null,
+      questionId: null,
     };
 
     this.selectQuestion = this.selectQuestion.bind(this);
+    this.selectAnswer = this.selectAnswer.bind(this);
   }
 
   async componentDidMount() {
@@ -32,12 +33,12 @@ class ExamSolver extends React.Component {
         }
 
         const exam = response.data;
-        const selectedQuestion = exam.questions[0];
+        const questionId = exam.questions[0].id;
 
         this.setState((state) => ({
           ...state,
           exam,
-          selectedQuestion,
+          questionId,
         }));
       })
       .catch((err) => console.error(err));
@@ -46,17 +47,38 @@ class ExamSolver extends React.Component {
   selectQuestion(questionId) {
     const { exam } = this.state;
 
-    const selectedQuestion = exam.questions.find((q) => q.id === questionId);
-    if (!selectedQuestion) return;
+    const question = exam.questions.find((q) => q.id === questionId);
+    if (!question) return;
 
     this.setState((state) => ({
       ...state,
-      selectedQuestion,
+      questionId: question.id,
     }));
   }
 
+  selectAnswer(questionId, answerId) {
+    this.setState((state) => {
+      const questions = state.exam.questions.map((question) => {
+        if (question.id !== questionId) return question;
+
+        return {
+          ...question,
+          selectedAnswerId: answerId,
+        };
+      });
+
+      return {
+        ...state,
+        exam: {
+          ...state.exam,
+          questions,
+        },
+      };
+    });
+  }
+
   render() {
-    const { exam, selectedQuestion } = this.state;
+    const { exam, questionId } = this.state;
 
     if (exam === null) {
       return <LoadingAnimation />;
@@ -65,12 +87,13 @@ class ExamSolver extends React.Component {
     return (
       <div>
         <QuestionView
-          question={selectedQuestion}
+          question={exam.questions.find((q) => q.id === questionId)}
+          selectAnswer={this.selectAnswer}
         />
 
         <ExamSolverNavBar
           questions={exam.questions}
-          selectedQuestion={selectedQuestion}
+          questionId={questionId}
           selectQuestion={this.selectQuestion}
           onSubmit={() => alert('Not implemented')}
         />

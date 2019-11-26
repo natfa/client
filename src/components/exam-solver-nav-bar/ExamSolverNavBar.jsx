@@ -13,7 +13,7 @@ import './styles.css';
 
 const QuestionNavigator = ({
   questions,
-  selectedQuestion,
+  questionId,
 
   selectQuestion,
 }) => questions.map((question, i) => {
@@ -23,7 +23,12 @@ const QuestionNavigator = ({
     onClick: () => selectQuestion(question.id),
   };
 
-  if (question.id === selectedQuestion.id) {
+  if (question.selectedAnswerId !== undefined) {
+    props.className = 'answered';
+    if (question.id === questionId) {
+      props.className = 'answered-and-selected';
+    }
+  } else if (question.id === questionId) {
     props.className = 'selected';
   }
 
@@ -37,7 +42,7 @@ const QuestionNavigator = ({
 
 const ExamSolverNavBar = ({
   questions,
-  selectedQuestion,
+  questionId,
 
   selectQuestion,
   onSubmit,
@@ -57,7 +62,7 @@ const ExamSolverNavBar = ({
       >
         <QuestionNavigator
           questions={questions}
-          selectedQuestion={selectedQuestion}
+          questionId={questionId}
           selectQuestion={selectQuestion}
         />
       </Grid>
@@ -96,17 +101,19 @@ const ExamSolverNavBar = ({
               marginRight: '10px',
             }}
             onClick={() => {
-              const questionIndex = questions.findIndex((q) => q.id === selectedQuestion.id);
+              const questionIndex = questions
+                .findIndex((q) => q.id === questionId);
+
               if (questionIndex === -1) return;
 
               if (questionIndex === 0) {
-                const questionId = questions[questions.length - 1].id;
-                selectQuestion(questionId);
+                const qId = questions[questions.length - 1].id;
+                selectQuestion(qId);
                 return;
               }
 
-              const questionId = questions[questionIndex - 1].id;
-              selectQuestion(questionId);
+              const qId = questions[questionIndex - 1].id;
+              selectQuestion(qId);
             }}
           >
             назад
@@ -116,17 +123,19 @@ const ExamSolverNavBar = ({
             size="large"
             variant="contained"
             onClick={() => {
-              const questionIndex = questions.findIndex((q) => q.id === selectedQuestion.id);
+              const questionIndex = questions
+                .findIndex((q) => q.id === questionId);
+
               if (questionIndex === -1) return;
 
               if (questionIndex === questions.length - 1) {
-                const questionId = questions[0].id;
-                selectQuestion(questionId);
+                const qId = questions[0].id;
+                selectQuestion(qId);
                 return;
               }
 
-              const questionId = questions[questionIndex + 1].id;
-              selectQuestion(questionId);
+              const qId = questions[questionIndex + 1].id;
+              selectQuestion(qId);
             }}
           >
             напред
@@ -139,10 +148,7 @@ const ExamSolverNavBar = ({
 
 ExamSolverNavBar.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedQuestion: PropTypes.shape({
-    id: PropTypes.string,
-    text: PropTypes.string,
-  }).isRequired,
+  questionId: PropTypes.string.isRequired,
 
   selectQuestion: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
