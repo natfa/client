@@ -7,6 +7,9 @@ import ExamSolverNavBar from '../../components/exam-solver-nav-bar';
 import QuestionView from '../../components/exam-solver-question-view';
 
 import examApi from '../../api/exam';
+import mediaApi from '../../api/media';
+
+import bufferToBlob from '../../utils/bufferToBlob';
 
 class ExamSolver extends React.Component {
   constructor(props) {
@@ -21,7 +24,7 @@ class ExamSolver extends React.Component {
     this.selectAnswer = this.selectAnswer.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { match } = this.props;
 
     examApi
@@ -40,6 +43,42 @@ class ExamSolver extends React.Component {
           exam,
           questionId,
         }));
+
+        exam.questions.forEach((question) => {
+          mediaApi
+            .getManyByQuestionId(question.id)
+            .then((mediaResponse) => {
+              if (!mediaResponse.success) {
+                console.error(mediaResponse.data);
+                return;
+              }
+
+              if (mediaResponse.data.length === 0) return;
+
+              const media = mediaResponse.data
+                .map((buffer) => bufferToBlob(buffer));
+
+              this.setState((state) => {
+                const questions = state.exam.questions.map((q) => {
+                  if (q.id !== question.id) return q;
+
+                  return {
+                    ...q,
+                    media,
+                  };
+                });
+
+                return {
+                  ...state,
+                  exam: {
+                    ...state.exam,
+                    questions,
+                  },
+                };
+              });
+            })
+            .catch((err) => console.error(err));
+        });
       })
       .catch((err) => console.error(err));
   }
@@ -95,7 +134,7 @@ class ExamSolver extends React.Component {
           questions={exam.questions}
           questionId={questionId}
           selectQuestion={this.selectQuestion}
-          onSubmit={() => alert('Not implemented')}
+          onSubmit={() => console.error('Not implemented')}
         />
       </div>
     );
