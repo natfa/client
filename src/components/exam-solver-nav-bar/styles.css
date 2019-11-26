@@ -6,8 +6,8 @@
   width: 100%;
   z-index: 100;
 
-  padding: 1rem 1rem 0 1rem;
   background: #F0F0F0;
+  padding: 0 1rem;
   border-top: 1px solid grey;
 }
 

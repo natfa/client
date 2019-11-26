@@ -11,7 +11,7 @@ import BackIcon from '@material-ui/icons/ArrowBack';
 
 import './styles.css';
 
-const QuestionNavigator = ({
+const QuestionsNav = ({
   questions,
   questionId,
 
@@ -50,8 +50,11 @@ const ExamSolverNavBar = ({
   <div className="exam-solver-nav-bar">
     <Grid
       container
+      direction="row"
+      wrap="nowrap"
+      justify="space-between"
+      alignItems="center"
       spacing={2}
-      direction="column"
     >
       <Grid
         className="question-navigator"
@@ -59,42 +62,39 @@ const ExamSolverNavBar = ({
         container
         direction="row"
         wrap="nowrap"
+        xs={12}
+        sm={5}
       >
-        <QuestionNavigator
+        <QuestionsNav
           questions={questions}
           questionId={questionId}
           selectQuestion={selectQuestion}
         />
       </Grid>
 
-      <Divider />
+      <Grid
+        item
+        container
+        justify="center"
+        xs={12}
+        sm={2}
+      >
+        <Grid item>
+          <Typography variant="h2">00:00</Typography>
+        </Grid>
+      </Grid>
 
       <Grid
         item
         container
-        direction="row"
-        wrap="nowrap"
-        justify="space-between"
-        alignItems="center"
+        justify="flex-end"
+        xs={12}
+        sm={5}
       >
         <Grid item>
           <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={onSubmit}
-          >
-            предай
-          </Button>
-        </Grid>
-
-        <Grid item>
-          <Typography variant="h2">00:00</Typography>
-        </Grid>
-
-        <Grid item>
-          <Button
             startIcon={<BackIcon />}
+            color="secondary"
             size="large"
             variant="contained"
             style={{
@@ -118,9 +118,13 @@ const ExamSolverNavBar = ({
           >
             назад
           </Button>
+        </Grid>
+
+        <Grid item>
           <Button
             endIcon={<ForwardIcon />}
             size="large"
+            color="primary"
             variant="contained"
             onClick={() => {
               const questionIndex = questions
