@@ -10,7 +10,13 @@ const MediaList = ({
 
   onItemRemove,
 }) => (
-  <Grid container>
+  <Grid
+    container
+    direction="row"
+    wrap="wrap"
+    spacing={2}
+    justify="flex-start"
+  >
     {media.map((m) => {
       const props = {
         src: m.url,
