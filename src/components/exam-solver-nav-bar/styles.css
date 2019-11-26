@@ -5,7 +5,7 @@
 
   width: 100%;
   z-index: 100;
-  
+
   padding: 1rem 1rem 0 1rem;
   background: #F0F0F0;
   border-top: 1px solid grey;
@@ -28,4 +28,8 @@
 
 .exam-solver-nav-bar .question-navigator > h5.answered {
   color: #4CAF50;
+}
+
+.exam-solver-nav-bar .question-navigator > h5.answered-and-selected {
+  color: #9C27B0;
 }
