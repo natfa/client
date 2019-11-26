@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import LoadingAnimation from '../../components/loading-animation';
 import ExamSolverNavBar from '../../components/exam-solver-nav-bar';
+import QuestionView from '../../components/exam-solver-question-view';
 
 import examApi from '../../api/exam';
 
@@ -63,7 +64,10 @@ class ExamSolver extends React.Component {
 
     return (
       <div>
-        <p>{selectedQuestion.text}</p>
+        <QuestionView
+          question={selectedQuestion}
+        />
+
         <ExamSolverNavBar
           questions={exam.questions}
           selectedQuestion={selectedQuestion}
