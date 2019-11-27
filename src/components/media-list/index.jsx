@@ -2,38 +2,74 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Grid from '@material-ui/core/Grid';
+import Dialog from '@material-ui/core/Dialog';
 
 import MediaListItem from '../media-list-item';
 
-const MediaList = ({
-  media,
+class MediaList extends React.Component {
+  constructor(props) {
+    super(props);
 
-  onItemRemove,
-}) => (
-  <Grid
-    container
-    direction="row"
-    wrap="wrap"
-    spacing={2}
-    justify="flex-start"
-  >
-    {media.map((m) => {
-      const props = {
-        src: m.url,
-      };
+    this.state = {
+      url: null,
+    };
 
-      if (onItemRemove) {
-        props.onRemove = () => onItemRemove(m.url);
-      }
+    this.openDialog = this.openDialog.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+  }
 
-      return (
-        <Grid key={m.url} item>
-          <MediaListItem {...props} />
-        </Grid>
-      );
-    })}
-  </Grid>
-);
+  openDialog(url) {
+    this.setState((state) => ({ ...state, url }));
+  }
+
+  closeDialog() {
+    this.setState((state) => ({ ...state, url: null }));
+  }
+
+  render() {
+    const { url } = this.state;
+    const { media, onItemRemove } = this.props;
+
+    return (
+      <Grid
+        container
+        direction="row"
+        wrap="wrap"
+        spacing={2}
+        justify="flex-start"
+      >
+        {media.map((m) => {
+          const props = {
+            src: m.url,
+            onImageClick: () => this.openDialog(m.url),
+          };
+
+          if (onItemRemove) {
+            props.onRemove = () => onItemRemove(m.url);
+          }
+
+          return (
+            <Grid key={m.url} item>
+              <MediaListItem {...props} />
+            </Grid>
+          );
+        })}
+
+        {url
+        && (
+          <Dialog
+            open={url !== null}
+            onClose={this.closeDialog}
+            fullWidth
+            maxWidth="lg"
+          >
+            <img alt="enlarged" src={url} />
+          </Dialog>
+        )}
+      </Grid>
+    );
+  }
+}
 
 MediaList.propTypes = {
   media: PropTypes.arrayOf(PropTypes.shape({

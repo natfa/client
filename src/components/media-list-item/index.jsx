@@ -8,10 +8,12 @@ import './styles.css';
 
 const MediaListItem = ({
   src,
+  onImageClick,
   onRemove,
 }) => (
   <div className="media-list-item">
-    <img alt="media list item" src={src} />
+    {/* eslint-disable-next-line */}
+    <img alt="media list item" src={src} onClick={onImageClick} />
     {onRemove
     && (
       <span>
@@ -25,6 +27,7 @@ const MediaListItem = ({
 
 MediaListItem.propTypes = {
   src: PropTypes.string.isRequired,
+  onImageClick: PropTypes.func.isRequired,
   onRemove: PropTypes.func,
 };
 
