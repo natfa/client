@@ -11,25 +11,31 @@
   border-top: 1px solid grey;
 }
 
-.exam-solver-nav-bar .question-navigator {
+.exam-solver-nav-bar > .question-navigator {
   overflow-x: auto;
   overflow-y: none;
 }
 
-.exam-solver-nav-bar .question-navigator > h5 {
-  margin: 0 1rem 0 0;
-  text-decoration: underline;
+.exam-solver-nav-bar > .question-navigator > h5 {
+  padding: 0.2rem 0.75rem;
   cursor: pointer;
+  border-radius: 4px;
+
+  transition: all 0.1s;
 }
 
-.exam-solver-nav-bar .question-navigator > h5.selected {
+.exam-solver-nav-bar > .question-navigator > h5:hover {
+  background-color: #D3D3D3;
+}
+
+.exam-solver-nav-bar > .question-navigator > h5.selected {
   color: #2196F3;
 }
 
-.exam-solver-nav-bar .question-navigator > h5.answered {
+.exam-solver-nav-bar > .question-navigator > h5.answered {
   color: #4CAF50;
 }
 
-.exam-solver-nav-bar .question-navigator > h5.answered-and-selected {
+.exam-solver-nav-bar > .question-navigator > h5.answered-and-selected {
   color: #9C27B0;
 }
