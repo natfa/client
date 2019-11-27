@@ -17,6 +17,10 @@ class ExamSolver extends React.Component {
   constructor(props) {
     super(props);
 
+    // a reference to the Typography element that is the currently
+    // selected question
+    this.questionLinkRef = React.createRef();
+
     this.state = {
       exam: null,
       questionId: null,
@@ -94,6 +98,18 @@ class ExamSolver extends React.Component {
         });
       })
       .catch((err) => console.error(err));
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { questionId } = this.state;
+
+    // only execute if the question view component has changed
+    if (questionId !== prevState.questionId) {
+      this.questionLinkRef.current.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -195,6 +211,7 @@ class ExamSolver extends React.Component {
         }
 
         <ExamSolverNavBar
+          ref={this.questionLinkRef}
           questions={exam.questions}
           questionId={questionId}
           selectQuestion={this.selectQuestion}

@@ -10,11 +10,11 @@ import BackIcon from '@material-ui/icons/ArrowBack';
 
 import './styles.css';
 
-const QuestionsNav = ({
+const QuestionsNav = React.forwardRef(({
   questions,
   questionId,
   selectQuestion,
-}) => questions.map((question, i) => {
+}, ref) => questions.map((question, i) => {
   const props = {
     variant: 'h5',
     key: question.id,
@@ -27,6 +27,7 @@ const QuestionsNav = ({
 
   if (question.id === questionId) {
     props.className += ' selected';
+    props.ref = ref;
   }
 
   return (
@@ -34,16 +35,26 @@ const QuestionsNav = ({
       {i + 1}
     </Typography>
   );
-});
+}));
+
+QuestionsNav.propTypes = {
+  questions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  questionId: PropTypes.string,
+  selectQuestion: PropTypes.func.isRequired,
+};
+
+QuestionsNav.defaultProps = {
+  questionId: null,
+};
 
 
-const ExamSolverNavBar = ({
+const ExamSolverNavBar = React.forwardRef(({
   questions,
   questionId,
   timeLeft,
   selectQuestion,
   openSubmitPage,
-}) => (
+}, ref) => (
   <Grid
     container
     className="exam-solver-nav-bar"
@@ -63,11 +74,13 @@ const ExamSolverNavBar = ({
       sm={5}
     >
       <QuestionsNav
+        ref={questionId !== null ? ref : null}
         questions={questions}
         questionId={questionId}
         selectQuestion={selectQuestion}
       />
       <Typography
+        ref={questionId === null ? ref : null}
         variant="h5"
         onClick={openSubmitPage}
         className={questionId === null ? 'selected' : null}
@@ -153,7 +166,7 @@ const ExamSolverNavBar = ({
       </Grid>
     </Grid>
   </Grid>
-);
+));
 
 ExamSolverNavBar.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
