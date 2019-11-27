@@ -13,7 +13,6 @@ import './styles.css';
 const QuestionsNav = ({
   questions,
   questionId,
-
   selectQuestion,
 }) => questions.map((question, i) => {
   const props = {
@@ -42,8 +41,9 @@ const QuestionsNav = ({
 const ExamSolverNavBar = ({
   questions,
   questionId,
-
+  timeLeft,
   selectQuestion,
+  openSubmitPage,
 }) => (
   <Grid
     container
@@ -68,6 +68,13 @@ const ExamSolverNavBar = ({
         questionId={questionId}
         selectQuestion={selectQuestion}
       />
+      <Typography
+        variant="h5"
+        onClick={openSubmitPage}
+        className={questionId === null ? 'selected' : null}
+      >
+        Предай
+      </Typography>
     </Grid>
 
     <Grid
@@ -78,7 +85,9 @@ const ExamSolverNavBar = ({
       sm={2}
     >
       <Grid item>
-        <Typography variant="h2">00:00</Typography>
+        <Typography variant="h2">
+          {timeLeft}
+        </Typography>
       </Grid>
     </Grid>
 
@@ -100,6 +109,11 @@ const ExamSolverNavBar = ({
             marginRight: '10px',
           }}
           onClick={() => {
+            if (questionId === null) {
+              const lastQuestionId = questions[questions.length - 1].id;
+              selectQuestion(lastQuestionId);
+              return;
+            }
             const questionIndex = questions
               .findIndex((q) => q.id === questionId);
 
@@ -115,7 +129,7 @@ const ExamSolverNavBar = ({
 
       <Grid item>
         <Button
-          disabled={questions.findIndex((q) => q.id === questionId) === questions.length - 1}
+          disabled={questionId === null}
           endIcon={<ForwardIcon />}
           size="large"
           color="primary"
@@ -124,7 +138,12 @@ const ExamSolverNavBar = ({
             const questionIndex = questions
               .findIndex((q) => q.id === questionId);
 
-            if (questionIndex === -1 || questionIndex === questions.length - 1) return;
+            if (questionIndex === -1) return;
+
+            if (questionIndex === questions.length - 1) {
+              openSubmitPage();
+              return;
+            }
 
             const { id } = questions[questionIndex + 1];
             selectQuestion(id);
@@ -139,9 +158,14 @@ const ExamSolverNavBar = ({
 
 ExamSolverNavBar.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  questionId: PropTypes.string.isRequired,
-
+  questionId: PropTypes.string,
+  timeLeft: PropTypes.string.isRequired,
   selectQuestion: PropTypes.func.isRequired,
+  openSubmitPage: PropTypes.func.isRequired,
+};
+
+ExamSolverNavBar.defaultProps = {
+  questionId: null,
 };
 
 export default ExamSolverNavBar;

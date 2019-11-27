@@ -5,11 +5,13 @@ import { withRouter } from 'react-router-dom';
 import LoadingAnimation from '../../components/loading-animation';
 import ExamSolverNavBar from '../../components/exam-solver-nav-bar';
 import QuestionView from '../../components/exam-solver-question-view';
+import SubmitPage from '../../components/exam-solver-submit-page';
 
 import examApi from '../../api/exam';
 import mediaApi from '../../api/media';
 
 import bufferToBlob from '../../utils/bufferToBlob';
+import ttsToString from '../../utils/ttsToString';
 
 class ExamSolver extends React.Component {
   constructor(props) {
@@ -18,8 +20,11 @@ class ExamSolver extends React.Component {
     this.state = {
       exam: null,
       questionId: null,
+      timeLeft: null,
     };
 
+    this.tick = this.tick.bind(this);
+    this.openSubmitPage = this.openSubmitPage.bind(this);
     this.selectQuestion = this.selectQuestion.bind(this);
     this.selectAnswer = this.selectAnswer.bind(this);
   }
@@ -27,6 +32,7 @@ class ExamSolver extends React.Component {
   componentDidMount() {
     const { match } = this.props;
 
+    // get exam
     examApi
       .getOneById(match.params.id)
       .then((response) => {
@@ -38,12 +44,18 @@ class ExamSolver extends React.Component {
         const exam = response.data;
         const questionId = exam.questions[0].id;
 
+        // set exam state
         this.setState((state) => ({
           ...state,
           exam,
           questionId,
+          timeLeft: exam.timeToSolve,
         }));
 
+        // start timer
+        this.timerID = setInterval(this.tick, 60000);
+
+        // fetch question medias
         exam.questions.forEach((question) => {
           mediaApi
             .getManyByQuestionId(question.id)
@@ -58,6 +70,7 @@ class ExamSolver extends React.Component {
               const media = mediaResponse.data
                 .map((buffer) => bufferToBlob(buffer));
 
+              // add media to questions' state
               this.setState((state) => {
                 const questions = state.exam.questions.map((q) => {
                   if (q.id !== question.id) return q;
@@ -81,6 +94,35 @@ class ExamSolver extends React.Component {
         });
       })
       .catch((err) => console.error(err));
+  }
+
+  componentWillUnmount() {
+    // stop timer, stop memory leaks
+    clearInterval(this.timerID);
+  }
+
+  /**
+   * Should execute each minute,
+   * keeps track of how much time is left fo the student to solve the exam
+   */
+  tick() {
+    this.setState((state) => {
+      const { timeLeft } = state;
+
+      if (timeLeft.minutes === 0) {
+        if (timeLeft.hours === 0) return state;
+
+        timeLeft.hours -= 1;
+        timeLeft.minutes = 59;
+      } else {
+        timeLeft.minutes -= 1;
+      }
+
+      return {
+        ...state,
+        timeLeft,
+      };
+    });
   }
 
   selectQuestion(questionId) {
@@ -116,24 +158,48 @@ class ExamSolver extends React.Component {
     });
   }
 
+  openSubmitPage() {
+    this.setState((state) => ({ ...state, questionId: null }));
+  }
+
   render() {
-    const { exam, questionId } = this.state;
+    const { exam, questionId, timeLeft } = this.state;
 
     if (exam === null) {
       return <LoadingAnimation />;
     }
 
+    const questionsLeft = exam.questions.reduce((acc, question) => {
+      if (!question.selectedAnswerId) {
+        return acc + 1;
+      }
+
+      return acc;
+    }, 0);
+
     return (
       <div>
-        <QuestionView
-          question={exam.questions.find((q) => q.id === questionId)}
-          selectAnswer={this.selectAnswer}
-        />
+        {
+          questionId === null
+            ? (
+              <SubmitPage
+                onSubmit={() => console.error('Not implemented')}
+                questionsLeft={questionsLeft}
+              />
+            ) : (
+              <QuestionView
+                question={exam.questions.find((q) => q.id === questionId)}
+                selectAnswer={this.selectAnswer}
+              />
+            )
+        }
 
         <ExamSolverNavBar
           questions={exam.questions}
           questionId={questionId}
           selectQuestion={this.selectQuestion}
+          timeLeft={ttsToString(timeLeft)}
+          openSubmitPage={this.openSubmitPage}
         />
       </div>
     );
