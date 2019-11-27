@@ -134,7 +134,6 @@ class ExamSolver extends React.Component {
           questions={exam.questions}
           questionId={questionId}
           selectQuestion={this.selectQuestion}
-          onSubmit={() => console.error('Not implemented')}
         />
       </div>
     );
