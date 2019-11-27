@@ -24,18 +24,14 @@
   transition: all 0.1s;
 }
 
-.exam-solver-nav-bar > .question-navigator > h5:hover {
-  background-color: #D3D3D3;
-}
-
 .exam-solver-nav-bar > .question-navigator > h5.selected {
-  color: #2196F3;
+  background-color: #D3D3D3;
 }
 
 .exam-solver-nav-bar > .question-navigator > h5.answered {
   color: #4CAF50;
 }
 
-.exam-solver-nav-bar > .question-navigator > h5.answered-and-selected {
-  color: #9C27B0;
+.exam-solver-nav-bar > .question-navigator > h5:hover {
+  background-color: #A3A3A3;
 }

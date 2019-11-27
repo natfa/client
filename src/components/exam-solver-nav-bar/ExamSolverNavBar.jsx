@@ -23,11 +23,10 @@ const QuestionsNav = ({
 
   if (question.selectedAnswerId !== undefined) {
     props.className = 'answered';
-    if (question.id === questionId) {
-      props.className = 'answered-and-selected';
-    }
-  } else if (question.id === questionId) {
-    props.className = 'selected';
+  }
+
+  if (question.id === questionId) {
+    props.className += ' selected';
   }
 
   return (
