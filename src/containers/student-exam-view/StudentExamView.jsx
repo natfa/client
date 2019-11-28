@@ -21,43 +21,60 @@ class StudentExamView extends React.Component {
     this.state = {
       exam: null,
     };
+
+    this.tick = this.tick.bind(this);
   }
 
   async componentDidMount() {
     const { match } = this.props;
 
-    let response;
-
     try {
-      response = await examApi.getOneById(match.params.id);
+      const response = await examApi.getOneById(match.params.id);
+
+      if (!response.success) {
+        console.error(response.data);
+        return;
+      }
+
+      const exam = response.data;
+
+      this.setState((state) => ({ ...state, exam }));
+
+      // do it once so that it shows up
+      this.tick();
+
+      // setup a timer to do it every second
+      this.timerID = setInterval(this.tick, 1000);
     } catch (err) {
       console.error(err);
     }
-
-    if (!response.success) {
-      console.error(response.data);
-      return;
-    }
-
-    const exam = response.data;
-
-    this.setState((state) => ({ ...state, exam }));
   }
 
-  getTimeLeftUntilStart() {
-    let rv = '';
-    const { exam } = this.state;
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
 
-    const aDay = 24 * 60 * 60;
-    const anHour = 60 * 60;
-    const aMinute = 60;
+  tick() {
+    const { exam } = this.state;
 
     const now = dayjs();
     const start = dayjs(exam.startDate);
 
+    const setTimeLeftUntilStart = (str) => {
+      this.setState((state) => ({
+        ...state,
+        timeLeftUntilStart: str,
+      }));
+    };
+
     if (now.isAfter(start)) {
-      return '00:00:00';
+      setTimeLeftUntilStart('00:00:00');
+      return;
     }
+
+    const aDay = 24 * 60 * 60;
+    const anHour = 60 * 60;
+    const aMinute = 60;
 
     // dayjs.unix() returns seconds not milliseconds
     let secondsLeft = start.unix() - now.unix();
@@ -66,31 +83,23 @@ class StudentExamView extends React.Component {
     secondsLeft -= daysLeft * aDay;
 
     if (daysLeft > 0) {
-      rv += `~ ${daysLeft} дни`;
-      return rv;
+      setTimeLeftUntilStart(`~ ${daysLeft} дни`);
+      return;
     }
 
     const hoursLeft = parseInt(secondsLeft / anHour, 10);
     secondsLeft -= hoursLeft * anHour;
 
-    if (hoursLeft > 0) {
-      rv += `${withLeadingZero(hoursLeft)}:`;
-    }
-
     const minutesLeft = parseInt(secondsLeft / aMinute, 10);
     secondsLeft -= minutesLeft * aMinute;
 
-    if (minutesLeft > 0) {
-      rv += `${withLeadingZero(minutesLeft)}:`;
-    }
+    const timeString = `${withLeadingZero(hoursLeft)}:${withLeadingZero(minutesLeft)}:${withLeadingZero(secondsLeft)}`;
 
-    rv += `${withLeadingZero(secondsLeft)}`;
-
-    return rv;
+    setTimeLeftUntilStart(timeString);
   }
 
   render() {
-    const { exam } = this.state;
+    const { exam, timeLeftUntilStart } = this.state;
 
     if (exam === null) {
       return <LoadingAnimation />;
@@ -99,8 +108,6 @@ class StudentExamView extends React.Component {
     const now = dayjs();
     const start = dayjs(exam.startDate);
     const startString = start.format('DD MMM YYYY, HH:mm');
-
-    const timeLeftUntilStart = this.getTimeLeftUntilStart();
 
     const timeToSolveString = ttsToString(exam.timeToSolve);
 
