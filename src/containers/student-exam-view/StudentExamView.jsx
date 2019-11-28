@@ -96,6 +96,7 @@ class StudentExamView extends React.Component {
       return <LoadingAnimation />;
     }
 
+    const now = dayjs();
     const start = dayjs(exam.startDate);
     const startString = start.format('DD MMM YYYY, HH:mm');
 
@@ -145,6 +146,7 @@ class StudentExamView extends React.Component {
 
           <Link to={`/solve/${exam.id}`}>
             <Button
+              disabled={start.isAfter(now)}
               variant="contained"
               color="primary"
               size="large"
