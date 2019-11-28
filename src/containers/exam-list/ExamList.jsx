@@ -29,7 +29,21 @@ class ExamList extends React.Component {
   componentDidMount() {
     examApi
       .getAll()
-      .then((exams) => {
+      .then((response) => {
+        const exams = response;
+
+        // sort by date
+        exams.sort((e1, e2) => {
+          const start1 = dayjs(e1.startDate);
+          const start2 = dayjs(e2.startDate);
+
+          if (start1.isBefore(start2)) return -1;
+
+          if (start1.isSame(start2)) return 0;
+
+          return 1;
+        });
+
         this.setState((state) => ({ ...state, exams }));
       })
       .catch((err) => console.error(err));
