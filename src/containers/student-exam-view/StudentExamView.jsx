@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -20,9 +20,12 @@ class StudentExamView extends React.Component {
 
     this.state = {
       exam: null,
+      timeLeftUntilStart: null,
+      redirectToExamSolver: false,
     };
 
     this.tick = this.tick.bind(this);
+    this.startSolvingExam = this.startSolvingExam.bind(this);
   }
 
   async componentDidMount() {
@@ -98,8 +101,16 @@ class StudentExamView extends React.Component {
     setTimeLeftUntilStart(timeString);
   }
 
+  startSolvingExam() {
+    this.setState((state) => ({ ...state, redirectToExamSolver: true }));
+  }
+
   render() {
-    const { exam, timeLeftUntilStart } = this.state;
+    const { exam, timeLeftUntilStart, redirectToExamSolver } = this.state;
+
+    if (redirectToExamSolver) {
+      return <Redirect push to={`/solve/${exam.id}`} />;
+    }
 
     if (exam === null) {
       return <LoadingAnimation />;
@@ -151,17 +162,16 @@ class StudentExamView extends React.Component {
             {timeLeftUntilStart}
           </Typography>
 
-          <Link to={`/solve/${exam.id}`}>
-            <Button
-              disabled={start.isAfter(now)}
-              variant="contained"
-              color="primary"
-              size="large"
-              fullWidth
-            >
-              започни
-            </Button>
-          </Link>
+          <Button
+            disabled={start.isAfter(now)}
+            variant="contained"
+            color="primary"
+            size="large"
+            fullWidth
+            onClick={this.startSolvingExam}
+          >
+            започни
+          </Button>
         </Grid>
       </Grid>
     );
