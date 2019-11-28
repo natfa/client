@@ -64,10 +64,10 @@ class ExamList extends React.Component {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Име</TableCell>
+                <TableCell align="left">Име</TableCell>
                 <TableCell align="right">Начало</TableCell>
-                <TableCell align="right">Продължителност</TableCell>
-                <TableCell align="right">Виж</TableCell>
+                <TableCell align="center">Продължителност</TableCell>
+                <TableCell align="center">Виж</TableCell>
               </TableRow>
             </TableHead>
 
@@ -78,16 +78,26 @@ class ExamList extends React.Component {
 
                 return (
                   <TableRow key={exam.id} hover>
-                    <TableCell>{exam.name}</TableCell>
-                    <TableCell align="right">{startDate}</TableCell>
-                    <TableCell align="right">{timeToSolve}</TableCell>
+                    <TableCell align="left">
+                      <Typography>{exam.name}</Typography>
+                    </TableCell>
+
                     <TableCell align="right">
+                      <Typography>{startDate}</Typography>
+                    </TableCell>
+
+                    <TableCell align="center">
+                      <Typography>{timeToSolve}</Typography>
+                    </TableCell>
+
+                    <TableCell align="center">
                       <Link to={`/exam/${exam.id}`}>
                         <IconButton>
                           <ViewIcon />
                         </IconButton>
                       </Link>
                     </TableCell>
+
                   </TableRow>
                 );
               })}
