@@ -55,6 +55,11 @@ class StudentExamView extends React.Component {
     const now = dayjs();
     const start = dayjs(exam.startDate);
 
+    if (now.isAfter(start)) {
+      return '00:00:00';
+    }
+
+    // dayjs.unix() returns seconds not milliseconds
     let secondsLeft = start.unix() - now.unix();
 
     const daysLeft = parseInt(secondsLeft / aDay, 10);
