@@ -71,13 +71,17 @@ class QuestionFormManager extends React.Component {
 
       mediaApi
         .getManyByQuestionId(question.id)
-        .then((response) => {
-          if (!response.success) {
-            console.error(response.data);
+        .then((buffers) => {
+          if (buffers === null) {
+            console.error('Media is null');
             return;
           }
 
-          const media = response.data.map((buffer) => bufferToBlob(buffer));
+          if (buffers.length === 0) {
+            return;
+          }
+
+          const media = buffers.map((buffer) => bufferToBlob(buffer));
 
           this.setState((state) => ({
             ...state,

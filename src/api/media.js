@@ -8,10 +8,11 @@ const getManyByQuestionId = async (questionId) => {
     credentials: 'include',
   });
 
-  return {
-    success: response.ok,
-    data: await response.json(),
-  };
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
 };
 
 export default {

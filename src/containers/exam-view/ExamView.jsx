@@ -40,10 +40,17 @@ class ExamView extends React.Component {
       exam.questions.forEach((question) => {
         mediaApi
           .getManyByQuestionId(question.id)
-          .then((mediaResponse) => {
-            if (!mediaResponse.success || mediaResponse.data.length === 0) return;
+          .then((buffers) => {
+            if (buffers === null) {
+              console.error('Media is null');
+              return;
+            }
 
-            const media = mediaResponse.data.map((buffer) => bufferToBlob(buffer));
+            if (buffers.length === 0) {
+              return;
+            }
+
+            const media = buffers.map((buffer) => bufferToBlob(buffer));
 
             this.setState((state) => {
               const questions = state.exam.questions.map((q) => {
