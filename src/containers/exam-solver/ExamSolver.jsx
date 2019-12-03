@@ -7,7 +7,7 @@ import ExamSolverNavBar from '../../components/exam-solver-nav-bar';
 import QuestionView from '../../components/exam-solver-question-view';
 import SubmitPage from '../../components/exam-solver-submit-page';
 
-import examApi from '../../api/exam';
+import solveApi from '../../api/solve';
 import mediaApi from '../../api/media';
 
 import bufferToBlob from '../../utils/bufferToBlob';
@@ -36,19 +36,17 @@ class ExamSolver extends React.Component {
   componentDidMount() {
     const { match } = this.props;
 
-    // get exam
-    examApi
-      .getOneById(match.params.id)
-      .then((response) => {
-        if (!response.success) {
-          console.error(response.data);
+    solveApi
+      .getExamById(match.params.id)
+      .then((examData) => {
+        if (examData === null) {
+          console.error('Exam is null, probably id not found');
           return;
         }
 
-        const exam = response.data;
+        const { exam, answered } = examData;
         const questionId = exam.questions[0].id;
 
-        // set exam state
         this.setState((state) => ({
           ...state,
           exam,
@@ -56,23 +54,24 @@ class ExamSolver extends React.Component {
           timeLeft: exam.timeToSolve,
         }));
 
-        // start timer
+        answered.forEach((a) => {
+          this.selectAnswer(a.questionId, a.answerId);
+        });
+
         this.timerID = setInterval(this.tick, 60000);
 
-        // fetch question medias
         exam.questions.forEach((question) => {
           mediaApi
             .getManyByQuestionId(question.id)
-            .then((mediaResponse) => {
-              if (!mediaResponse.success) {
-                console.error(mediaResponse.data);
+            .then((buffers) => {
+              if (buffers === null) {
+                console.error('Media is null');
                 return;
               }
 
-              if (mediaResponse.data.length === 0) return;
+              if (buffers.length === 0) return;
 
-              const media = mediaResponse.data
-                .map((buffer) => bufferToBlob(buffer));
+              const media = buffers.map((buffer) => bufferToBlob(buffer));
 
               // add media to questions' state
               this.setState((state) => {
@@ -94,10 +93,14 @@ class ExamSolver extends React.Component {
                 };
               });
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+              console.error(err);
+            });
         });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   componentDidUpdate(_, prevState) {
@@ -205,7 +208,10 @@ class ExamSolver extends React.Component {
             ) : (
               <QuestionView
                 question={exam.questions.find((q) => q.id === questionId)}
-                selectAnswer={this.selectAnswer}
+                selectAnswer={(qId, aId) => {
+                  this.selectAnswer(qId, aId);
+                  solveApi.answerQuestion(qId, aId);
+                }}
               />
             )
         }
