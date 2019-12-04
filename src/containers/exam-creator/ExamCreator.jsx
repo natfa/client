@@ -46,6 +46,8 @@ class ExamCreator extends React.Component {
     this.handleBoundariesCancel = this.handleBoundariesCancel.bind(this);
     this.handleBoundariesUpdate = this.handleBoundariesUpdate.bind(this);
     this.handleBoundariesSubmit = this.handleBoundariesSubmit.bind(this);
+
+    this.submitExamFilters = this.submitExamFilters.bind(this);
   }
 
   handleNameChange(name) {
@@ -123,7 +125,11 @@ class ExamCreator extends React.Component {
     this.setState((state) => ({ ...state, boundaries }));
   }
 
-  async handleBoundariesSubmit() {
+  handleBoundariesSubmit() {
+    this.submitExamFilters();
+  }
+
+  async submitExamFilters() {
     const {
       name,
       date,
