@@ -23,12 +23,7 @@ class ExamCreator extends React.Component {
       timeToSolve: dayjs(today).hour(0).minute(0).second(0),
       filters: [],
       filtersComplete: false,
-      boundaries: {
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-      },
+      boundaries: [],
       examId: null,
     };
 
@@ -112,12 +107,7 @@ class ExamCreator extends React.Component {
     this.setState((state) => ({
       ...state,
       filtersComplete: false,
-      boundaries: {
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-      },
+      boundaries: [],
     }));
   }
 
