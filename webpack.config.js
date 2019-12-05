@@ -13,8 +13,10 @@ module.exports = {
     landing: path.resolve(__dirname, 'src/pages/landing.jsx'),
     teacher: path.resolve(__dirname, 'src/pages/teacher.jsx'),
     student: path.resolve(__dirname, 'src/pages/student.jsx'),
-    unauthorized: path.resolve(__dirname, 'src/pages/401.jsx'),
-    forbidden: path.resolve(__dirname, 'src/pages/403.jsx'),
+
+    401: path.resolve(__dirname, 'src/pages/401.jsx'),
+    403: path.resolve(__dirname, 'src/pages/403.jsx'),
+    404: path.resolve(__dirname, 'src/pages/404.jsx'),
   },
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -69,15 +71,21 @@ module.exports = {
       template: path.resolve(__dirname, 'public/index.html'),
     }),
     new HtmlWebpackPlugin({
-      chunks: ['unauthorized'],
+      chunks: ['401'],
       title: '401 Unauthorized',
-      filename: 'unauthorized/index.html',
+      filename: '401/index.html',
       template: path.resolve(__dirname, 'public/index.html'),
     }),
     new HtmlWebpackPlugin({
-      chunks: ['forbidden'],
+      chunks: ['403'],
       title: '403 Forbidden',
-      filename: 'forbidden/index.html',
+      filename: '403/index.html',
+      template: path.resolve(__dirname, 'public/index.html'),
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['404'],
+      title: '404 Not found',
+      filename: '404/index.html',
       template: path.resolve(__dirname, 'public/index.html'),
     }),
   ],
