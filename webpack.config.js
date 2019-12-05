@@ -13,6 +13,7 @@ module.exports = {
     landing: path.resolve(__dirname, 'src/pages/landing.jsx'),
     teacher: path.resolve(__dirname, 'src/pages/teacher.jsx'),
     student: path.resolve(__dirname, 'src/pages/student.jsx'),
+    unauthorized: path.resolve(__dirname, 'src/pages/401.jsx'),
   },
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -64,6 +65,12 @@ module.exports = {
       chunks: ['student'],
       title: 'Students',
       filename: 'student/index.html',
+      template: path.resolve(__dirname, 'public/index.html'),
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['unauthorized'],
+      title: '401 Unauthorized',
+      filename: 'unauthorized/index.html',
       template: path.resolve(__dirname, 'public/index.html'),
     }),
   ],
