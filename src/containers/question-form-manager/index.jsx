@@ -184,7 +184,7 @@ class QuestionFormManager extends React.Component {
   handleTextChange(e) {
     const { value } = e.target;
 
-    if (value.length > 150) return;
+    if (value.length > 500) return;
 
     this.setState((state) => ({
       ...state,
