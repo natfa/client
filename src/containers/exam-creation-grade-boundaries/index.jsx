@@ -9,16 +9,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import GradeBoundary from '../../components/grade-boundary';
 
+import courseApi from '../../api/course';
+
 class ExamCreationGradeBoundaries extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      allCourses: [
-        { id: '1', name: 'Фотография' },
-        { id: '2', name: 'Драматургия' },
-        { id: '3', name: 'Анимация' },
-      ],
+      courses: [],
       selectedCourse: null,
     };
 
@@ -26,6 +24,23 @@ class ExamCreationGradeBoundaries extends React.Component {
     this.deleteCourseBoundary = this.deleteCourseBoundary.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handlePointsChange = this.handlePointsChange.bind(this);
+  }
+
+  /**
+   * Populates the courses array in the state
+   */
+  componentDidMount() {
+    courseApi
+      .getAllCourses()
+      .then((courses) => {
+        if (courses === null) {
+          console.error('courses is null');
+          return;
+        }
+
+        this.setState((state) => ({ ...state, courses }));
+      })
+      .catch((err) => console.error(err));
   }
 
   /**
@@ -98,9 +113,9 @@ class ExamCreationGradeBoundaries extends React.Component {
   }
 
   handleSelectChange(e) {
-    const { allCourses } = this.state;
+    const { courses } = this.state;
 
-    const course = allCourses.find((c) => c.name === e.target.value);
+    const course = courses.find((c) => c.name === e.target.value);
 
     // reset
     if (course === undefined) {
@@ -113,7 +128,7 @@ class ExamCreationGradeBoundaries extends React.Component {
 
   render() {
     const {
-      allCourses,
+      courses,
       selectedCourse,
     } = this.state;
 
@@ -124,7 +139,7 @@ class ExamCreationGradeBoundaries extends React.Component {
       onSubmit,
     } = this.props;
 
-    const unusedCourses = allCourses.filter((course) => {
+    const unusedCourses = courses.filter((course) => {
       const used = boundaries
         .find((boundary) => boundary.course.id === course.id);
 
