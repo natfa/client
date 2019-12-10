@@ -32,7 +32,7 @@ const GradeBoundary = ({
       >
         <Grid item>
           <Typography variant="h5">
-            {`Оценки за специалност ${boundary.course.name}`}
+            {`Оценки за специалност ${boundary.specialty.name}`}
           </Typography>
         </Grid>
 
@@ -91,7 +91,7 @@ const GradeBoundary = ({
 
 GradeBoundary.propTypes = {
   boundary: PropTypes.shape({
-    course: PropTypes.shape({
+    specialty: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
     }),

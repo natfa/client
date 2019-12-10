@@ -9,36 +9,36 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import GradeBoundary from '../../components/grade-boundary';
 
-import courseApi from '../../api/course';
+import specialtyApi from '../../api/specialty';
 
 class ExamCreationGradeBoundaries extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      courses: [],
-      selectedCourse: null,
+      specialties: [],
+      selectedSpecialty: null,
     };
 
-    this.addSelectedCourse = this.addSelectedCourse.bind(this);
-    this.deleteCourseBoundary = this.deleteCourseBoundary.bind(this);
+    this.addSelectedSpecialty = this.addSelectedSpecialty.bind(this);
+    this.deleteSpecialty = this.deleteSpecialty.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handlePointsChange = this.handlePointsChange.bind(this);
   }
 
   /**
-   * Populates the courses array in the state
+   * Populates the specialties array in the state
    */
   componentDidMount() {
-    courseApi
-      .getAllCourses()
-      .then((courses) => {
-        if (courses === null) {
-          console.error('courses is null');
+    specialtyApi
+      .getAllSpecialties()
+      .then((specialties) => {
+        if (specialties === null) {
+          console.error('specialties is null');
           return;
         }
 
-        this.setState((state) => ({ ...state, courses }));
+        this.setState((state) => ({ ...state, specialties }));
       })
       .catch((err) => console.error(err));
   }
@@ -46,17 +46,17 @@ class ExamCreationGradeBoundaries extends React.Component {
   /**
    * adds a new boundary item to the boundaries object
    */
-  addSelectedCourse() {
-    const { selectedCourse } = this.state;
+  addSelectedSpecialty() {
+    const { selectedSpecialty } = this.state;
     const { boundaries, onBoundariesUpdate } = this.props;
 
     // prevent clicking without a selection
-    if (selectedCourse === null) return;
+    if (selectedSpecialty === null) return;
 
     const newBoundaries = [
       ...boundaries,
       {
-        course: selectedCourse,
+        specialty: selectedSpecialty,
         3: 0,
         4: 0,
         5: 0,
@@ -66,17 +66,17 @@ class ExamCreationGradeBoundaries extends React.Component {
 
     onBoundariesUpdate(newBoundaries);
 
-    this.setState((state) => ({ ...state, selectedCourse: null }));
+    this.setState((state) => ({ ...state, selectedSpecialty: null }));
   }
 
   /**
    * removes a boundary
    */
-  deleteCourseBoundary(course) {
+  deleteSpecialty(specialty) {
     const { boundaries, onBoundariesUpdate } = this.props;
 
     const newBoundaries = boundaries
-      .filter((boundary) => boundary.course.id !== course.id);
+      .filter((boundary) => boundary.specialty.id !== specialty.id);
 
     onBoundariesUpdate(newBoundaries);
   }
@@ -84,7 +84,7 @@ class ExamCreationGradeBoundaries extends React.Component {
   /**
    * changes the points for a specific boundary for a specific grade
    */
-  handlePointsChange(course, grade, points) {
+  handlePointsChange(specialty, grade, points) {
     const {
       boundaries,
       onBoundariesUpdate,
@@ -99,7 +99,7 @@ class ExamCreationGradeBoundaries extends React.Component {
     }
 
     const newBoundaries = boundaries.map((boundary) => {
-      if (boundary.course.id !== course.id) return boundary;
+      if (boundary.specialty.id !== specialty.id) return boundary;
 
       const newBoundary = {
         ...boundary,
@@ -113,23 +113,23 @@ class ExamCreationGradeBoundaries extends React.Component {
   }
 
   handleSelectChange(e) {
-    const { courses } = this.state;
+    const { specialties } = this.state;
 
-    const course = courses.find((c) => c.name === e.target.value);
+    const specialty = specialties.find((s) => s.name === e.target.value);
 
     // reset
-    if (course === undefined) {
-      this.setState((state) => ({ ...state, selectedCourse: null }));
+    if (specialty === undefined) {
+      this.setState((state) => ({ ...state, selectedSpecialty: null }));
       return;
     }
 
-    this.setState((state) => ({ ...state, selectedCourse: course }));
+    this.setState((state) => ({ ...state, selectedSpecialty: specialty }));
   }
 
   render() {
     const {
-      courses,
-      selectedCourse,
+      specialties,
+      selectedSpecialty,
     } = this.state;
 
     const {
@@ -139,9 +139,9 @@ class ExamCreationGradeBoundaries extends React.Component {
       onSubmit,
     } = this.props;
 
-    const unusedCourses = courses.filter((course) => {
+    const unusedSpecialties = specialties.filter((specialty) => {
       const used = boundaries
-        .find((boundary) => boundary.course.id === course.id);
+        .find((boundary) => boundary.specialty.id === specialty.id);
 
       return used === undefined;
     });
@@ -156,7 +156,7 @@ class ExamCreationGradeBoundaries extends React.Component {
           <Typography align="center" variant="h4">Граници за оценки</Typography>
         </Grid>
 
-        {unusedCourses.length > 0
+        {unusedSpecialties.length > 0
         && (
           <Grid
             item
@@ -171,14 +171,14 @@ class ExamCreationGradeBoundaries extends React.Component {
               sm={7}
             >
               <Select
-                value={selectedCourse ? selectedCourse.name : ''}
+                value={selectedSpecialty ? selectedSpecialty.name : ''}
                 variant="outlined"
                 onChange={this.handleSelectChange}
                 fullWidth
               >
-                {unusedCourses.map((course) => (
-                  <MenuItem key={course.id} value={course.name}>
-                    {course.name}
+                {unusedSpecialties.map((specialty) => (
+                  <MenuItem key={specialty.id} value={specialty.name}>
+                    {specialty.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -194,7 +194,7 @@ class ExamCreationGradeBoundaries extends React.Component {
               <Grid item>
                 <Button
                   variant="outlined"
-                  onClick={this.addSelectedCourse}
+                  onClick={this.addSelectedSpecialty}
                 >
                   добави
                 </Button>
@@ -205,14 +205,14 @@ class ExamCreationGradeBoundaries extends React.Component {
         )}
 
         {boundaries.map((boundary) => (
-          <Grid key={boundary.course.id} item>
+          <Grid key={boundary.specialty.id} item>
             <GradeBoundary
               boundary={boundary}
               maxPoints={maxPoints}
               onPointsChange={(grade, points) => {
-                this.handlePointsChange(boundary.course, grade, points);
+                this.handlePointsChange(boundary.specialty, grade, points);
               }}
-              onDelete={() => this.deleteCourseBoundary(boundary.course)}
+              onDelete={() => this.deleteSpecialty(boundary.specialty)}
             />
           </Grid>
         ))}
@@ -252,7 +252,7 @@ class ExamCreationGradeBoundaries extends React.Component {
 ExamCreationGradeBoundaries.propTypes = {
   maxPoints: PropTypes.number.isRequired,
   boundaries: PropTypes.arrayOf(PropTypes.shape({
-    course: PropTypes.object,
+    specialty: PropTypes.object,
     3: PropTypes.number,
     4: PropTypes.number,
     5: PropTypes.number,

@@ -1,9 +1,9 @@
 import { apiRoute } from '../constants';
 
-const courseApiRoute = `${apiRoute}/course`;
+const specialtyApiRoute = `${apiRoute}/specialty`;
 
-async function getAllCourses() {
-  const request = await fetch(courseApiRoute, {
+async function getAllSpecialties() {
+  const request = await fetch(specialtyApiRoute, {
     method: 'GET',
     credentials: 'include',
   });
@@ -17,5 +17,5 @@ async function getAllCourses() {
 }
 
 export default {
-  getAllCourses,
+  getAllSpecialties,
 };
