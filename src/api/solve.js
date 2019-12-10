@@ -28,7 +28,21 @@ const answerQuestion = async (questionId, answerId) => {
   return response.ok;
 };
 
+const submitExam = async (solution) => {
+  const response = await fetch(`${solveApiRoute}/submit`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(solution),
+  });
+
+  return response.ok;
+};
+
 export default {
   getExamById,
   answerQuestion,
+  submitExam,
 };

@@ -31,6 +31,7 @@ class ExamSolver extends React.Component {
     this.openSubmitPage = this.openSubmitPage.bind(this);
     this.selectQuestion = this.selectQuestion.bind(this);
     this.selectAnswer = this.selectAnswer.bind(this);
+    this.submitExam = this.submitExam.bind(this);
   }
 
   componentDidMount() {
@@ -181,6 +182,26 @@ class ExamSolver extends React.Component {
     this.setState((state) => ({ ...state, questionId: null }));
   }
 
+  submitExam() {
+    const { exam } = this.state;
+
+    const solution = exam.questions.map((question) => {
+      if (question.selectedAnswerId === undefined) return null;
+
+      return {
+        questionId: question.id,
+        answerId: question.selectedAnswerId,
+      };
+    }).filter((qa) => qa !== null);
+
+    const data = {
+      examId: exam.id,
+      solution,
+    }
+
+    solveApi.submitExam(data);
+  }
+
   render() {
     const { exam, questionId, timeLeft } = this.state;
 
@@ -202,7 +223,7 @@ class ExamSolver extends React.Component {
           questionId === null
             ? (
               <SubmitPage
-                onSubmit={() => console.error('Not implemented')}
+                onSubmit={this.submitExam}
                 questionsLeft={questionsLeft}
               />
             ) : (
