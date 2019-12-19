@@ -38,14 +38,22 @@ class LandingApp extends React.Component {
     e.preventDefault();
     const { email, password } = this.state;
 
-    const authenticated = await authenticate(email, password);
+    const account = await authenticate(email, password);
 
-    if (!authenticated) {
+    if (!account) {
       alert('Invalid credentials');
       return;
     }
 
-    window.location.pathname = '/teacher';
+    if (account.roles.includes('teacher')) {
+      window.location.pathname = '/teacher';
+    } else if (account.roles.includes('student')) {
+      window.location.pathname = '/student';
+    } else if (account.roles.includes('admin')) {
+      window.location.pathname = '/admin';
+    } else {
+      window.location.pathname = '/403';
+    }
   }
 
   render() {
