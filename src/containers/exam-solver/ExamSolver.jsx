@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 
 import LoadingAnimation from '../../components/loading-animation';
 import ExamSolverNavBar from '../../components/exam-solver-nav-bar';
@@ -25,6 +25,7 @@ class ExamSolver extends React.Component {
       exam: null,
       questionId: null,
       timeLeft: null,
+      solved: false,
     };
 
     this.tick = this.tick.bind(this);
@@ -197,13 +198,27 @@ class ExamSolver extends React.Component {
     const data = {
       examId: exam.id,
       solution,
-    }
+    };
 
     solveApi.submitExam(data);
+
+    this.setState((state) => ({
+      ...state,
+      solved: true,
+    }));
   }
 
   render() {
-    const { exam, questionId, timeLeft } = this.state;
+    const {
+      exam,
+      questionId,
+      timeLeft,
+      solved,
+    } = this.state;
+
+    if (solved) {
+      return <Redirect push to="/" />;
+    }
 
     if (exam === null) {
       return <LoadingAnimation />;
