@@ -39,8 +39,25 @@ const getAll = async () => {
   return response.json();
 };
 
+async function getStudentExamResults(examId, studentId) {
+  const url = `${examApiRoute}/${examId}/results/${studentId}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    console.error(response);
+    console.error(await response.text());
+    return null;
+  }
+
+  return response.json();
+}
+
 export default {
   compile,
   getOneById,
   getAll,
+  getStudentExamResults,
 };
