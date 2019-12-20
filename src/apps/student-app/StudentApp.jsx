@@ -3,29 +3,52 @@ import { Switch, Route } from 'react-router-dom';
 
 import withLayout from '../../utils/withLayout';
 
-import ExamList from '../../containers/exam-list';
+import ExamList from '../../components/exam-list';
 import StudentExamView from '../../containers/student-exam-view';
 import ExamSolver from '../../containers/exam-solver';
 import StudentExamResult from '../../containers/student-exam-result';
+import StudentDashboard from '../../containers/student-dashboard';
 
-const StudentApp = () => (
-  <Switch>
-    <Route path="/exam/:id">
-      <StudentExamView />
-    </Route>
+import upcomingExams from '../../utils/upcomingExams';
+import pastExams from '../../utils/pastExams';
 
-    <Route path="/solve/:id">
-      <ExamSolver />
-    </Route>
+const PAGES = [
+  { pathname: '/exams', name: 'Изпити' },
+  { pathname: '/results', name: 'Резултати' },
+];
 
-    <Route path="/results/:examId">
-      <StudentExamResult />
-    </Route>
 
-    <Route path="/">
-      <ExamList />
-    </Route>
-  </Switch>
-);
+function StudentApp() {
+  const UpcomingExamsList = upcomingExams(ExamList);
+  const PastExamsList = pastExams(ExamList);
 
-export default withLayout(StudentApp);
+  return (
+    <Switch>
+      <Route path="/exams">
+        <UpcomingExamsList />
+      </Route>
+
+      <Route path="/results">
+        <PastExamsList />
+      </Route>
+
+      <Route path="/exam/:id">
+        <StudentExamView />
+      </Route>
+
+      <Route path="/solve/:id">
+        <ExamSolver />
+      </Route>
+
+      <Route path="/results/:examId">
+        <StudentExamResult />
+      </Route>
+
+      <Route path="/">
+        <StudentDashboard />
+      </Route>
+    </Switch>
+  );
+}
+
+export default withLayout(StudentApp, PAGES);
