@@ -9,8 +9,10 @@ import QuestionFormManager from '../../containers/question-form-manager';
 import QuestionList from '../../containers/question-list';
 
 import ExamCreator from '../../containers/exam-creator';
-import ExamList from '../../containers/exam-list';
+import ExamList from '../../components/exam-list';
 import ExamView from '../../containers/exam-view';
+
+import allExams from '../../utils/allExams';
 
 const PAGES = [
   { pathname: '/create-question', name: 'Създай нов въпрос' },
@@ -20,32 +22,36 @@ const PAGES = [
   { pathname: '/exams', name: 'Всички тестове' },
 ];
 
-const TeacherApp = () => (
-  <Switch>
-    <Route path="/create-question">
-      <QuestionFormManager />
-    </Route>
+function TeacherApp() {
+  const AllExamsList = allExams(ExamList);
 
-    <Route path="/questions">
-      <QuestionList />
-    </Route>
+  return (
+    <Switch>
+      <Route path="/create-question">
+        <QuestionFormManager />
+      </Route>
 
-    <Route path="/create-exam">
-      <ExamCreator />
-    </Route>
+      <Route path="/questions">
+        <QuestionList />
+      </Route>
 
-    <Route path="/exams">
-      <ExamList />
-    </Route>
+      <Route path="/create-exam">
+        <ExamCreator />
+      </Route>
 
-    <Route path="/exam/:id">
-      <ExamView />
-    </Route>
+      <Route path="/exams">
+        <AllExamsList />
+      </Route>
 
-    <Route path="/">
-      <TeacherDashboard />
-    </Route>
-  </Switch>
-);
+      <Route path="/exam/:id">
+        <ExamView />
+      </Route>
+
+      <Route path="/">
+        <TeacherDashboard />
+      </Route>
+    </Switch>
+  );
+}
 
 export default withLayout(TeacherApp, PAGES);
