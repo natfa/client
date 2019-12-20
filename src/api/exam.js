@@ -55,9 +55,45 @@ async function getStudentExamResults(examId, studentId) {
   return response.json();
 }
 
+async function getUpcomingExams() {
+  const url = `${examApiRoute}/upcoming`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    console.error(response);
+    console.error(await response.text());
+    return null;
+  }
+
+  return response.json();
+}
+
+async function getPastExams() {
+  const url = `${examApiRoute}/past`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    console.error(response);
+    console.error(await response.text());
+    return null;
+  }
+
+  return response.json();
+}
+
 export default {
   compile,
   getOneById,
   getAll,
   getStudentExamResults,
+  getUpcomingExams,
+  getPastExams,
 };
