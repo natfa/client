@@ -8,9 +8,9 @@ import StudentExamView from '../../containers/student-exam-view';
 import ExamSolver from '../../containers/exam-solver';
 import StudentExamResult from '../../containers/student-exam-result';
 import StudentDashboard from '../../containers/student-dashboard';
+import StudentResultList from '../../containers/student-result-list';
 
 import upcomingExams from '../../utils/upcomingExams';
-import pastExams from '../../utils/pastExams';
 
 const PAGES = [
   { pathname: '/exams', name: 'Всички изпити' },
@@ -20,18 +20,9 @@ const PAGES = [
 
 function StudentApp() {
   const UpcomingExamsList = upcomingExams(ExamList);
-  const PastExamsList = pastExams(ExamList);
 
   return (
     <Switch>
-      <Route path="/exams">
-        <UpcomingExamsList />
-      </Route>
-
-      <Route path="/results">
-        <PastExamsList />
-      </Route>
-
       <Route path="/exam/:id">
         <StudentExamView />
       </Route>
@@ -42,6 +33,14 @@ function StudentApp() {
 
       <Route path="/results/:examId">
         <StudentExamResult />
+      </Route>
+
+      <Route path="/exams">
+        <UpcomingExamsList />
+      </Route>
+
+      <Route path="/results">
+        <StudentResultList />
       </Route>
 
       <Route path="/">
