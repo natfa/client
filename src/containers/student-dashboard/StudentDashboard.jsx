@@ -1,8 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
 
-import { Link as RouterLink } from 'react-router-dom';
-
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -19,7 +17,7 @@ import examApi from '../../api/exam';
 
 import ttsToString from '../../utils/ttsToString';
 
-const Link = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} />);
+import Link from '../../components/link';
 
 class StudentDashboard extends React.Component {
   constructor(props) {
@@ -104,15 +102,21 @@ class StudentDashboard extends React.Component {
                       return (
                         <TableRow key={exam.id} hover>
                           <TableCell align="left">
-                            <MuiLink component={Link} to={`/exam/${exam.id}`}>
-                              {exam.name}
-                            </MuiLink>
+                            <Typography>
+                              <MuiLink component={Link} to={`/exam/${exam.id}`}>
+                                {exam.name}
+                              </MuiLink>
+                            </Typography>
                           </TableCell>
                           <TableCell align="center">
-                            {startDate}
+                            <Typography>
+                              {startDate}
+                            </Typography>
                           </TableCell>
                           <TableCell align="right">
-                            {timeToSolve}
+                            <Typography>
+                              {timeToSolve}
+                            </Typography>
                           </TableCell>
                         </TableRow>
                       );

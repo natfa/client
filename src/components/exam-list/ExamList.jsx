@@ -4,8 +4,7 @@ import dayjs from 'dayjs';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import ViewIcon from '@material-ui/icons/Visibility';
+import MuiLink from '@material-ui/core/Link';
 
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,8 +12,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 
-import { Link } from 'react-router-dom';
-
+import Link from '../link';
 import LoadingAnimation from '../loading-animation';
 import ttsToString from '../../utils/ttsToString';
 
@@ -47,7 +45,6 @@ function ExamList({ exams }) {
               <TableCell align="left">Име</TableCell>
               <TableCell align="right">Начало</TableCell>
               <TableCell align="center">Продължителност</TableCell>
-              <TableCell align="center">Виж</TableCell>
             </TableRow>
           </TableHead>
 
@@ -59,7 +56,11 @@ function ExamList({ exams }) {
               return (
                 <TableRow key={exam.id} hover>
                   <TableCell align="left">
-                    <Typography>{exam.name}</Typography>
+                    <Typography>
+                      <MuiLink component={Link} to={`/exam/${exam.id}`}>
+                        {exam.name}
+                      </MuiLink>
+                    </Typography>
                   </TableCell>
 
                   <TableCell align="right">
@@ -68,14 +69,6 @@ function ExamList({ exams }) {
 
                   <TableCell align="center">
                     <Typography>{timeToSolve}</Typography>
-                  </TableCell>
-
-                  <TableCell align="center">
-                    <Link to={`/exam/${exam.id}`}>
-                      <IconButton>
-                        <ViewIcon />
-                      </IconButton>
-                    </Link>
                   </TableCell>
 
                 </TableRow>
