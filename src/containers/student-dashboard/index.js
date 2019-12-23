@@ -1,3 +1,3 @@
-import StudentDashboard from './Dashboard';
+import StudentDashboard from './StudentDashboard';
 
 export default StudentDashboard;

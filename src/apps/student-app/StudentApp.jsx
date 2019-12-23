@@ -13,7 +13,9 @@ import upcomingExams from '../../utils/upcomingExams';
 import pastExams from '../../utils/pastExams';
 
 const PAGES = [
-  { pathname: '/exams', name: 'Изпити' },
+  { pathname: '/', name: 'Начало' },
+
+  { pathname: '/exams', name: 'Всички изпити' },
   { pathname: '/results', name: 'Резултати' },
 ];
 
