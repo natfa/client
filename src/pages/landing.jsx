@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { getActiveSession } from '../api/session';
-
 import LoadingAnimation from '../components/loading-animation';
 import LandingApp from '../apps/landing-app';
+
+import { getActiveSession } from '../api/session';
+import withRouter from '../utils/withRouter';
 
 (async function IIFE() {
   const rootNode = document.getElementById('root');
@@ -33,5 +34,7 @@ import LandingApp from '../apps/landing-app';
     return;
   }
 
-  ReactDOM.render(<LandingApp />, rootNode);
+  const LandingAppWithRouter = withRouter(LandingApp, '/landing');
+
+  ReactDOM.render(<LandingAppWithRouter />, rootNode);
 }());

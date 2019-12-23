@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom';
 
 import NotFound from '../components/not-found';
 
+import withRouter from '../utils/withRouter';
+
 (async function IIFE() {
   const rootNode = document.getElementById('root');
-  ReactDOM.render(<NotFound />, rootNode);
+
+  const NotFoundWithRouter = withRouter(NotFound, '/404');
+
+  ReactDOM.render(<NotFoundWithRouter />, rootNode);
 }());

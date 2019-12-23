@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import MuiLink from '@material-ui/core/Link';
 import Drawer from '@material-ui/core/Drawer';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
@@ -13,7 +14,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import { withStyles } from '@material-ui/styles';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 const WhiteIconButton = withStyles({
   root: {
@@ -28,10 +29,9 @@ const PaddedContainer = withStyles({
   },
 })(Container);
 
-// TODO: figure out why this works
 const ListItemLink = ({ to, text, onClick }) => {
   const link = React.forwardRef((props, ref) => (
-    <Link to={to} {...props} ref={ref} />
+    <RouterLink to={to} {...props} ref={ref} />
   ));
 
   return (
@@ -49,19 +49,30 @@ ListItemLink.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
+
+const Link = React.forwardRef((props, ref) => (
+  <RouterLink ref={ref} {...props} />
+));
+
 class Layout extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       drawerOpen: false,
+      goToHome: false,
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
+    this.goToHome = this.goToHome.bind(this);
+  }
+
+  goToHome() {
+    this.setState((state) => ({ ...state, goToHome: true }));
   }
 
   toggleDrawer() {
-    this.setState((state) => ({ drawerOpen: !state.drawerOpen }));
+    this.setState((state) => ({ ...state, drawerOpen: !state.drawerOpen }));
   }
 
   renderDrawer() {
@@ -90,7 +101,12 @@ class Layout extends React.Component {
   }
 
   render() {
+    const { goToHome } = this.state;
     const { children, pages } = this.props;
+
+    if (goToHome) {
+      return <Redirect push to="/" />;
+    }
 
     return (
       <>
@@ -104,7 +120,9 @@ class Layout extends React.Component {
               </WhiteIconButton>
             )}
             <Typography variant="h6">
-              Система за оценяване НАТФИЗ
+              <MuiLink component={Link} to="/" color="inherit">
+                Система за оценяване НАТФИЗ
+              </MuiLink>
             </Typography>
           </Toolbar>
         </AppBar>
