@@ -1,11 +1,12 @@
 import React from 'react';
 import dayjs from 'dayjs';
 
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import MuiLink from '@material-ui/core/Link';
 
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
@@ -17,6 +18,8 @@ import TableCell from '@material-ui/core/TableCell';
 import examApi from '../../api/exam';
 
 import ttsToString from '../../utils/ttsToString';
+
+const Link = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} />);
 
 class StudentDashboard extends React.Component {
   constructor(props) {
@@ -101,9 +104,9 @@ class StudentDashboard extends React.Component {
                       return (
                         <TableRow key={exam.id} hover>
                           <TableCell align="left">
-                            <Link to={`/exam/${exam.id}`}>
+                            <MuiLink component={Link} to={`/exam/${exam.id}`}>
                               {exam.name}
-                            </Link>
+                            </MuiLink>
                           </TableCell>
                           <TableCell align="center">
                             {startDate}
