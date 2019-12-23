@@ -29,17 +29,16 @@ class StudentExamResult extends React.Component {
     const { match } = this.props;
     const { examId } = match.params;
     // TODO: Grab the student id somehow
-    const studentId = 1;
+    const studentId = 3;
 
     examApi
       .getStudentExamResults(examId, studentId)
       .then((data) => {
-        console.log(data);
         this.setState((state) => ({
           ...state,
-          exam: data.examResults.exam,
-          grade: data.examResults.grade,
-          studentSolution: data.examResults.solution,
+          exam: data.exam,
+          grade: data.grade,
+          studentSolution: data.solution,
         }));
       })
       .catch((err) => console.error(err));
