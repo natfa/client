@@ -16,7 +16,7 @@ import TableBody from '@material-ui/core/TableBody';
 import Link from '../link';
 import ttsToString from '../../utils/ttsToString';
 
-function ExamTable({
+function ExamsTable({
   exams,
   urlBuilder,
 }) {
@@ -89,7 +89,7 @@ function ExamTable({
   );
 }
 
-ExamTable.propTypes = {
+ExamsTable.propTypes = {
   exams: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
@@ -103,4 +103,4 @@ ExamTable.propTypes = {
   urlBuilder: PropTypes.func.isRequired,
 };
 
-export default ExamTable;
+export default ExamsTable;

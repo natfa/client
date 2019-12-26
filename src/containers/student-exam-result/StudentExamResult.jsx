@@ -22,6 +22,7 @@ class StudentExamResult extends React.Component {
       exam: null,
       grade: null,
       studentSolution: null,
+      student: null,
     };
   }
 
@@ -56,7 +57,7 @@ class StudentExamResult extends React.Component {
         spacing={5}
       >
         <Grid item>
-          <Typography variant="h4" color="primary">{exam.name}</Typography>
+          <Typography variant="h4">{`Изпит: ${exam.name}`}</Typography>
         </Grid>
 
         <Grid item>

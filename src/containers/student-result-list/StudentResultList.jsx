@@ -50,7 +50,11 @@ class StudentResultList extends React.Component {
       <Grid
         container
         direction="column"
+        spacing={2}
       >
+        <Grid item>
+          <Typography variant="h5">Резултати</Typography>
+        </Grid>
 
         <Grid item>
           <TableContainer component={Paper}>

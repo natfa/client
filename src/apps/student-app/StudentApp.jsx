@@ -1,9 +1,11 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
+import Typography from '@material-ui/core/Typography';
+
 import withLayout from '../../utils/withLayout';
 
-import ExamList from '../../components/exam-list';
+import ExamsTable from '../../components/exams-table';
 import StudentExamView from '../../containers/student-exam-view';
 import ExamSolver from '../../containers/exam-solver';
 import StudentExamResult from '../../containers/student-exam-result';
@@ -52,7 +54,16 @@ class StudentApp extends React.Component {
       return <LoadingAnimation />;
     }
 
-    const UpcomingExamsList = upcomingExams(ExamList);
+    const UpcomingExamsTable = (props) => {
+      const Table = upcomingExams(ExamsTable);
+
+      return (
+        <>
+          <Typography variant="h5">Всички предстоящи изпити</Typography>
+          <Table {...props} />
+        </>
+      );
+    };
 
     return (
       <Switch>
@@ -71,7 +82,7 @@ class StudentApp extends React.Component {
         </Route>
 
         <Route path="/exams">
-          <UpcomingExamsList
+          <UpcomingExamsTable
             urlBuilder={(exam) => `/exam/${exam.id}`}
           />
         </Route>

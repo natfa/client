@@ -11,7 +11,7 @@ import QuestionList from '../../containers/question-list';
 
 import StudentExamResult from '../../containers/student-exam-result';
 import ExamCreator from '../../containers/exam-creator';
-import ExamList from '../../components/exam-list';
+import ExamsTable from '../../components/exams-table';
 import ExamView from '../../containers/exam-view';
 import ExamResults from '../../containers/exam-results';
 
@@ -49,8 +49,8 @@ TeacherViewStudentExamResult.propTypes = {
 
 
 function TeacherApp() {
-  const AllExamsList = allExams(ExamList);
-  const ResultsList = pastExams(ExamList);
+  const AllExamsTable = allExams(ExamsTable);
+  const ResultsTable = pastExams(ExamsTable);
   const TeacherViewStudentExamResultWithRouter = withRouter(TeacherViewStudentExamResult);
 
   return (
@@ -68,7 +68,7 @@ function TeacherApp() {
       </Route>
 
       <Route path="/results">
-        <ResultsList
+        <ResultsTable
           urlBuilder={(exam) => `/results/${exam.id}`}
         />
       </Route>
@@ -86,7 +86,7 @@ function TeacherApp() {
       </Route>
 
       <Route path="/exams">
-        <AllExamsList
+        <AllExamsTable
           urlBuilder={(exam) => `/exam/${exam.id}`}
         />
       </Route>

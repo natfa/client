@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 
 import examApi from '../../api/exam';
 
-import ExamList from '../../components/exam-list';
+import ExamsTable from '../../components/exams-table';
 
 class StudentDashboard extends React.Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class StudentDashboard extends React.Component {
             </Grid>
 
             <Grid item>
-              <ExamList
+              <ExamsTable
                 exams={upcomingExams}
                 urlBuilder={(exam) => `/exam/${exam.id}`}
               />
