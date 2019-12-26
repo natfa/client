@@ -32,6 +32,10 @@ function TeacherApp() {
 
   return (
     <Switch>
+      <Route path="/results/:examId/:studentId">
+        <p>Helloooo</p>
+      </Route>
+
       <Route path="/exam/:id">
         <ExamView />
       </Route>
