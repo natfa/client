@@ -27,11 +27,27 @@ function ExamList({ exams }) {
     return (
       <Grid container>
         <Grid item>
-          <Typography>Няма скорошни изпити.</Typography>
+          <Typography>Няма намерени изпити.</Typography>
         </Grid>
       </Grid>
     );
   }
+
+  const sortedExams = exams.sort((examA, examB) => {
+    const startA = dayjs(examA.startDate);
+    const startB = dayjs(examB.startDate);
+
+    if (startA.isBefore(startB)) {
+      return -1;
+    }
+
+    if (startA.isAfter(startB)) {
+      return 1;
+    }
+
+    return 0;
+  });
+
   return (
     <Grid container direction="column">
       <Grid item>
@@ -52,7 +68,7 @@ function ExamList({ exams }) {
             </TableHead>
 
             <TableBody>
-              {exams.map((exam) => {
+              {sortedExams.map((exam) => {
                 const startDate = dayjs(exam.startDate).format('DD MMM YYYY, HH:mm');
                 const timeToSolve = ttsToString(exam.timeToSolve);
 
