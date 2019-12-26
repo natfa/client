@@ -26,10 +26,8 @@ class StudentExamResult extends React.Component {
   }
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, studentId } = this.props;
     const { examId } = match.params;
-    // TODO: Grab the student id somehow
-    const studentId = 3;
 
     examApi
       .getStudentExamResults(examId, studentId)
@@ -101,11 +99,16 @@ StudentExamResult.propTypes = {
       examId: PropTypes.string,
     }),
   }).isRequired,
+  studentId: PropTypes.string.isRequired,
 };
 
 
 function QuestionResult({ question, solution }) {
-  const givenAnswer = question.answers.find((answer) => answer.id === solution.answerId);
+  let givenAnswer;
+
+  if (solution !== undefined) {
+    givenAnswer = question.answers.find((answer) => answer.id === solution.answerId);
+  }
 
   return (
     <PaddedPaper elevation={2} square>
@@ -156,11 +159,30 @@ function QuestionResult({ question, solution }) {
         <Divider />
 
         <Grid item container alignItems="center">
-          <Typography variant="body1" align="justify" style={{ lineHeight: '30px' }}>
-            {`You answered: ${givenAnswer.text}`}
-          </Typography>
+          {
+            givenAnswer === undefined
+              ? (
+                <>
+                  <Typography variant="body1" align="justify" style={{ lineHeight: '30px' }}>
+                    Няма даден отговор
+                  </Typography>
 
-          {givenAnswer.correct ? <CorrectIcon style={{ color: 'green' }} /> : <IncorrectIcon style={{ color: 'red' }} />}
+                  <IncorrectIcon style={{ color: 'red' }} />
+                </>
+              ) : (
+                <>
+                  <Typography variant="body1" align="justify" style={{ lineHeight: '30px' }}>
+                    {`Даден отговор: ${givenAnswer.text}`}
+                  </Typography>
+
+                  {
+                    givenAnswer.correct
+                      ? <CorrectIcon style={{ color: 'green' }} />
+                      : <IncorrectIcon style={{ color: 'red' }} />
+                  }
+                </>
+              )
+          }
         </Grid>
       </Grid>
     </PaddedPaper>
@@ -181,7 +203,11 @@ QuestionResult.propTypes = {
   solution: PropTypes.shape({
     questionId: PropTypes.string,
     answerId: PropTypes.string,
-  }).isRequired,
+  }),
+};
+
+QuestionResult.defaultProps = {
+  solution: undefined,
 };
 
 export default withRouter(StudentExamResult);

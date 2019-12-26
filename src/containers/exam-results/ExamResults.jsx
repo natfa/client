@@ -38,6 +38,7 @@ class ExamResults extends React.Component {
           return;
         }
 
+        console.log(examResults);
         this.setState((state) => ({ ...state, results: examResults }));
       })
       .catch((err) => console.error(err));

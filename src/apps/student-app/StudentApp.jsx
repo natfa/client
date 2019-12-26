@@ -9,47 +9,85 @@ import ExamSolver from '../../containers/exam-solver';
 import StudentExamResult from '../../containers/student-exam-result';
 import StudentDashboard from '../../containers/student-dashboard';
 import StudentResultList from '../../containers/student-result-list';
+import LoadingAnimation from '../../components/loading-animation';
 
 import upcomingExams from '../../utils/upcomingExams';
+
+import studentApi from '../../api/student';
 
 const PAGES = [
   { pathname: '/exams', name: 'Всички изпити' },
   { pathname: '/results', name: 'Резултати' },
 ];
 
+class StudentApp extends React.Component {
+  constructor(props) {
+    super(props);
 
-function StudentApp() {
-  const UpcomingExamsList = upcomingExams(ExamList);
+    this.state = {
+      student: null,
+    };
+  }
 
-  return (
-    <Switch>
-      <Route path="/exam/:id">
-        <StudentExamView />
-      </Route>
+  componentDidMount() {
+    studentApi
+      .getStudent()
+      .then((student) => {
+        if (student === null) {
+          alert('You might be in the wrong place...');
+          console.error('Student is not a student');
 
-      <Route path="/solve/:id">
-        <ExamSolver />
-      </Route>
+          return;
+        }
 
-      <Route path="/results/:examId">
-        <StudentExamResult />
-      </Route>
+        this.setState((state) => ({ ...state, student }));
+      })
+      .catch((err) => console.error(err));
+  }
 
-      <Route path="/exams">
-        <UpcomingExamsList
-          urlBuilder={(exam) => `/exam/${exam.id}`}
-        />
-      </Route>
+  render() {
+    const { student } = this.state;
 
-      <Route path="/results">
-        <StudentResultList />
-      </Route>
+    if (student === null) {
+      return <LoadingAnimation />;
+    }
 
-      <Route path="/">
-        <StudentDashboard />
-      </Route>
-    </Switch>
-  );
+    const UpcomingExamsList = upcomingExams(ExamList);
+
+    return (
+      <Switch>
+        <Route path="/exam/:id">
+          <StudentExamView />
+        </Route>
+
+        <Route path="/solve/:id">
+          <ExamSolver />
+        </Route>
+
+        <Route path="/results/:examId">
+          <StudentExamResult
+            studentId={student.id}
+          />
+        </Route>
+
+        <Route path="/exams">
+          <UpcomingExamsList
+            urlBuilder={(exam) => `/exam/${exam.id}`}
+          />
+        </Route>
+
+        <Route path="/results">
+          <StudentResultList
+            studentId={student.id}
+          />
+        </Route>
+
+        <Route path="/">
+          <StudentDashboard />
+        </Route>
+      </Switch>
+    );
+  }
 }
 
 export default withLayout(StudentApp, PAGES);

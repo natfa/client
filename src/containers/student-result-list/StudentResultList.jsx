@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -26,11 +27,13 @@ class StudentResultList extends React.Component {
   }
 
   componentDidMount() {
+    const { studentId } = this.props;
+
     examApi
       .getPastExams()
       .then((exams) => {
         const resultPromises = exams
-          .map((exam) => examApi.getStudentExamResults(exam.id, 3));
+          .map((exam) => examApi.getStudentExamResults(exam.id, studentId));
 
         return Promise.all(resultPromises);
       })
@@ -116,5 +119,9 @@ class StudentResultList extends React.Component {
     );
   }
 }
+
+StudentResultList.propTypes = {
+  studentId: PropTypes.string.isRequired,
+};
 
 export default StudentResultList;
