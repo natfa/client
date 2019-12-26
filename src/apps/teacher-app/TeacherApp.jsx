@@ -40,7 +40,9 @@ function TeacherApp() {
       </Route>
 
       <Route path="/exams">
-        <AllExamsList />
+        <AllExamsList
+          urlBuilder={(exam) => `/exam/${exam.id}`}
+        />
       </Route>
 
       <Route path="/exam/:id">

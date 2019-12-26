@@ -15,14 +15,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 
 import Link from '../link';
-import LoadingAnimation from '../loading-animation';
 import ttsToString from '../../utils/ttsToString';
 
-function ExamList({ exams }) {
-  if (exams === null) {
-    return <LoadingAnimation />;
-  }
-
+function ExamList({
+  exams,
+  urlBuilder,
+}) {
   if (exams.length === 0) {
     return (
       <Grid container>
@@ -32,6 +30,8 @@ function ExamList({ exams }) {
       </Grid>
     );
   }
+
+  const generateUrl = (exam) => urlBuilder(exam);
 
   const sortedExams = exams.sort((examA, examB) => {
     const startA = dayjs(examA.startDate);
@@ -47,6 +47,7 @@ function ExamList({ exams }) {
 
     return 0;
   });
+
 
   return (
     <Grid container direction="column">
@@ -76,7 +77,7 @@ function ExamList({ exams }) {
                   <TableRow key={exam.id} hover>
                     <TableCell align="left">
                       <Typography>
-                        <MuiLink component={Link} to={`/exam/${exam.id}`}>
+                        <MuiLink component={Link} to={generateUrl(exam)}>
                           {exam.name}
                         </MuiLink>
                       </Typography>
@@ -111,11 +112,8 @@ ExamList.propTypes = {
       hours: PropTypes.number,
       minutes: PropTypes.number,
     }),
-  })),
-};
-
-ExamList.defaultProps = {
-  exams: null,
+  })).isRequired,
+  urlBuilder: PropTypes.func.isRequired,
 };
 
 export default ExamList;

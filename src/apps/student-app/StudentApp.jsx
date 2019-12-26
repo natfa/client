@@ -36,7 +36,9 @@ function StudentApp() {
       </Route>
 
       <Route path="/exams">
-        <UpcomingExamsList />
+        <UpcomingExamsList
+          urlBuilder={(exam) => `/exam/${exam.id}`}
+        />
       </Route>
 
       <Route path="/results">
