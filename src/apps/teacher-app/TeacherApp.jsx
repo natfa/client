@@ -11,8 +11,10 @@ import QuestionList from '../../containers/question-list';
 import ExamCreator from '../../containers/exam-creator';
 import ExamList from '../../components/exam-list';
 import ExamView from '../../containers/exam-view';
+import ExamResults from '../../containers/exam-results';
 
 import allExams from '../../utils/allExams';
+import pastExams from '../../utils/pastExams';
 
 const PAGES = [
   { pathname: '/create-question', name: 'Създай нов въпрос' },
@@ -20,13 +22,30 @@ const PAGES = [
 
   { pathname: '/create-exam', name: 'Създай нов тест' },
   { pathname: '/exams', name: 'Всички тестове' },
+
+  { pathname: '/results', name: 'Изпитни резултати' },
 ];
 
 function TeacherApp() {
   const AllExamsList = allExams(ExamList);
+  const ResultsList = pastExams(ExamList);
 
   return (
     <Switch>
+      <Route path="/exam/:id">
+        <ExamView />
+      </Route>
+
+      <Route path="/results/:examId">
+        <ExamResults />
+      </Route>
+
+      <Route path="/results">
+        <ResultsList
+          urlBuilder={(exam) => `/results/${exam.id}`}
+        />
+      </Route>
+
       <Route path="/create-question">
         <QuestionFormManager />
       </Route>
@@ -43,10 +62,6 @@ function TeacherApp() {
         <AllExamsList
           urlBuilder={(exam) => `/exam/${exam.id}`}
         />
-      </Route>
-
-      <Route path="/exam/:id">
-        <ExamView />
       </Route>
 
       <Route path="/">
