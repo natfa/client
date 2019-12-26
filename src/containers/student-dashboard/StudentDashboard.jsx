@@ -3,21 +3,10 @@ import dayjs from 'dayjs';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import MuiLink from '@material-ui/core/Link';
-
-import TableContainer from '@material-ui/core/TableContainer';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
 
 import examApi from '../../api/exam';
 
-import ttsToString from '../../utils/ttsToString';
-
-import Link from '../../components/link';
+import ExamList from '../../components/exam-list';
 
 class StudentDashboard extends React.Component {
   constructor(props) {
@@ -78,52 +67,10 @@ class StudentDashboard extends React.Component {
             </Grid>
 
             <Grid item>
-              <TableContainer component={Paper}>
-                <Table aria-label="upcoming exams table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left">
-                        Изпит
-                      </TableCell>
-                      <TableCell align="center">
-                        Начало
-                      </TableCell>
-                      <TableCell align="right">
-                        Продължителност
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {upcomingExams.map((exam) => {
-                      const startDate = dayjs(exam.startDate).format('DD MMM YYYY, HH:mm');
-                      const timeToSolve = ttsToString(exam.timeToSolve);
-
-                      return (
-                        <TableRow key={exam.id} hover>
-                          <TableCell align="left">
-                            <Typography>
-                              <MuiLink component={Link} to={`/exam/${exam.id}`}>
-                                {exam.name}
-                              </MuiLink>
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Typography>
-                              {startDate}
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="right">
-                            <Typography>
-                              {timeToSolve}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <ExamList
+                exams={upcomingExams}
+                urlBuilder={(exam) => `/exam/${exam.id}`}
+              />
             </Grid>
 
           </Grid>
