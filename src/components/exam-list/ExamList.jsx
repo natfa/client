@@ -5,7 +5,9 @@ import dayjs from 'dayjs';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
+import Paper from '@material-ui/core/Paper';
 
+import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -39,43 +41,45 @@ function ExamList({ exams }) {
       </Grid>
 
       <Grid item>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">Име</TableCell>
-              <TableCell align="right">Начало</TableCell>
-              <TableCell align="center">Продължителност</TableCell>
-            </TableRow>
-          </TableHead>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Име</TableCell>
+                <TableCell align="right">Начало</TableCell>
+                <TableCell align="center">Продължителност</TableCell>
+              </TableRow>
+            </TableHead>
 
-          <TableBody>
-            {exams.map((exam) => {
-              const startDate = dayjs(exam.startDate).format('DD MMM YYYY, HH:mm');
-              const timeToSolve = ttsToString(exam.timeToSolve);
+            <TableBody>
+              {exams.map((exam) => {
+                const startDate = dayjs(exam.startDate).format('DD MMM YYYY, HH:mm');
+                const timeToSolve = ttsToString(exam.timeToSolve);
 
-              return (
-                <TableRow key={exam.id} hover>
-                  <TableCell align="left">
-                    <Typography>
-                      <MuiLink component={Link} to={`/exam/${exam.id}`}>
-                        {exam.name}
-                      </MuiLink>
-                    </Typography>
-                  </TableCell>
+                return (
+                  <TableRow key={exam.id} hover>
+                    <TableCell align="left">
+                      <Typography>
+                        <MuiLink component={Link} to={`/exam/${exam.id}`}>
+                          {exam.name}
+                        </MuiLink>
+                      </Typography>
+                    </TableCell>
 
-                  <TableCell align="right">
-                    <Typography>{startDate}</Typography>
-                  </TableCell>
+                    <TableCell align="right">
+                      <Typography>{startDate}</Typography>
+                    </TableCell>
 
-                  <TableCell align="center">
-                    <Typography>{timeToSolve}</Typography>
-                  </TableCell>
+                    <TableCell align="center">
+                      <Typography>{timeToSolve}</Typography>
+                    </TableCell>
 
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Grid>
     </Grid>
   );
