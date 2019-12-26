@@ -1,5 +1,7 @@
 import React from 'react';
 
+import LoadingAnimation from '../components/loading-animation';
+
 import examApi from '../api/exam';
 
 function pastExams(Component) {
@@ -27,6 +29,10 @@ function pastExams(Component) {
 
     render() {
       const { exams } = this.state;
+
+      if (exams === null) {
+        return <LoadingAnimation />;
+      }
 
       return (
         <Component {...this.props} exams={exams} />
