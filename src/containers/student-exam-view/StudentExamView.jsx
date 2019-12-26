@@ -20,6 +20,7 @@ class StudentExamView extends React.Component {
 
     this.state = {
       exam: null,
+      studentHasAlreadySubmitted: false,
       timeLeftUntilStart: null,
       redirectToExamSolver: false,
     };
@@ -39,9 +40,13 @@ class StudentExamView extends React.Component {
         return;
       }
 
-      const exam = response.data;
+      const { exam, hasSubmitted } = response.data;
 
-      this.setState((state) => ({ ...state, exam }));
+      this.setState((state) => ({
+        ...state,
+        exam,
+        studentHasAlreadySubmitted: hasSubmitted,
+      }));
 
       // do it once so that it shows up
       this.tick();
@@ -106,7 +111,12 @@ class StudentExamView extends React.Component {
   }
 
   render() {
-    const { exam, timeLeftUntilStart, redirectToExamSolver } = this.state;
+    const {
+      exam,
+      timeLeftUntilStart,
+      redirectToExamSolver,
+      studentHasAlreadySubmitted,
+    } = this.state;
 
     if (redirectToExamSolver) {
       return <Redirect push to={`/solve/${exam.id}`} />;
@@ -118,33 +128,36 @@ class StudentExamView extends React.Component {
 
     const now = dayjs();
     const start = dayjs(exam.startDate);
+    const end = dayjs(exam.endDate);
     const startString = start.format('DD MMM YYYY, HH:mm');
 
     const timeToSolveString = ttsToString(exam.timeToSolve);
 
-    return (
-      <Grid spacing={2} container direction="row-reverse" style={{ height: '100%' }}>
-        <Grid container direction="column" item xs={12} sm={3}>
-          <Grid container direction="row" justify="space-between" item>
-            <Typography color="primary">Начало:</Typography>
-            <Typography>{startString}</Typography>
-          </Grid>
+    let infoComponent = null;
 
-          <Grid container direction="row" justify="space-between" item>
-            <Typography color="primary">Продължителност:</Typography>
-            <Typography>{timeToSolveString}</Typography>
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12} sm={9} style={{ height: '100%', overflow: 'auto', overflowX: 'hidden' }}>
-          <Typography
-            align="center"
-            variant="h3"
-            gutterBottom
-          >
-            {exam.name}
-          </Typography>
-
+    if (now.isAfter(end)) {
+      infoComponent = (
+        <Typography
+          align="center"
+          variant="h5"
+          gutterBottom
+        >
+          Изпитът е приключил.
+        </Typography>
+      );
+    } else if (studentHasAlreadySubmitted) {
+      infoComponent = (
+        <Typography
+          align="center"
+          variant="h5"
+          gutterBottom
+        >
+          Изпитът Ви е предаден.
+        </Typography>
+      );
+    } else {
+      infoComponent = (
+        <>
           <Typography
             align="center"
             variant="h5"
@@ -161,17 +174,66 @@ class StudentExamView extends React.Component {
           >
             {timeLeftUntilStart}
           </Typography>
+        </>
+      );
+    }
 
-          <Button
-            disabled={start.isAfter(now)}
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            onClick={this.startSolvingExam}
-          >
-            започни
-          </Button>
+    return (
+      <Grid
+        container
+        spacing={2}
+        direction="row-reverse"
+      >
+
+        <Grid
+          item
+          container
+          direction="column"
+          xs={12}
+          sm={3}
+        >
+          <Grid container direction="row" justify="space-between" item>
+            <Typography color="primary">Начало:</Typography>
+            <Typography>{startString}</Typography>
+          </Grid>
+
+          <Grid container direction="row" justify="space-between" item>
+            <Typography color="primary">Продължителност:</Typography>
+            <Typography>{timeToSolveString}</Typography>
+          </Grid>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          sm={9}
+        >
+          <Grid item>
+            <Typography
+              align="center"
+              variant="h3"
+              gutterBottom
+            >
+              {exam.name}
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            {infoComponent}
+          </Grid>
+
+          <Grid item>
+            <Button
+              disabled={studentHasAlreadySubmitted || start.isAfter(now)}
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              onClick={this.startSolvingExam}
+            >
+              започни
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     );
