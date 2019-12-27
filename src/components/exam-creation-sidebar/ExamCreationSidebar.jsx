@@ -49,7 +49,7 @@ const ExamCreationSidebar = ({
         inputVariant="outlined"
         margin="dense"
         fullWidth
-        label="Време за решаване"
+        label="Време за решаване (ЧЧ:ММ)"
       />
     </Grid>
 
