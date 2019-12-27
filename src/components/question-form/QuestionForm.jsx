@@ -7,6 +7,7 @@ import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -16,6 +17,8 @@ import MediaList from '../media-list';
 import './styles.css';
 
 const QuestionForm = ({
+  loading,
+
   subjectError,
   themeError,
   textError,
@@ -242,6 +245,10 @@ const QuestionForm = ({
               запази
             </Button>
           </Grid>
+
+          <Grid item xs={12} sm={1}>
+            {loading && <CircularProgress />}
+          </Grid>
         </Grid>
       </Grid>
     </form>
@@ -249,6 +256,8 @@ const QuestionForm = ({
 };
 
 QuestionForm.propTypes = {
+  loading: PropTypes.bool,
+
   subjectError: PropTypes.string,
   themeError: PropTypes.string,
   textError: PropTypes.string,
@@ -283,6 +292,7 @@ QuestionForm.propTypes = {
 };
 
 QuestionForm.defaultProps = {
+  loading: false,
   subjectError: undefined,
   themeError: undefined,
   textError: undefined,

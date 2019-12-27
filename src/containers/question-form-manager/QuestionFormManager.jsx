@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v1';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 import QuestionForm from '../../components/question-form';
 
 import questionApi from '../../api/question';
@@ -34,6 +39,9 @@ class QuestionFormManager extends React.Component {
       pointsError: undefined,
       correctAnswersError: undefined,
       incorrectAnswersError: undefined,
+
+      loading: false,
+      snackbarOpen: false,
     };
 
     this.handleSubjectChange = this.handleSubjectChange.bind(this);
@@ -49,6 +57,7 @@ class QuestionFormManager extends React.Component {
     this.handleMediaDelete = this.handleMediaDelete.bind(this);
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.closeSnackbar = this.closeSnackbar.bind(this);
   }
 
   componentDidMount() {
@@ -304,6 +313,10 @@ class QuestionFormManager extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
+    // start loading animation
+    this.setState((state) => ({ ...state, loading: true }));
+
     const { subjectText, themeText, question: questionState } = this.state;
     const { question, onSubmit } = this.props;
 
@@ -327,7 +340,8 @@ class QuestionFormManager extends React.Component {
       return;
     }
 
-    questionApi.createOne(formData)
+    questionApi
+      .createOne(formData)
       .then((response) => {
         if (!response.success) {
           const {
@@ -341,6 +355,7 @@ class QuestionFormManager extends React.Component {
 
           this.setState((state) => ({
             ...state,
+            loading: false,
             subjectError: subject,
             themeError: theme,
             textError: text,
@@ -353,6 +368,8 @@ class QuestionFormManager extends React.Component {
 
         this.setState((state) => ({
           ...state,
+          loading: false,
+          snackbarOpen: true,
           question: {
             subjectId: null,
             themeId: null,
@@ -366,8 +383,13 @@ class QuestionFormManager extends React.Component {
       .catch((err) => console.error(err));
   }
 
+  closeSnackbar() {
+    this.setState((state) => ({ ...state, snackbarOpen: false }));
+  }
+
   render() {
     const {
+      loading,
       subjects,
       subjectText,
       themes,
@@ -380,42 +402,72 @@ class QuestionFormManager extends React.Component {
       pointsError,
       correctAnswersError,
       incorrectAnswersError,
+
+      snackbarOpen,
     } = this.state;
 
     return (
-      <QuestionForm
-        subjectError={subjectError}
-        themeError={themeError}
-        textError={textError}
-        pointsError={pointsError}
-        correctAnswersError={correctAnswersError}
-        incorrectAnswersError={incorrectAnswersError}
+      <>
+        <QuestionForm
+          subjectError={subjectError}
+          themeError={themeError}
+          textError={textError}
+          pointsError={pointsError}
+          correctAnswersError={correctAnswersError}
+          incorrectAnswersError={incorrectAnswersError}
 
-        subjects={subjects}
-        subject={subjectText}
-        onSubjectChange={this.handleSubjectChange}
+          subjects={subjects}
+          subject={subjectText}
+          onSubjectChange={this.handleSubjectChange}
 
-        themes={themes.filter((theme) => theme.subject.id === question.subjectId)}
-        theme={themeText}
-        onThemeChange={this.handleThemeChange}
+          themes={themes.filter((theme) => theme.subject.id === question.subjectId)}
+          theme={themeText}
+          onThemeChange={this.handleThemeChange}
 
-        text={question.text}
-        onTextChange={this.handleTextChange}
+          text={question.text}
+          onTextChange={this.handleTextChange}
 
-        points={question.points}
-        onPointsChange={this.handlePointsChange}
+          points={question.points}
+          onPointsChange={this.handlePointsChange}
 
-        answers={question.answers}
-        onAnswerChange={this.handleAnswerChange}
-        onAnswerDelete={this.handleAnswerDelete}
-        onAddAnswer={this.handleAddAnswer}
+          answers={question.answers}
+          onAnswerChange={this.handleAnswerChange}
+          onAnswerDelete={this.handleAnswerDelete}
+          onAddAnswer={this.handleAddAnswer}
 
-        media={question.media}
-        onMediaUpload={this.handleMediaUpload}
-        onMediaDelete={this.handleMediaDelete}
+          media={question.media}
+          onMediaUpload={this.handleMediaUpload}
+          onMediaDelete={this.handleMediaDelete}
 
-        onSubmit={this.handleSubmit}
-      />
+          onSubmit={this.handleSubmit}
+          loading={loading}
+        />
+        <Snackbar
+          anchorOrigin={{
+            horizontal: 'left',
+            vertical: 'bottom',
+          }}
+          autoHideDuration={3000}
+          open={snackbarOpen}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: 'green',
+            }}
+            message={<span>Успешна операция.</span>}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="close"
+                onClick={this.closeSnackbar}
+                color="inherit"
+              >
+                <CloseIcon />
+              </IconButton>,
+            ]}
+          />
+        </Snackbar>
+      </>
     );
   }
 }
