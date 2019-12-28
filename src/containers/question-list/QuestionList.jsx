@@ -14,8 +14,6 @@ import LoadingAnimation from '../../components/loading-animation';
 
 import questionApi from '../../api/question';
 
-import './styles.css';
-
 class QuestionList extends React.Component {
   constructor(props) {
     super(props);
