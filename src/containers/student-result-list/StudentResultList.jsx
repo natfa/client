@@ -38,7 +38,10 @@ class StudentResultList extends React.Component {
         return Promise.all(resultPromises);
       })
       .then((results) => {
-        this.setState((state) => ({ ...state, results }));
+        this.setState((state) => ({
+          ...state,
+          results: results.filter((result) => result),
+        }));
       })
       .catch((err) => console.error(err));
   }
