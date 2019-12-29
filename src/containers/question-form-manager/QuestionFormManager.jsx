@@ -449,6 +449,7 @@ class QuestionFormManager extends React.Component {
           }}
           autoHideDuration={3000}
           open={snackbarOpen}
+          onClose={this.closeSnackbar}
         >
           <SnackbarContent
             style={{
