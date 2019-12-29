@@ -54,28 +54,24 @@ class StudentDashboard extends React.Component {
         direction="column"
         spacing={5}
       >
-        {upcomingExams.length > 0
-        && (
-          <Grid
-            item
-            container
-            direction="column"
-            spacing={2}
-          >
-            <Grid item>
-              <Typography variant="h5">Предстоящи изпити</Typography>
-            </Grid>
-
-            <Grid item>
-              <ExamsTable
-                exams={upcomingExams}
-                urlBuilder={(exam) => `/exam/${exam.id}`}
-              />
-            </Grid>
-
+        <Grid
+          item
+          container
+          direction="column"
+          spacing={2}
+        >
+          <Grid item>
+            <Typography variant="h5">Предстоящи изпити (изпити в следващите 30 дни)</Typography>
           </Grid>
-        )}
 
+          <Grid item>
+            <ExamsTable
+              exams={upcomingExams}
+              urlBuilder={(exam) => `/exam/${exam.id}`}
+            />
+          </Grid>
+
+        </Grid>
       </Grid>
     );
   }
