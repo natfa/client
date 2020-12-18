@@ -1,9 +1,9 @@
 import { apiRoute } from '../constants';
 
-const subjectApiRoute = `${apiRoute}/subject`;
+const moduleApiRoute = `${apiRoute}/module`;
 
 export const getAll = async () => {
-  const response = await fetch(subjectApiRoute, {
+  const response = await fetch(moduleApiRoute, {
     method: 'GET',
   });
 

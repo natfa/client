@@ -88,15 +88,11 @@ class ExamCreationGradeBoundaries extends React.Component {
     const {
       boundaries,
       onBoundariesUpdate,
-      maxPoints,
     } = this.props;
 
     let pointsNum = Number(points);
 
     if (Number.isNaN(pointsNum)) return;
-    if (pointsNum > maxPoints) {
-      pointsNum = maxPoints;
-    }
 
     const newBoundaries = boundaries.map((boundary) => {
       if (boundary.specialty.id !== specialty.id) return boundary;
@@ -133,7 +129,6 @@ class ExamCreationGradeBoundaries extends React.Component {
     } = this.state;
 
     const {
-      maxPoints,
       boundaries,
       onCancel,
       onSubmit,
@@ -208,7 +203,6 @@ class ExamCreationGradeBoundaries extends React.Component {
           <Grid key={boundary.specialty.id} item>
             <GradeBoundary
               boundary={boundary}
-              maxPoints={maxPoints}
               onPointsChange={(grade, points) => {
                 this.handlePointsChange(boundary.specialty, grade, points);
               }}
@@ -250,7 +244,6 @@ class ExamCreationGradeBoundaries extends React.Component {
 }
 
 ExamCreationGradeBoundaries.propTypes = {
-  maxPoints: PropTypes.number.isRequired,
   boundaries: PropTypes.arrayOf(PropTypes.shape({
     specialty: PropTypes.object,
     3: PropTypes.number,

@@ -13,7 +13,6 @@ import { possibleGrades } from '../../constants';
 
 const GradeBoundary = ({
   boundary,
-  maxPoints,
   onPointsChange,
   onDelete,
 }) => (
@@ -79,7 +78,7 @@ const GradeBoundary = ({
               </Grid>
 
               <Grid item xs={3} sm={1}>
-                <Typography>{`/ ${maxPoints}`}</Typography>
+                <Typography>{`/ ${0}`}</Typography>
               </Grid>
             </Grid>
           );
@@ -92,7 +91,7 @@ const GradeBoundary = ({
 GradeBoundary.propTypes = {
   boundary: PropTypes.shape({
     specialty: PropTypes.shape({
-      id: PropTypes.string,
+      id: PropTypes.number,
       name: PropTypes.string,
     }),
     3: PropTypes.number,
@@ -100,7 +99,6 @@ GradeBoundary.propTypes = {
     5: PropTypes.number,
     6: PropTypes.number,
   }).isRequired,
-  maxPoints: PropTypes.number.isRequired,
   onPointsChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };

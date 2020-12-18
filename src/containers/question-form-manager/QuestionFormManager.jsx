@@ -11,7 +11,7 @@ import QuestionForm from '../../components/question-form';
 
 import questionApi from '../../api/question';
 import mediaApi from '../../api/media';
-import subjectApi from '../../api/subject';
+import moduleApi from '../../api/module';
 import themeApi from '../../api/theme';
 
 import bufferToBlob from '../../utils/bufferToBlob';
@@ -113,7 +113,7 @@ class QuestionFormManager extends React.Component {
         .catch((err) => console.error(err));
     }
 
-    subjectApi
+    moduleApi
       .getAll()
       .then((subjects) => {
         this.setState((state) => ({
@@ -327,7 +327,7 @@ class QuestionFormManager extends React.Component {
 
     formData.append('text', questionState.text);
     formData.append('points', questionState.points);
-    formData.append('subjectName', subjectText);
+    formData.append('moduleName', subjectText);
     formData.append('themeName', themeText);
 
     correct.map((a) => formData.append('correctAnswers[]', a.text));

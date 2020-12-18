@@ -63,8 +63,8 @@ class ExamCreator extends React.Component {
       filters: [
         ...state.filters,
         {
-          subject,
-          themeFilters: [],
+          module: subject,
+          themes: [],
         },
       ],
     }));
@@ -72,9 +72,10 @@ class ExamCreator extends React.Component {
 
   handleFilterUpdate(filter) {
     this.setState((state) => {
+
       const filters = state.filters
         .map((f) => {
-          if (f.subject.id === filter.subject.id) {
+          if (f.module.id === filter.module.id) {
             return filter;
           }
           return f;
@@ -90,7 +91,7 @@ class ExamCreator extends React.Component {
   handleFilterDelete(filter) {
     this.setState((state) => {
       const filters = state.filters
-        .filter((f) => f.subject.id !== filter.subject.id);
+        .filter((f) => f.module.id !== filter.module.id);
 
       return {
         ...state,
@@ -112,6 +113,7 @@ class ExamCreator extends React.Component {
   }
 
   handleBoundariesUpdate(boundaries) {
+    console.log(boundaries);
     this.setState((state) => ({ ...state, boundaries }));
   }
 
@@ -177,21 +179,10 @@ class ExamCreator extends React.Component {
 
     let totalPoints = 0;
 
-    // IMPORTANT
-    // this operation has a side effect:
-    // the total points are being counted as the total question count is being figured out
-    // this is done so that there aren't two separate computations that would go through the same
-    // operations. I did this because on my end applying filters was being very slow
     const totalQuestionCount = filters.reduce((tqcAcc, filter) => {
-      const filterQuestionCount = filter.themeFilters.reduce((fqcAcc, themeFilter) => {
-        const themeQuestionCount = pointValues.reduce((thqcAcc, pointValue) => {
-          totalPoints += pointValue * themeFilter[pointValue];
-          return thqcAcc + themeFilter[pointValue];
-        }, 0);
-
-        return fqcAcc + themeQuestionCount;
+      const filterQuestionCount = filter.themes.reduce((fqcAcc, themeFilter) => {
+        return fqcAcc + themeFilter.count;
       }, 0);
-
       return tqcAcc + filterQuestionCount;
     }, 0);
 
