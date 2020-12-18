@@ -51,7 +51,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    //new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       chunks: ['landing'],
       title: 'Log In',
