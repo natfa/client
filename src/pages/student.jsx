@@ -1,5 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import dayjs from 'dayjs';
+import dayjsDuration from 'dayjs/plugin/duration';
+
+dayjs.extend(dayjsDuration);
 
 import LoadingAnimation from '../components/loading-animation';
 import StudentApp from '../apps/student-app';
