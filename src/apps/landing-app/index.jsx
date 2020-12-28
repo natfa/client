@@ -45,12 +45,10 @@ class LandingApp extends React.Component {
       return;
     }
 
-    if (account.roles.includes('teacher')) {
+    if (account.role === 'teacher') {
       window.location.pathname = '/teacher';
-    } else if (account.roles.includes('student')) {
+    } else if (account.role === 'student') {
       window.location.pathname = '/student';
-    } else if (account.roles.includes('admin')) {
-      window.location.pathname = '/admin';
     } else {
       window.location.pathname = '/403';
     }
