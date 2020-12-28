@@ -3,7 +3,6 @@ import { apiRoute } from '../constants';
 const examApiRoute = `${apiRoute}/exam`;
 
 const compile = async (data) => {
-  console.log(data);
   const response = await fetch(examApiRoute, {
     method: 'POST',
     credentials: 'include',
