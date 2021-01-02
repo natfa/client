@@ -84,8 +84,7 @@ class SubjectFilter extends React.Component {
 
     const newFilter = {
       ...filter,
-      themeFilters: filter.themeFilters
-        .filter((themeFilter) => themeFilter.theme.id !== themeId),
+      themes: filter.themes.filter(tf => tf.theme.id !== themeId),
     };
 
     onUpdate(newFilter);
