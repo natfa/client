@@ -91,14 +91,10 @@ function ExamsTable({
 
 ExamsTable.propTypes = {
   exams: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     name: PropTypes.string,
     startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    timeToSolve: PropTypes.shape({
-      hours: PropTypes.number,
-      minutes: PropTypes.number,
-    }),
+    timeToSolve: PropTypes.number,
   })).isRequired,
   urlBuilder: PropTypes.func.isRequired,
 };

@@ -128,7 +128,7 @@ class StudentResultList extends React.Component {
 }
 
 StudentResultList.propTypes = {
-  studentId: PropTypes.string.isRequired,
+  studentId: PropTypes.number.isRequired,
 };
 
 export default StudentResultList;
