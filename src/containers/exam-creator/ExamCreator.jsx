@@ -132,22 +132,31 @@ class ExamCreator extends React.Component {
 
     // setup start and end date
     const startDate = dayjs(date);
-    // add enough time for students to solve the exam
-    const endDate = dayjs(date)
-      .add(timeToSolve.hour(), 'hour')
-      .add(timeToSolve.minute(), 'minute');
+
+    let parameters = [];
+
+    filters.forEach((filter) => {
+      const { themes } = filter;
+
+      const filterParameters = themes.map((parameter) => {
+        return {
+          theme: parameter.theme,
+          count: parameter.count,
+        }
+      });
+
+      parameters = [...parameters, ...filterParameters];
+    });
 
     const data = {
-      name,
-      startDate,
-      endDate,
-      timeToSolve: {
-        hours: timeToSolve.hour(),
-        minutes: timeToSolve.minute(),
-      },
-      filters,
-      boundaries,
+      name: name,
+      startDate: startDate,
+      timeToSolve: (timeToSolve.hour() * 3600) + (timeToSolve.minute() * 60),
+      parameters: parameters,
+      specialties: boundaries.map(b => b.specialty),
     };
+
+    console.log(data);
 
     try {
       const response = await examApi.compile(data);
@@ -156,7 +165,10 @@ class ExamCreator extends React.Component {
         return;
       }
 
-      this.setState((state) => ({ ...state, examId: response.data.examId }));
+      const exam = response.data;
+      console.log(exam);
+
+      this.setState((state) => ({ ...state, examId: exam.id }));
     } catch (err) {
       console.error(err);
     }
@@ -173,9 +185,11 @@ class ExamCreator extends React.Component {
       examId,
     } = this.state;
 
+    /*
     if (examId !== null) {
       return <Redirect push to={`/exam/${examId}`} />;
     }
+    */
 
     let totalPoints = 0;
 
