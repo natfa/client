@@ -15,14 +15,14 @@ const getExamById = async (id) => {
   return response.json();
 };
 
-const answerQuestion = async (questionId, answerId) => {
+const answerQuestion = async (data) => {
   const response = await fetch(`${solveApiRoute}/answer`, {
     method: 'POST',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ questionId, answerId }),
+    body: JSON.stringify(data),
   });
 
   return response.ok;
