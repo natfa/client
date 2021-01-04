@@ -1,9 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import dayjs from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration';
+import dayjsRelativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/bg';
 
+dayjs.locale('bg');
 dayjs.extend(dayjsDuration);
+dayjs.extend(dayjsRelativeTime);
 
 import LoadingAnimation from '../components/loading-animation';
 import StudentApp from '../apps/student-app';
