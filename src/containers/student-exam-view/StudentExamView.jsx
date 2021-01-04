@@ -40,12 +40,12 @@ class StudentExamView extends React.Component {
         return;
       }
 
-      const { exam, hasSubmitted } = response.data;
+      const exam = response.data;
 
       this.setState((state) => ({
         ...state,
         exam,
-        studentHasAlreadySubmitted: hasSubmitted,
+        studentHasAlreadySubmitted: exam.studentExams[0].grade !== null,
       }));
 
       // do it once so that it shows up
@@ -80,28 +80,13 @@ class StudentExamView extends React.Component {
       return;
     }
 
-    const aDay = 24 * 60 * 60;
-    const anHour = 60 * 60;
-    const aMinute = 60;
+    const timeLeft = dayjs.duration(start.diff(now));
 
-    // dayjs.unix() returns seconds not milliseconds
-    let secondsLeft = start.unix() - now.unix();
+    const hours = timeLeft.hours();
+    const minutes = timeLeft.minutes();
+    const seconds = timeLeft.seconds();
 
-    const daysLeft = parseInt(secondsLeft / aDay, 10);
-    secondsLeft -= daysLeft * aDay;
-
-    if (daysLeft > 0) {
-      setTimeLeftUntilStart(`~ ${daysLeft} дни`);
-      return;
-    }
-
-    const hoursLeft = parseInt(secondsLeft / anHour, 10);
-    secondsLeft -= hoursLeft * anHour;
-
-    const minutesLeft = parseInt(secondsLeft / aMinute, 10);
-    secondsLeft -= minutesLeft * aMinute;
-
-    const timeString = `${withLeadingZero(hoursLeft)}:${withLeadingZero(minutesLeft)}:${withLeadingZero(secondsLeft)}`;
+    const timeString = `${withLeadingZero(hours)}:${withLeadingZero(minutes)}:${withLeadingZero(seconds)}`;
 
     setTimeLeftUntilStart(timeString);
   }

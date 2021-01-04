@@ -5,12 +5,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
-import MediaList from '../media-list';
 import AnswerView from '../exam-solver-answer-view';
 
 const QuestionView = ({
   question,
-
+  givenAnswerId,
   selectAnswer,
 }) => (
   <Grid
@@ -22,12 +21,6 @@ const QuestionView = ({
       <Grid item xs={12} sm={7}>
         <Typography variant="h5">{question.text}</Typography>
       </Grid>
-      {question.media
-        && (
-        <Grid item xs={12} sm={5}>
-          <MediaList media={question.media} />
-        </Grid>
-        )}
     </Grid>
 
     <Divider />
@@ -35,12 +28,12 @@ const QuestionView = ({
     <Grid item>
       <AnswerView
         answers={question.answers}
-        selectedAnswerId={question.selectedAnswerId}
+        selectedAnswerId={givenAnswerId}
         onAnswerChange={(e) => {
           const { value } = e.target;
           const answerId = value;
 
-          selectAnswer(question.id, answerId);
+          selectAnswer(Number(question.id), Number(answerId));
         }}
       />
     </Grid>
@@ -49,12 +42,12 @@ const QuestionView = ({
 
 QuestionView.propTypes = {
   question: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     text: PropTypes.string,
+    points: PropTypes.number,
     answers: PropTypes.arrayOf(PropTypes.object),
-    selectedAnswerId: PropTypes.string,
-    media: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
+  givenAnswerId: PropTypes.number,
   selectAnswer: PropTypes.func.isRequired,
 };
 

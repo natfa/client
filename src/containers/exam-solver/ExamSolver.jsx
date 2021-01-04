@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
 import { Redirect, withRouter } from 'react-router-dom';
 
 import LoadingAnimation from '../../components/loading-animation';
@@ -8,9 +9,6 @@ import QuestionView from '../../components/exam-solver-question-view';
 import SubmitPage from '../../components/exam-solver-submit-page';
 
 import solveApi from '../../api/solve';
-import mediaApi from '../../api/media';
-
-import bufferToBlob from '../../utils/bufferToBlob';
 import ttsToString from '../../utils/ttsToString';
 
 class ExamSolver extends React.Component {
@@ -23,6 +21,7 @@ class ExamSolver extends React.Component {
 
     this.state = {
       exam: null,
+      questions: null,
       questionId: null,
       timeLeft: null,
       solved: false,
@@ -40,68 +39,25 @@ class ExamSolver extends React.Component {
 
     solveApi
       .getExamById(match.params.id)
-      .then((examData) => {
-        if (examData === null) {
+      .then((exam) => {
+        if (exam === null) {
           console.error('Exam is null, probably id not found');
           return;
         }
 
-        const { exam, answered } = examData;
-        const questionId = exam.questions[0].id;
+        const { questions } = exam.studentExams[0];
+        const questionId = questions[0].id;
+
 
         this.setState((state) => ({
           ...state,
           exam,
+          questions,
           questionId,
           timeLeft: exam.timeToSolve,
         }));
 
-        answered.forEach((a) => {
-          this.selectAnswer(a.questionId, a.answerId);
-        });
-
         this.timerID = setInterval(this.tick, 60000);
-
-        exam.questions.forEach((question) => {
-          mediaApi
-            .getManyByQuestionId(question.id)
-            .then((buffers) => {
-              if (buffers === null) {
-                console.error('Media is null');
-                return;
-              }
-
-              if (buffers.length === 0) return;
-
-              const media = buffers.map((buffer) => bufferToBlob(buffer));
-
-              // add media to questions' state
-              this.setState((state) => {
-                const questions = state.exam.questions.map((q) => {
-                  if (q.id !== question.id) return q;
-
-                  return {
-                    ...q,
-                    media,
-                  };
-                });
-
-                return {
-                  ...state,
-                  exam: {
-                    ...state.exam,
-                    questions,
-                  },
-                };
-              });
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        });
-      })
-      .catch((err) => {
-        console.error(err);
       });
   }
 
@@ -130,26 +86,19 @@ class ExamSolver extends React.Component {
     this.setState((state) => {
       const { timeLeft } = state;
 
-      if (timeLeft.minutes === 0) {
-        if (timeLeft.hours === 0) return state;
-
-        timeLeft.hours -= 1;
-        timeLeft.minutes = 59;
-      } else {
-        timeLeft.minutes -= 1;
-      }
+      const newTimeLeft = dayjs.duration(timeLeft).subtract(1, 'minute').seconds();
 
       return {
         ...state,
-        timeLeft,
+        timeLeft: newTimeLeft,
       };
     });
   }
 
   selectQuestion(questionId) {
-    const { exam } = this.state;
+    const { questions } = this.state;
 
-    const question = exam.questions.find((q) => q.id === questionId);
+    const question = questions.find((q) => q.id === questionId);
     if (!question) return;
 
     this.setState((state) => ({
@@ -159,24 +108,17 @@ class ExamSolver extends React.Component {
   }
 
   selectAnswer(questionId, answerId) {
-    this.setState((state) => {
-      const questions = state.exam.questions.map((question) => {
-        if (question.id !== questionId) return question;
+    this.setState((state) => ({
+      ...state,
+      questions: state.questions.map((q) => {
+        if (q.questionId !== questionId) return q;
 
         return {
-          ...question,
-          selectedAnswerId: answerId,
+          ...q,
+          givenAnswerId: answerId,
         };
-      });
-
-      return {
-        ...state,
-        exam: {
-          ...state.exam,
-          questions,
-        },
-      };
-    });
+      }),
+    }));
   }
 
   openSubmitPage() {
@@ -186,21 +128,9 @@ class ExamSolver extends React.Component {
   submitExam() {
     const { exam } = this.state;
 
-    const solution = exam.questions.map((question) => {
-      if (question.selectedAnswerId === undefined) return null;
-
-      return {
-        questionId: question.id,
-        answerId: question.selectedAnswerId,
-      };
-    }).filter((qa) => qa !== null);
-
-    const data = {
-      examId: exam.id,
-      solution,
-    };
-
-    solveApi.submitExam(data);
+    solveApi.submitExam({
+      examId: exam.id
+    });
 
     this.setState((state) => ({
       ...state,
@@ -211,6 +141,7 @@ class ExamSolver extends React.Component {
   render() {
     const {
       exam,
+      questions,
       questionId,
       timeLeft,
       solved,
@@ -224,13 +155,15 @@ class ExamSolver extends React.Component {
       return <LoadingAnimation />;
     }
 
-    const questionsLeft = exam.questions.reduce((acc, question) => {
-      if (!question.selectedAnswerId) {
+    const questionsLeft = questions.reduce((acc, question) => {
+      if (!question.givenAnswerId) {
         return acc + 1;
       }
 
       return acc;
     }, 0);
+
+    const question = questions.find(q => q.id === questionId);
 
     return (
       <div>
@@ -243,10 +176,16 @@ class ExamSolver extends React.Component {
               />
             ) : (
               <QuestionView
-                question={exam.questions.find((q) => q.id === questionId)}
+                question={question.question}
+                givenAnswerId={question.givenAnswerId}
                 selectAnswer={(qId, aId) => {
                   this.selectAnswer(qId, aId);
-                  solveApi.answerQuestion(qId, aId);
+                  const studentExamId = exam.studentExams[0].id;
+                  solveApi.answerQuestion({
+                    studentExamId,
+                    questionId: qId,
+                    givenAnswerId: aId,
+                  });
                 }}
               />
             )
@@ -254,7 +193,7 @@ class ExamSolver extends React.Component {
 
         <ExamSolverNavBar
           ref={this.questionLinkRef}
-          questions={exam.questions}
+          questions={questions}
           questionId={questionId}
           selectQuestion={this.selectQuestion}
           timeLeft={ttsToString(timeLeft)}

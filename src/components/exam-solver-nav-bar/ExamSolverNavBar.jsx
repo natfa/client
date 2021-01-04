@@ -21,7 +21,7 @@ const QuestionsNav = React.forwardRef(({
     onClick: () => selectQuestion(question.id),
   };
 
-  if (question.selectedAnswerId !== undefined) {
+  if (question.givenAnswerId) {
     props.className = 'answered';
   }
 
@@ -39,7 +39,7 @@ const QuestionsNav = React.forwardRef(({
 
 QuestionsNav.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  questionId: PropTypes.string,
+  questionId: PropTypes.number,
   selectQuestion: PropTypes.func.isRequired,
 };
 
@@ -170,7 +170,7 @@ const ExamSolverNavBar = React.forwardRef(({
 
 ExamSolverNavBar.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  questionId: PropTypes.string,
+  questionId: PropTypes.number,
   timeLeft: PropTypes.string.isRequired,
   selectQuestion: PropTypes.func.isRequired,
   openSubmitPage: PropTypes.func.isRequired,

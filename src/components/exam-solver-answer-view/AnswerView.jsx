@@ -26,16 +26,16 @@ const AnswerView = ({
 
 AnswerView.propTypes = {
   answers: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     text: PropTypes.string,
   })).isRequired,
-  selectedAnswerId: PropTypes.string,
+  selectedAnswerId: PropTypes.number,
 
   onAnswerChange: PropTypes.func.isRequired,
 };
 
 AnswerView.defaultProps = {
-  selectedAnswerId: '',
+  selectedAnswerId: null,
 };
 
 export default AnswerView;
