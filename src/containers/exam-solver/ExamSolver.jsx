@@ -86,7 +86,7 @@ class ExamSolver extends React.Component {
     this.setState((state) => {
       const { timeLeft } = state;
 
-      const newTimeLeft = dayjs.duration(timeLeft).subtract(1, 'minute').seconds();
+      const newTimeLeft = dayjs.duration(timeLeft, 'seconds').subtract({ minutes: 1 }).asSeconds();
 
       return {
         ...state,
