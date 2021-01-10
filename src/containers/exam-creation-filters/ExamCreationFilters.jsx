@@ -80,7 +80,7 @@ class ExamCreationFilters extends React.Component {
             onClick={this.openDialog}
             disabled={unusedSubjects.length === 0}
           >
-            филтър
+            Добавяне на модул
           </Button>
 
           <Button
@@ -94,7 +94,7 @@ class ExamCreationFilters extends React.Component {
         </Grid>
 
         <Dialog open={dialogOpen} onClose={this.closeDialog}>
-          <DialogTitle>Изберете предмет</DialogTitle>
+          <DialogTitle>Изберете модул</DialogTitle>
           <List>
             {unusedSubjects.map((subject) => (
               <ListItem

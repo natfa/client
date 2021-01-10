@@ -71,7 +71,7 @@ class SubjectFilter extends React.Component {
         ...filter.themes,
         {
           theme,
-          count: 0,
+          count: 1,
         },
       ],
     };
